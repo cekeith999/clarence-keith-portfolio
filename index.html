@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
+        :root { --marquee-h: 48px; }
         body {
             font-family: 'Inter', sans-serif;
             background-color: #FEFDEE;
@@ -54,6 +55,7 @@
             display: flex;
             height: calc(100vh - 80px); /* Account for header height */
             margin-top: 80px; /* Offset for fixed header */
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .circles-sidebar {
             width: 10%;
@@ -74,6 +76,7 @@
             padding: 1rem;
             height: 100%;
             max-height: calc(100vh - 80px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .project-content .image-section {
             position: sticky;
@@ -182,9 +185,38 @@
             transform: scale(1.05);
             border-color: #333;
         }
+        /* Marquee bar */
+        .marquee {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: var(--marquee-h);
+            background: #ffffff;
+            color: #111827;
+            border-top: 1px solid #e5e7eb;
+            overflow: hidden;
+            z-index: 100;
+        }
+        .marquee__track {
+            display: flex;
+            width: max-content;
+            white-space: nowrap;
+            animation: marquee-scroll 20s linear infinite;
+            will-change: transform;
+        }
+        .marquee__item {
+            padding: 0 2rem;
+            line-height: var(--marquee-h);
+            font-weight: 600;
+        }
+        @keyframes marquee-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
     </style>
 </head>
-<body class="h-full min-h-screen flex flex-col">
+<body class="min-h-screen bg-[#FEFDEE] text-gray-800 flex flex-col">
 
     <!-- Header Navigation -->
     <header class="w-full p-6 sm:p-8 sticky top-0 z-50 bg-[#FEFDEE] shadow-sm">
@@ -403,6 +435,21 @@
             </div>
         </section>
     </main>
+
+    <!-- Fixed bottom marquee -->
+    <div class="marquee" aria-hidden="true">
+        <div class="marquee__track">
+            <div class="marquee__item">Fun fact: I build footwear concepts with 3D printing.</div>
+            <div class="marquee__item">Fun fact: I prototype fast — iterate even faster.</div>
+            <div class="marquee__item">Fun fact: I mix generative design with traditional craft.</div>
+            <div class="marquee__item">Fun fact: Rendered over 1,000 images this year.</div>
+            <!-- duplicate for seamless loop -->
+            <div class="marquee__item">Fun fact: I build footwear concepts with 3D printing.</div>
+            <div class="marquee__item">Fun fact: I prototype fast — iterate even faster.</div>
+            <div class="marquee__item">Fun fact: I mix generative design with traditional craft.</div>
+            <div class="marquee__item">Fun fact: Rendered over 1,000 images this year.</div>
+        </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -1131,10 +1178,10 @@
                 if (count === 2) return [{ x: -0.5, y: 0 }, { x: 0.5, y: 0 }];
                 if (count === 3) return [{ x: 0, y: -0.8 }, { x: -1, y: 0.8 }, { x: 1, y: 0.8 }];
                 if (count === 4) return [
-                    { x: 0, y: -0.8 },    // Top
-                    { x: -1, y: 0.8 },    // Bottom left
-                    { x: 1, y: 0.8 },     // Bottom right
-                    { x: 0, y: 0 }        // Center (About)
+                    { x: 0, y: -0.9 },    // Top a bit higher
+                    { x: -1.2, y: 1.1 },  // Bottom left
+                    { x: 1.2, y: 1.1 },   // Bottom right
+                    { x: 0, y: 0.15 }     // Center (About) lowered slightly
                 ];
                 // For more than 4, arrange in a circle
                 const positions = [];
