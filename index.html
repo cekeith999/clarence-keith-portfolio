@@ -274,6 +274,8 @@
             overflow-y: auto;
             transform: scale(0.7);
             transition: transform 0.3s ease;
+            position: relative;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
         
         .popup-overlay.active .popup-content {
@@ -294,6 +296,35 @@
     </style>
 </head>
 <body class="min-h-screen bg-[#F00000] text-white flex flex-col">
+
+    <!-- Contact Popup -->
+    <div id="contact-popup" class="popup-overlay">
+        <div class="popup-content">
+            <button class="popup-close" id="popup-close">&times;</button>
+            <h2 class="text-3xl font-bold text-black mb-6">Get In Touch</h2>
+            <form id="popup-contact-form" class="space-y-4">
+                <div>
+                    <label for="popup-name" class="block text-sm font-medium text-white mb-2">Name</label>
+                    <input type="text" id="popup-name" name="name" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-colors bg-white text-black">
+                </div>
+                <div>
+                    <label for="popup-email" class="block text-sm font-medium text-white mb-2">Email/Phone Number</label>
+                    <input type="text" id="popup-email" name="contact" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-colors bg-white text-black">
+                </div>
+                <div>
+                    <label for="popup-message" class="block text-sm font-medium text-white mb-2">Message</label>
+                    <textarea id="popup-message" name="message" rows="4" required 
+                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-colors resize-none bg-white text-black"></textarea>
+                </div>
+                <button type="submit" 
+                        class="w-full bg-black text-white py-3 rounded-lg font-bold text-lg hover:bg-gray-800 transition-colors duration-300">
+                    Send Message
+                </button>
+            </form>
+        </div>
+    </div>
 
     <!-- Header Navigation -->
     <header class="w-full p-6 sm:p-8 sticky top-0 z-50 bg-[#F00000] shadow-sm">
@@ -528,35 +559,6 @@
             <div class="marquee__item">Everything about life contradicts itself. We chase freedom through structure. We find identity in repetition. We call our screens a window to the world while the world keeps shrinking behind them. People want to escape systems but still need something to belong to. That's the joke, everything that frees us also traps us. We hate the artificial but live through it anyway. It's not fake, it's just another layer of survival. Pretending might be the only thing that keeps us human.</div>
             <div class="marquee__item">Every invention feels like an echo. We build machines to talk for us, then forget what silence sounds like. We automate feeling, and it leaves us starving for the real thing. We keep trying to design empathy into the system, but maybe the system was never supposed to care. It's all theater, but that doesn't make it meaningless. It's still a stage where we can rehearse being alive, over and over, until it feels right again.</div>
             <div class="marquee__item">I work inside that space, between art and survival, between code and soul. I'm not trying to fix the contradiction. I'm trying to live in it. The goal isn't harmony, it's awareness. To notice the glitch and still make something from it. To build a world that doesn't exist yet and remind myself that creation is the only honest way to lie. Every mask, every prototype, every render is proof that I'm still learning how to translate being into form.</div>
-        </div>
-    </div>
-
-    <!-- Contact Popup -->
-    <div id="contact-popup" class="popup-overlay">
-        <div class="popup-content">
-            <button class="popup-close" id="popup-close">&times;</button>
-            <h2 class="text-3xl font-bold text-black mb-6">Get In Touch</h2>
-            <form id="popup-contact-form" class="space-y-4">
-                <div>
-                    <label for="popup-name" class="block text-sm font-medium text-white mb-2">Name</label>
-                    <input type="text" id="popup-name" name="name" required 
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-colors bg-white text-black">
-                </div>
-                <div>
-                    <label for="popup-email" class="block text-sm font-medium text-white mb-2">Email/Phone Number</label>
-                    <input type="text" id="popup-email" name="contact" required 
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-colors bg-white text-black">
-                </div>
-                <div>
-                    <label for="popup-message" class="block text-sm font-medium text-white mb-2">Message</label>
-                    <textarea id="popup-message" name="message" rows="4" required 
-                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-colors resize-none bg-white text-black"></textarea>
-                </div>
-                <button type="submit" 
-                        class="w-full bg-black text-white py-3 rounded-lg font-bold text-lg hover:bg-gray-800 transition-colors duration-300">
-                    Send Message
-                </button>
-            </form>
         </div>
     </div>
 
