@@ -397,9 +397,28 @@
                 {
                     id: 'project1',
                     name: 'Crimson Fibers',
-                    category: 'Experimental 3D Printed Footwear',
-                    price: '$350',
-                    description: 'This piece explores the intersection of generative design and additive manufacturing...',
+                    tagline: 'Experimental 3D Printed Footwear',
+                    date: 'Spring 2025',
+                    goal: 'This piece explores the intersection of generative design and additive manufacturing...',
+                    role: [
+                        'Lead Designer',
+                        '3D Modeling',
+                        'Material Research',
+                        'Prototype Development'
+                    ],
+                    skills: [
+                        '3D Printing',
+                        'Generative Design',
+                        'CAD Modeling',
+                        'Material Science',
+                        'Rapid Prototyping',
+                        'Design Iteration'
+                    ],
+                    lessons: [
+                        'Material selection critical for structural integrity',
+                        'Iterative testing improves final design',
+                        'User feedback drives meaningful improvements'
+                    ],
                     circleImage: 'images/heel boot (8).png',
                     mainImage: 'images/heel boot (8).png',
                     thumbnails: [
@@ -410,9 +429,28 @@
                 {
                     id: 'project2',
                     name: 'Yellow Wave',
-                    category: 'Digital Sculpture & Concept Art',
-                    price: '$420',
-                    description: "'Yellow Wave' is a concept piece that blends fluid dynamics with solid form...",
+                    tagline: 'Digital Sculpture & Concept Art',
+                    date: 'Fall 2024',
+                    goal: "'Yellow Wave' is a concept piece that blends fluid dynamics with solid form...",
+                    role: [
+                        'Concept Development',
+                        '3D Sculpting',
+                        'Visual Design',
+                        'Rendering'
+                    ],
+                    skills: [
+                        '3D Sculpting',
+                        'Fluid Dynamics',
+                        'Concept Art',
+                        'Digital Rendering',
+                        'Form Exploration',
+                        'Visual Storytelling'
+                    ],
+                    lessons: [
+                        'Fluid forms require careful balance',
+                        'Color choice impacts emotional response',
+                        'Concept clarity drives execution'
+                    ],
                     circleImage: 'images/MyShoeBoot Side View.png',
                     mainImage: 'images/MyShoeBoot Side View.png',
                     thumbnails: [
@@ -423,9 +461,28 @@
                 {
                     id: 'project3',
                     name: 'Monochrome Strap',
-                    category: 'A Study in Form and Function',
-                    price: '$280',
-                    description: 'This design focuses on minimalism and utility. The shoe is a single, continuous form...',
+                    tagline: 'A Study in Form and Function',
+                    date: 'Winter 2024',
+                    goal: 'This design focuses on minimalism and utility. The shoe is a single, continuous form...',
+                    role: [
+                        'Design Lead',
+                        'Function Analysis',
+                        'Material Selection',
+                        'Testing & Validation'
+                    ],
+                    skills: [
+                        'Minimalist Design',
+                        'Functional Analysis',
+                        'Material Engineering',
+                        'User Testing',
+                        'Design Systems',
+                        'Quality Control'
+                    ],
+                    lessons: [
+                        'Simplicity requires more design discipline',
+                        'Function should drive form decisions',
+                        'User testing reveals hidden requirements'
+                    ],
                     circleImage: 'images/TunsShoe Side View.png',
                     mainImage: 'images/TunsShoe Side View.png',
                     thumbnails: [
@@ -436,9 +493,12 @@
                 {
                     id: 'about',
                     name: 'About Me',
-                    category: 'Personal Information',
-                    price: '',
-                    description: 'Learn more about my background, skills, and expertise in footwear design and 3D art.',
+                    tagline: 'Personal Information',
+                    date: '',
+                    goal: 'Learn more about my background, skills, and expertise in footwear design and 3D art.',
+                    role: [],
+                    skills: [],
+                    lessons: [],
                     circleImage: 'images/Mehead.png',
                     mainImage: 'images/Mehead.png',
                     thumbnails: [
@@ -605,7 +665,7 @@
                 container.className = 'w-full max-w-7xl mx-auto p-4';
                 
                 const grid = document.createElement('div');
-                grid.className = 'grid grid-cols-1 lg:grid-cols-2 gap-6';
+                grid.className = 'grid grid-cols-1 lg:grid-cols-2 gap-8';
                 
                 // Image gallery section
                 const imageSection = document.createElement('div');
@@ -637,37 +697,121 @@
                 imageSection.appendChild(thumbnailsContainer);
                 imageSection.appendChild(mainImageContainer);
                 
-                // Project details section
+                // Project details section with new structure
                 const detailsSection = document.createElement('div');
-                detailsSection.className = 'flex flex-col justify-center';
+                detailsSection.className = 'flex flex-col space-y-6';
+                
+                // 1) Header
+                const headerSection = document.createElement('div');
+                headerSection.className = 'space-y-2';
                 
                 const title = document.createElement('h1');
-                title.className = 'text-3xl font-extrabold tracking-tight mb-2';
+                title.className = 'text-3xl font-extrabold tracking-tight';
                 title.textContent = project.name;
                 
-                const category = document.createElement('p');
-                category.className = 'text-base text-gray-600 mb-3';
-                category.textContent = project.category;
+                const tagline = document.createElement('p');
+                tagline.className = 'text-lg text-gray-600 font-medium';
+                tagline.textContent = project.tagline;
                 
-                if (project.price) {
-                    const price = document.createElement('p');
-                    price.className = 'text-2xl font-bold mb-4';
-                    price.textContent = project.price;
-                    detailsSection.appendChild(price);
-                }
+                headerSection.appendChild(title);
+                headerSection.appendChild(tagline);
                 
-                const button = document.createElement('button');
-                button.className = 'w-full bg-black text-white py-2 rounded-lg font-semibold hover:bg-gray-800 transition-colors duration-300 mb-4';
-                button.textContent = project.id === 'about' ? 'Get In Touch' : 'Contact for Purchase';
+                // 2) Date
+                const dateSection = document.createElement('div');
+                dateSection.className = 'space-y-1';
                 
-                const description = document.createElement('p');
-                description.className = 'text-gray-700 leading-relaxed text-sm';
-                description.textContent = project.description;
+                const date = document.createElement('p');
+                date.className = 'text-base text-gray-500';
+                date.textContent = project.date;
                 
-                detailsSection.appendChild(title);
-                detailsSection.appendChild(category);
-                detailsSection.appendChild(button);
-                detailsSection.appendChild(description);
+                dateSection.appendChild(date);
+                
+                // 3) Goal
+                const goalSection = document.createElement('div');
+                goalSection.className = 'space-y-2';
+                
+                const goalLabel = document.createElement('h3');
+                goalLabel.className = 'text-lg font-semibold text-gray-800';
+                goalLabel.textContent = 'Goal:';
+                
+                const goalText = document.createElement('p');
+                goalText.className = 'text-gray-700 leading-relaxed';
+                goalText.textContent = project.goal;
+                
+                goalSection.appendChild(goalLabel);
+                goalSection.appendChild(goalText);
+                
+                // 4) Lists Section
+                const listsSection = document.createElement('div');
+                listsSection.className = 'space-y-6';
+                
+                // Role
+                const roleSection = document.createElement('div');
+                roleSection.className = 'space-y-2';
+                
+                const roleLabel = document.createElement('h3');
+                roleLabel.className = 'text-lg font-semibold text-gray-800';
+                roleLabel.textContent = 'Role';
+                
+                const roleList = document.createElement('ul');
+                roleList.className = 'space-y-1 text-gray-700';
+                project.role.forEach(role => {
+                    const li = document.createElement('li');
+                    li.textContent = `• ${role}`;
+                    roleList.appendChild(li);
+                });
+                
+                roleSection.appendChild(roleLabel);
+                roleSection.appendChild(roleList);
+                
+                // Skills
+                const skillsSection = document.createElement('div');
+                skillsSection.className = 'space-y-2';
+                
+                const skillsLabel = document.createElement('h3');
+                skillsLabel.className = 'text-lg font-semibold text-gray-800';
+                skillsLabel.textContent = 'Skills';
+                
+                const skillsList = document.createElement('ul');
+                skillsList.className = 'space-y-1 text-gray-700';
+                project.skills.forEach(skill => {
+                    const li = document.createElement('li');
+                    li.textContent = `• ${skill}`;
+                    skillsList.appendChild(li);
+                });
+                
+                skillsSection.appendChild(skillsLabel);
+                skillsSection.appendChild(skillsList);
+                
+                // Lessons Learned
+                const lessonsSection = document.createElement('div');
+                lessonsSection.className = 'space-y-2';
+                
+                const lessonsLabel = document.createElement('h3');
+                lessonsLabel.className = 'text-lg font-semibold text-gray-800';
+                lessonsLabel.textContent = 'Lessons Learned';
+                
+                const lessonsList = document.createElement('ul');
+                lessonsList.className = 'space-y-1 text-gray-700';
+                project.lessons.forEach(lesson => {
+                    const li = document.createElement('li');
+                    li.textContent = `• ${lesson}`;
+                    lessonsList.appendChild(li);
+                });
+                
+                lessonsSection.appendChild(lessonsLabel);
+                lessonsSection.appendChild(lessonsList);
+                
+                // Assemble lists section
+                listsSection.appendChild(roleSection);
+                listsSection.appendChild(skillsSection);
+                listsSection.appendChild(lessonsSection);
+                
+                // Assemble details section
+                detailsSection.appendChild(headerSection);
+                detailsSection.appendChild(dateSection);
+                detailsSection.appendChild(goalSection);
+                detailsSection.appendChild(listsSection);
                 
                 grid.appendChild(imageSection);
                 grid.appendChild(detailsSection);
