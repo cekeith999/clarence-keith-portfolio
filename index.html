@@ -74,6 +74,12 @@
             padding: 2rem;
             min-height: 100%;
         }
+        .project-content .page-content {
+            display: block !important;
+        }
+        .project-content .active {
+            display: block !important;
+        }
         .circles-sidebar .portfolio-circle {
             position: relative;
             top: auto;
@@ -272,7 +278,7 @@
                     <div class="flex flex-col-reverse sm:flex-row gap-4">
                         <div class="flex sm:flex-col gap-3 overflow-x-auto sm:overflow-y-auto pr-2">
                             <img src="images/MyShoeBoot Side View.png" alt="Thumbnail 1" class="thumbnail w-20 h-20 object-cover rounded-md active">
-                            <img src="images/MyShoeBoot Front View.png" alt="Thumbnail 2" class="thumbnail w-20 h-20 object-cover rounded-md">
+                            <img src="images/MyShoeBoot Front  View.png" alt="Thumbnail 2" class="thumbnail w-20 h-20 object-cover rounded-md">
                         </div>
                         <div class="flex-1">
                             <img data-main-image="project2" src="images/MyShoeBoot Side View.png" alt="Main product image" class="w-full h-auto object-cover rounded-lg shadow-lg">
@@ -528,9 +534,18 @@
                 splitLayout.appendChild(circlesSidebar);
                 splitLayout.appendChild(projectContent);
                 
+                // Store original content before replacing
+                const originalContent = mainContainer.innerHTML;
+                
                 // Replace main content
                 mainContainer.innerHTML = '';
                 mainContainer.appendChild(splitLayout);
+                
+                // Store original content in a hidden div for later use
+                const hiddenContent = document.createElement('div');
+                hiddenContent.style.display = 'none';
+                hiddenContent.innerHTML = originalContent;
+                document.body.appendChild(hiddenContent);
             }
 
             function displayProjectInSplitLayout(projectId) {
@@ -540,8 +555,16 @@
                     return;
                 }
                 
-                // Get the original project section
-                const originalProject = document.getElementById(projectId);
+                // Look for the project in the hidden content first, then in the main document
+                let originalProject = document.getElementById(projectId);
+                if (!originalProject) {
+                    // Try to find it in the hidden content
+                    const hiddenContent = document.querySelector('div[style*="display: none"]');
+                    if (hiddenContent) {
+                        originalProject = hiddenContent.querySelector(`#${projectId}`);
+                    }
+                }
+                
                 if (!originalProject) {
                     console.error('Original project not found:', projectId);
                     return;
@@ -564,28 +587,53 @@
                 `;
                 projectContent.appendChild(backButton);
                 
-                // Clone the project content (get the inner content, not the section wrapper)
-                const projectInnerContent = originalProject.querySelector('div');
-                if (projectInnerContent) {
-                    const projectClone = projectInnerContent.cloneNode(true);
-                    // Remove the back button from the cloned content since we're adding our own
-                    const existingBackButton = projectClone.querySelector('button[data-target="home"]');
-                    if (existingBackButton) {
-                        existingBackButton.remove();
-                    }
-                    projectContent.appendChild(projectClone);
-                    console.log('Project content cloned successfully');
-                } else {
-                    console.error('No inner content found in project');
-                    // Fallback: clone the entire section but remove page-content class
-                    const projectClone = originalProject.cloneNode(true);
-                    projectClone.classList.remove('page-content');
-                    projectContent.appendChild(projectClone);
+                // Clone the entire project section content
+                const projectClone = originalProject.cloneNode(true);
+                projectClone.classList.remove('page-content');
+                projectClone.classList.add('active');
+                
+                // Remove the existing back button from the cloned content
+                const existingBackButton = projectClone.querySelector('button[data-target="home"]');
+                if (existingBackButton) {
+                    existingBackButton.remove();
                 }
+                
+                // Append the cloned project content
+                projectContent.appendChild(projectClone);
+                console.log('Project content cloned successfully');
+                
+                // Re-attach thumbnail click handlers to the new content
+                attachThumbnailHandlers(projectContent);
+            }
+            
+            function attachThumbnailHandlers(container) {
+                const thumbnails = container.querySelectorAll('.thumbnail');
+                thumbnails.forEach(thumb => {
+                    thumb.addEventListener('click', (e) => {
+                        const clickedThumb = e.target;
+                        const projectSection = clickedThumb.closest('.page-content, .active');
+                        const mainImage = projectSection.querySelector(`[data-main-image]`);
+                        
+                        if (mainImage) {
+                            mainImage.src = clickedThumb.src;
+                        }
+
+                        // Update active state for thumbnails within the same project
+                        projectSection.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+                        clickedThumb.classList.add('active');
+                    });
+                });
             }
 
             function returnToHomeLayout() {
                 isSplitLayout = false;
+                
+                // Clean up hidden content
+                const hiddenContent = document.querySelector('div[style*="display: none"]');
+                if (hiddenContent) {
+                    hiddenContent.remove();
+                }
+                
                 mainContainer.innerHTML = `
                     <section id="home" class="page-content active h-full flex items-center justify-center relative">
                         <div id="circle-container">
@@ -689,7 +737,7 @@
             document.addEventListener('click', (e) => {
                 if (e.target.classList.contains('thumbnail')) {
                     const clickedThumb = e.target;
-                    const projectSection = clickedThumb.closest('.page-content');
+                    const projectSection = clickedThumb.closest('.page-content, .active');
                     const mainImage = projectSection.querySelector(`[data-main-image]`);
                     
                     if (mainImage) {
