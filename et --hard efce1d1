@@ -1,0 +1,5 @@
+[33me8458e7[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Fix circle animations and page navigation - restore smooth movements and fix all project pages opening
+[33m70ccd36[m Fix seamless circle transitions - circles now move directly into sidebar without snapping
+[33m7405d4b[m Add smooth circle movement animations for opening/closing projects and page transitions
+[33mefce1d1[m Fix circle spacing and improve animations - 3 project circles evenly spaced with me circle in center, smoother transitions
+[33m3f1bcaf[m Add About page as center circle with split layout functionality
