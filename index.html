@@ -5,11 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clarence Keith - Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         :root { --marquee-h: 48px; }
+        
+        /* Yeezy Tstar Font Faces */
+        @font-face {
+            font-family: 'Yeezy Tstar';
+            src: url('fonts/yeezy_tstar-regular-webfont.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'Yeezy Tstar';
+            src: url('fonts/yeezy_tstar-bold-webfont.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+        
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Yeezy Tstar', sans-serif;
             background-color: #FEFDEE;
             color: #333;
         }
@@ -211,7 +226,7 @@
         .marquee__item {
             padding: 0 2rem;
             line-height: var(--marquee-h);
-            font-weight: 600;
+            font-weight: bold;
         }
         @keyframes marquee-scroll {
             0% { transform: translateX(0); }
@@ -253,7 +268,7 @@
             <div class="w-full max-w-6xl mx-auto p-6 sm:p-8">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     <div class="order-2 lg:order-1">
-                        <h1 class="text-5xl font-extrabold tracking-tight mb-6">About Me</h1>
+                        <h1 class="text-5xl font-bold tracking-tight mb-6">About Me</h1>
                         <div class="space-y-6 text-lg leading-relaxed">
                             <p class="text-gray-700">
                                 I'm Clarence Keith, a passionate footwear designer and 3D artist specializing in experimental design and additive manufacturing. My work explores the intersection of traditional craftsmanship and cutting-edge technology.
@@ -325,7 +340,7 @@
         <section id="contact" class="page-content">
             <div class="w-full max-w-6xl mx-auto p-6 sm:p-8">
                 <div class="text-center mb-12">
-                    <h1 class="text-5xl font-extrabold tracking-tight mb-4">Get In Touch</h1>
+                    <h1 class="text-5xl font-bold tracking-tight mb-4">Get In Touch</h1>
                     <p class="text-xl text-gray-600 max-w-2xl mx-auto">
                         Ready to collaborate on your next footwear project? Let's discuss how we can bring your vision to life.
                     </p>
@@ -773,7 +788,7 @@
                 headerSection.className = 'space-y-2';
                 
                 const title = document.createElement('h1');
-                title.className = 'text-3xl font-extrabold tracking-tight';
+                title.className = 'text-3xl font-bold tracking-tight';
                 title.textContent = project.name;
                 
                 const tagline = document.createElement('p');
@@ -798,7 +813,7 @@
                 goalSection.className = 'space-y-2';
                 
                 const goalLabel = document.createElement('h3');
-                goalLabel.className = 'text-lg font-semibold text-gray-800';
+                goalLabel.className = 'text-lg font-bold text-gray-800';
                 goalLabel.textContent = 'Goal:';
                 
                 const goalText = document.createElement('p');
@@ -817,7 +832,7 @@
                 roleSection.className = 'space-y-2';
                 
                 const roleLabel = document.createElement('h3');
-                roleLabel.className = 'text-lg font-semibold text-gray-800';
+                roleLabel.className = 'text-lg font-bold text-gray-800';
                 roleLabel.textContent = 'Role';
                 
                 const roleList = document.createElement('ul');
@@ -836,7 +851,7 @@
                 skillsSection.className = 'space-y-2';
                 
                 const skillsLabel = document.createElement('h3');
-                skillsLabel.className = 'text-lg font-semibold text-gray-800';
+                skillsLabel.className = 'text-lg font-bold text-gray-800';
                 skillsLabel.textContent = 'Skills';
                 
                 const skillsList = document.createElement('ul');
@@ -855,7 +870,7 @@
                 lessonsSection.className = 'space-y-2';
                 
                 const lessonsLabel = document.createElement('h3');
-                lessonsLabel.className = 'text-lg font-semibold text-gray-800';
+                lessonsLabel.className = 'text-lg font-bold text-gray-800';
                 lessonsLabel.textContent = 'Lessons Learned';
                 
                 const lessonsList = document.createElement('ul');
@@ -904,7 +919,7 @@
                 aboutContent.className = 'order-2 lg:order-1';
                 
                 const title = document.createElement('h1');
-                title.className = 'text-4xl font-extrabold tracking-tight mb-4';
+                title.className = 'text-4xl font-bold tracking-tight mb-4';
                 title.textContent = 'About Me';
                 
                 const description1 = document.createElement('p');
