@@ -75,6 +75,23 @@
             height: 100%;
             max-height: calc(100vh - 80px);
         }
+        .project-content .image-section {
+            position: sticky;
+            top: 80px; /* matches header height */
+            align-self: start;
+            height: calc(100vh - 80px);
+            overflow: hidden;
+        }
+        .project-content .details-section {
+            max-height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+        .circle-label {
+            position: relative;
+            z-index: 1;
+            margin-top: 8px;
+            pointer-events: none;
+        }
         .project-content .page-content {
             display: block !important;
         }
@@ -669,7 +686,7 @@
                 
                 // Image gallery section
                 const imageSection = document.createElement('div');
-                imageSection.className = 'flex flex-col-reverse sm:flex-row gap-4';
+                imageSection.className = 'flex flex-col-reverse sm:flex-row gap-4 image-section';
                 
                 // Thumbnails container
                 const thumbnailsContainer = document.createElement('div');
@@ -699,7 +716,7 @@
                 
                 // Project details section with new structure
                 const detailsSection = document.createElement('div');
-                detailsSection.className = 'flex flex-col space-y-6';
+                detailsSection.className = 'flex flex-col space-y-6 details-section';
                 
                 // 1) Header
                 const headerSection = document.createElement('div');
@@ -1136,43 +1153,26 @@
                     hoveredCircle.addEventListener('mouseenter', () => {
                         if (isSplitLayout) return; // Don't animate in split layout
                         
-                        const hoveredX = parseFloat(hoveredCircle.dataset.baseX);
-                        const hoveredY = parseFloat(hoveredCircle.dataset.baseY);
-                        hoveredCircle.style.transform = `translate(-50%, -50%) translate(${hoveredX}px, ${hoveredY}px) scale(1.5)`;
+                        // Scale the hovered circle only (no push effect)
+                        hoveredCircle.style.transform = 'scale(1.15)';
                         hoveredCircle.style.zIndex = '10';
                         hoveredCircle.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.2)';
                         
                         // Scale the label as well
                         const label = hoveredCircle.parentElement.querySelector('.circle-label');
                         if (label) {
-                            label.style.transform = 'scale(1.2)';
+                            label.style.transform = 'scale(1.1)';
                             label.style.opacity = '1';
                             label.style.fontWeight = '600';
                         }
-                        circles.forEach(otherCircle => {
-                            if (otherCircle === hoveredCircle) return;
-                            const otherX = parseFloat(otherCircle.dataset.baseX);
-                            const otherY = parseFloat(otherCircle.dataset.baseY);
-                            const dx = otherX - hoveredX;
-                            const dy = otherY - hoveredY;
-                            const distance = Math.sqrt(dx*dx + dy*dy);
-                            if (distance > 0) {
-                                const maxPush = radius * 0.4;
-                                const pushFactor = maxPush * (1 - Math.min(distance / (radius * 1.5), 1));
-                                const pushX = (dx / distance) * pushFactor;
-                                const pushY = (dy / distance) * pushFactor;
-                                otherCircle.style.transform = `translate(-50%, -50%) translate(${otherX + pushX}px, ${otherY + pushY}px)`;
-                            }
-                        });
                     });
 
                     hoveredCircle.addEventListener('mouseleave', () => {
                         if (isSplitLayout) return; // Don't animate in split layout
                         
+                        // Reset all circles back to scale(1) without translation
                         circles.forEach(circle => {
-                            const baseX = parseFloat(circle.dataset.baseX);
-                            const baseY = parseFloat(circle.dataset.baseY);
-                            circle.style.transform = `translate(-50%, -50%) translate(${baseX}px, ${baseY}px) scale(1)`;
+                            circle.style.transform = 'scale(1)';
                             circle.style.zIndex = '1';
                             circle.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.1)';
                             
