@@ -291,6 +291,9 @@
                         </div>
                         
                         <div class="mt-8">
+                            <button id="thoughts-button" class="mb-6 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors duration-300 text-sm">
+                                Click if you'd like to read some of my thoughts recently
+                            </button>
                             <h3 class="text-2xl font-bold mb-4 text-black">Skills & Expertise</h3>
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="space-y-2">
@@ -1330,6 +1333,37 @@
                     setupCircles();
                 }
             });
+
+            // Handle thoughts button click
+            const thoughtsButton = document.getElementById('thoughts-button');
+            if (thoughtsButton) {
+                thoughtsButton.addEventListener('click', () => {
+                    const aboutSection = document.getElementById('about');
+                    if (aboutSection) {
+                        aboutSection.innerHTML = `
+                            <div class="w-full max-w-4xl mx-auto p-6 sm:p-8">
+                                <div class="text-center">
+                                    <h1 class="text-4xl font-bold mb-8 text-black">Some of my thoughts recently</h1>
+                                    <div class="space-y-6 text-left max-w-3xl mx-auto">
+                                        <p class="text-white text-lg leading-relaxed">
+                                            People wear clothes like armor, not because they're cold but because they're scared of being seen for what they are, unfinished. Every thread says something about how far we've drifted from our own expression. Fashion started as protection, then communication, now it's performance. We forgot what we were trying to say. People talk about wanting authenticity, but no one really wants to be seen mid-process. We like the illusion of rawness, not the mess it takes to get there.
+                                        </p>
+                                        <p class="text-white text-lg leading-relaxed">
+                                            Everything about life contradicts itself. We chase freedom through structure. We find identity in repetition. We call our screens a window to the world while the world keeps shrinking behind them. People want to escape systems but still need something to belong to. That's the joke, everything that frees us also traps us. We hate the artificial but live through it anyway. It's not fake, it's just another layer of survival. Pretending might be the only thing that keeps us human.
+                                        </p>
+                                        <p class="text-white text-lg leading-relaxed">
+                                            Every invention feels like an echo. We build machines to talk for us, then forget what silence sounds like. We automate feeling, and it leaves us starving for the real thing. We keep trying to design empathy into the system, but maybe the system was never supposed to care. It's all theater, but that doesn't make it meaningless. It's still a stage where we can rehearse being alive, over and over, until it feels right again.
+                                        </p>
+                                        <p class="text-white text-lg leading-relaxed">
+                                            I work inside that space, between art and survival, between code and soul. I'm not trying to fix the contradiction. I'm trying to live in it. The goal isn't harmony, it's awareness. To notice the glitch and still make something from it. To build a world that doesn't exist yet and remind myself that creation is the only honest way to lie. Every mask, every prototype, every render is proof that I'm still learning how to translate being into form.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            }
         });
     </script>
 </body>
