@@ -26,6 +26,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
         .portfolio-circle {
             position: absolute;
@@ -46,6 +47,74 @@
         }
         .page-content.active {
             display: block; /* Show the active page */
+        }
+        
+        /* Split screen layout when project is active */
+        .split-layout {
+            display: flex;
+            height: calc(100vh - 80px); /* Account for header height */
+            margin-top: 80px; /* Offset for fixed header */
+        }
+        .circles-sidebar {
+            width: 10%;
+            min-width: 80px;
+            background-color: #FEFDEE;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem 0.5rem;
+            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border-right: 1px solid #e5e7eb;
+        }
+        .project-content {
+            width: 90%;
+            overflow-y: auto;
+            background-color: #FEFDEE;
+            padding: 2rem;
+        }
+        .circles-sidebar .portfolio-circle {
+            position: relative;
+            top: auto;
+            left: auto;
+            transform: none;
+            margin: 0.75rem 0;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 3px solid #FEFDEE;
+        }
+        .circles-sidebar .portfolio-circle:hover {
+            transform: scale(1.15);
+            border-color: #D9534F;
+            box-shadow: 0 8px 25px rgba(217, 83, 79, 0.3);
+        }
+        
+        /* Mobile responsiveness for split layout */
+        @media (max-width: 768px) {
+            .split-layout {
+                flex-direction: column;
+                height: calc(100vh - 60px);
+                margin-top: 60px;
+            }
+            .circles-sidebar {
+                width: 100%;
+                min-width: auto;
+                height: 15%;
+                flex-direction: row;
+                justify-content: center;
+                padding: 0.5rem;
+                border-right: none;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            .project-content {
+                width: 100%;
+                height: 85%;
+                padding: 1rem;
+            }
+            .circles-sidebar .portfolio-circle {
+                margin: 0 0.5rem;
+                width: 50px;
+                height: 50px;
+            }
         }
          .thumbnail {
             cursor: pointer;
@@ -79,7 +148,7 @@
     </header>
 
     <!-- Page Container -->
-    <main class="flex-grow">
+    <main class="flex-grow" id="main-container">
         <!-- Home Page (Circles) -->
         <section id="home" class="page-content active h-full flex items-center justify-center relative">
             <div id="circle-container">
@@ -370,6 +439,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const container = document.getElementById('circle-container');
+            const mainContainer = document.getElementById('main-container');
             const portfolioItems = [
                 { id: 'project1', imageUrl: 'images/heel boot (8).png' },
                 { id: 'project2', imageUrl: 'images/MyShoeBoot Side View.png' },
@@ -377,20 +447,140 @@
             ];
             const circles = [];
             let radius = 0;
+            let isSplitLayout = false;
 
             function showPage(targetId) {
+                // Hide all pages
                 document.querySelectorAll('.page-content').forEach(page => {
                     page.classList.remove('active');
                 });
-                const newPage = document.getElementById(targetId);
-                if (newPage) {
-                    newPage.classList.add('active');
+
+                if (targetId === 'home') {
+                    // Return to home layout
+                    if (isSplitLayout) {
+                        returnToHomeLayout();
+                    }
+                    document.getElementById('home').classList.add('active');
+                } else if (['project1', 'project2', 'project3'].includes(targetId)) {
+                    // Show project in split layout
+                    if (!isSplitLayout) {
+                        createSplitLayout();
+                    }
+                    displayProjectInSplitLayout(targetId);
+                } else {
+                    // Other pages (about, contact) - full screen
+                    if (isSplitLayout) {
+                        returnToHomeLayout();
+                    }
+                    document.getElementById(targetId).classList.add('active');
                 }
-                window.scrollTo(0, 0); // Scroll to top on page change
+                
+                window.scrollTo(0, 0);
+            }
+
+            function createSplitLayout() {
+                isSplitLayout = true;
+                
+                // Create split layout structure
+                const splitLayout = document.createElement('div');
+                splitLayout.className = 'split-layout';
+                splitLayout.id = 'split-layout';
+                
+                // Create circles sidebar
+                const circlesSidebar = document.createElement('div');
+                circlesSidebar.className = 'circles-sidebar';
+                circlesSidebar.id = 'circles-sidebar';
+                
+                // Create project content area
+                const projectContent = document.createElement('div');
+                projectContent.className = 'project-content';
+                projectContent.id = 'project-content';
+                
+                // Move circles to sidebar
+                const circlesContainer = document.createElement('div');
+                circlesContainer.className = 'flex flex-col items-center space-y-4';
+                
+                circles.forEach((circle, index) => {
+                    const circleClone = circle.cloneNode(true);
+                    circleClone.style.width = '60px';
+                    circleClone.style.height = '60px';
+                    circleClone.style.position = 'relative';
+                    circleClone.style.top = 'auto';
+                    circleClone.style.left = 'auto';
+                    circleClone.style.transform = 'none';
+                    circleClone.style.margin = '0.75rem 0';
+                    circleClone.style.border = '3px solid #FEFDEE';
+                    
+                    // Add click handler to circle clone
+                    const circleLink = circleClone.closest('a');
+                    if (circleLink) {
+                        circleLink.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            showPage(circleLink.dataset.target);
+                        });
+                    }
+                    
+                    circlesContainer.appendChild(circleClone);
+                });
+                
+                circlesSidebar.appendChild(circlesContainer);
+                splitLayout.appendChild(circlesSidebar);
+                splitLayout.appendChild(projectContent);
+                
+                // Replace main content
+                mainContainer.innerHTML = '';
+                mainContainer.appendChild(splitLayout);
+            }
+
+            function displayProjectInSplitLayout(projectId) {
+                const projectContent = document.getElementById('project-content');
+                if (!projectContent) return;
+                
+                // Get the original project section
+                const originalProject = document.getElementById(projectId);
+                if (!originalProject) return;
+                
+                // Clone the project content (without the section wrapper)
+                const projectClone = originalProject.cloneNode(true);
+                projectClone.classList.remove('page-content');
+                projectClone.classList.add('active');
+                
+                // Clear and populate project content
+                projectContent.innerHTML = '';
+                projectContent.appendChild(projectClone);
+                
+                // Add back button at the top
+                const backButton = document.createElement('button');
+                backButton.className = 'mb-6 flex items-center space-x-2 text-gray-600 hover:text-[#D9534F] transition-colors duration-300 nav-link';
+                backButton.setAttribute('data-target', 'home');
+                backButton.innerHTML = `
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    <span>Back to Portfolio</span>
+                `;
+                
+                projectContent.insertBefore(backButton, projectContent.firstChild);
+            }
+
+            function returnToHomeLayout() {
+                isSplitLayout = false;
+                mainContainer.innerHTML = `
+                    <section id="home" class="page-content active h-full flex items-center justify-center relative">
+                        <div id="circle-container">
+                            <!-- Circles will be dynamically generated by JavaScript here -->
+                        </div>
+                    </section>
+                `;
+                
+                // Re-setup circles
+                setupCircles();
             }
 
             function setupCircles() {
+                const container = document.getElementById('circle-container');
                 if (!container) return;
+                
                 container.innerHTML = '';
                 circles.length = 0;
                 const containerRect = container.getBoundingClientRect();
@@ -425,8 +615,10 @@
             }
 
             function addCircleEventListeners() {
-                 circles.forEach(hoveredCircle => {
+                circles.forEach(hoveredCircle => {
                     hoveredCircle.addEventListener('mouseenter', () => {
+                        if (isSplitLayout) return; // Don't animate in split layout
+                        
                         const hoveredX = parseFloat(hoveredCircle.dataset.baseX);
                         const hoveredY = parseFloat(hoveredCircle.dataset.baseY);
                         hoveredCircle.style.transform = `translate(-50%, -50%) translate(${hoveredX}px, ${hoveredY}px) scale(1.5)`;
@@ -450,6 +642,8 @@
                     });
 
                     hoveredCircle.addEventListener('mouseleave', () => {
+                        if (isSplitLayout) return; // Don't animate in split layout
+                        
                         circles.forEach(circle => {
                             const baseX = parseFloat(circle.dataset.baseX);
                             const baseY = parseFloat(circle.dataset.baseY);
@@ -461,7 +655,7 @@
                 });
             }
             
-            // --- Global Navigation ---
+            // Global Navigation
             document.body.addEventListener('click', (e) => {
                 const targetLink = e.target.closest('.nav-link');
                 if (targetLink && targetLink.dataset.target) {
@@ -471,20 +665,20 @@
             });
 
             // Thumbnail click logic
-            document.querySelectorAll('.thumbnail').forEach(thumb => {
-                thumb.addEventListener('click', (e) => {
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('thumbnail')) {
                     const clickedThumb = e.target;
                     const projectSection = clickedThumb.closest('.page-content');
                     const mainImage = projectSection.querySelector(`[data-main-image]`);
                     
                     if (mainImage) {
-                         mainImage.src = clickedThumb.src;
+                        mainImage.src = clickedThumb.src;
                     }
 
                     // Update active state for thumbnails within the same project
                     projectSection.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
                     clickedThumb.classList.add('active');
-                });
+                }
             });
 
             // Contact form handling
@@ -508,7 +702,7 @@
                     submitBtn.textContent = 'Sending...';
                     submitBtn.disabled = true;
                     
-                    // Simulate form submission (replace with actual form handling)
+                    // Simulate form submission
                     setTimeout(() => {
                         alert('Thank you for your message! I\'ll get back to you soon.');
                         contactForm.reset();
@@ -518,9 +712,13 @@
                 });
             }
 
-            // Initial setup and resize handling
+            // Initial setup
             setupCircles();
-            window.addEventListener('resize', setupCircles);
+            window.addEventListener('resize', () => {
+                if (!isSplitLayout) {
+                    setupCircles();
+                }
+            });
         });
     </script>
 </body>
