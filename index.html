@@ -811,22 +811,22 @@
                 if (project.projects && project.projects.length > 0) {
                     // Create a scrollable container for multiple projects
                     const scrollContainer = document.createElement('div');
-                    scrollContainer.className = 'space-y-16';
+                    scrollContainer.className = 'space-y-20';
                     
                     // Add main project header
                     const headerSection = document.createElement('div');
-                    headerSection.className = 'text-center mb-12';
+                    headerSection.className = 'text-center mb-16';
                     
                     const title = document.createElement('h1');
-                    title.className = 'text-4xl font-bold tracking-tight text-black mb-4';
+                    title.className = 'text-5xl font-bold tracking-tight text-black mb-6';
                     title.textContent = project.name;
                     
                     const tagline = document.createElement('p');
-                    tagline.className = 'text-xl text-white mb-6';
+                    tagline.className = 'text-2xl text-white mb-8';
                     tagline.textContent = project.tagline;
                     
                     const goal = document.createElement('p');
-                    goal.className = 'text-lg text-white max-w-3xl mx-auto';
+                    goal.className = 'text-lg text-white max-w-4xl mx-auto leading-relaxed';
                     goal.textContent = project.goal;
                     
                     headerSection.appendChild(title);
@@ -834,38 +834,166 @@
                     headerSection.appendChild(goal);
                     scrollContainer.appendChild(headerSection);
                     
-                    // Create sections for each sub-project
+                    // Create full product pages for each sub-project
                     project.projects.forEach((subProject, index) => {
                         const projectSection = document.createElement('div');
-                        projectSection.className = 'border-t border-gray-300 pt-12';
+                        projectSection.className = 'border-t-2 border-gray-400 pt-16';
                         
-                        const projectTitle = document.createElement('h2');
-                        projectTitle.className = 'text-3xl font-bold text-black mb-4';
-                        projectTitle.textContent = subProject.name;
+                        // Create the same grid layout as individual projects
+                        const grid = document.createElement('div');
+                        grid.className = 'grid grid-cols-1 lg:grid-cols-2 gap-12';
                         
-                        const projectDescription = document.createElement('p');
-                        projectDescription.className = 'text-lg text-white mb-8';
-                        projectDescription.textContent = subProject.description;
+                        // Image gallery section (left side)
+                        const imageSection = document.createElement('div');
+                        imageSection.className = 'flex flex-col-reverse sm:flex-row gap-4 image-section';
                         
-                        const imageGrid = document.createElement('div');
-                        imageGrid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
+                        // Thumbnails container
+                        const thumbnailsContainer = document.createElement('div');
+                        thumbnailsContainer.className = 'flex sm:flex-col gap-3 overflow-x-auto sm:overflow-y-auto pr-2';
                         
                         subProject.images.forEach((image, imgIndex) => {
-                            const imageContainer = document.createElement('div');
-                            imageContainer.className = 'relative group cursor-pointer';
-                            
                             const img = document.createElement('img');
                             img.src = image.src;
                             img.alt = image.alt;
-                            img.className = 'w-full h-64 object-cover rounded-lg shadow-lg transition-transform duration-300 group-hover:scale-105';
-                            
-                            imageContainer.appendChild(img);
-                            imageGrid.appendChild(imageContainer);
+                            img.className = `thumbnail w-20 h-20 object-cover rounded-md ${imgIndex === 0 ? 'active' : ''}`;
+                            thumbnailsContainer.appendChild(img);
                         });
                         
-                        projectSection.appendChild(projectTitle);
-                        projectSection.appendChild(projectDescription);
-                        projectSection.appendChild(imageGrid);
+                        // Main image container
+                        const mainImageContainer = document.createElement('div');
+                        mainImageContainer.className = 'flex-1';
+                        
+                        const mainImage = document.createElement('img');
+                        mainImage.src = subProject.images[0].src;
+                        mainImage.alt = subProject.name;
+                        mainImage.setAttribute('data-main-image', subProject.name.toLowerCase().replace(/\s+/g, '-'));
+                        mainImage.className = 'w-full h-auto object-cover rounded-lg shadow-lg';
+                        mainImageContainer.appendChild(mainImage);
+                        
+                        imageSection.appendChild(thumbnailsContainer);
+                        imageSection.appendChild(mainImageContainer);
+                        
+                        // Project details section (right side)
+                        const detailsSection = document.createElement('div');
+                        detailsSection.className = 'flex flex-col space-y-6 details-section';
+                        
+                        // 1) Header
+                        const headerSection = document.createElement('div');
+                        headerSection.className = 'space-y-2';
+                        
+                        const projectTitle = document.createElement('h2');
+                        projectTitle.className = 'text-4xl font-bold tracking-tight text-black';
+                        projectTitle.textContent = subProject.name;
+                        
+                        const projectTagline = document.createElement('p');
+                        projectTagline.className = 'text-lg text-white font-medium';
+                        projectTagline.textContent = subProject.description;
+                        
+                        headerSection.appendChild(projectTitle);
+                        headerSection.appendChild(projectTagline);
+                        
+                        // 2) Date
+                        const dateSection = document.createElement('div');
+                        dateSection.className = 'space-y-1';
+                        
+                        const date = document.createElement('p');
+                        date.className = 'text-base text-white';
+                        date.textContent = project.date;
+                        
+                        dateSection.appendChild(date);
+                        
+                        // 3) Goal
+                        const goalSection = document.createElement('div');
+                        goalSection.className = 'space-y-2';
+                        
+                        const goalLabel = document.createElement('h3');
+                        goalLabel.className = 'text-lg font-bold text-black';
+                        goalLabel.textContent = 'Design Focus:';
+                        
+                        const goalText = document.createElement('p');
+                        goalText.className = 'text-white leading-relaxed';
+                        goalText.textContent = subProject.description;
+                        
+                        goalSection.appendChild(goalLabel);
+                        goalSection.appendChild(goalText);
+                        
+                        // 4) Lists Section
+                        const listsSection = document.createElement('div');
+                        listsSection.className = 'space-y-6';
+                        
+                        // Role
+                        const roleSection = document.createElement('div');
+                        roleSection.className = 'space-y-2';
+                        
+                        const roleLabel = document.createElement('h3');
+                        roleLabel.className = 'text-lg font-bold text-black';
+                        roleLabel.textContent = 'Role';
+                        
+                        const roleList = document.createElement('ul');
+                        roleList.className = 'space-y-1 text-white';
+                        project.role.forEach(role => {
+                            const li = document.createElement('li');
+                            li.textContent = `• ${role}`;
+                            roleList.appendChild(li);
+                        });
+                        
+                        roleSection.appendChild(roleLabel);
+                        roleSection.appendChild(roleList);
+                        
+                        // Skills
+                        const skillsSection = document.createElement('div');
+                        skillsSection.className = 'space-y-2';
+                        
+                        const skillsLabel = document.createElement('h3');
+                        skillsLabel.className = 'text-lg font-bold text-black';
+                        skillsLabel.textContent = 'Skills';
+                        
+                        const skillsList = document.createElement('ul');
+                        skillsList.className = 'space-y-1 text-white';
+                        project.skills.forEach(skill => {
+                            const li = document.createElement('li');
+                            li.textContent = `• ${skill}`;
+                            skillsList.appendChild(li);
+                        });
+                        
+                        skillsSection.appendChild(skillsLabel);
+                        skillsSection.appendChild(skillsList);
+                        
+                        // Lessons Learned
+                        const lessonsSection = document.createElement('div');
+                        lessonsSection.className = 'space-y-2';
+                        
+                        const lessonsLabel = document.createElement('h3');
+                        lessonsLabel.className = 'text-lg font-bold text-black';
+                        lessonsLabel.textContent = 'Lessons Learned';
+                        
+                        const lessonsList = document.createElement('ul');
+                        lessonsList.className = 'space-y-1 text-white';
+                        project.lessons.forEach(lesson => {
+                            const li = document.createElement('li');
+                            li.textContent = `• ${lesson}`;
+                            lessonsList.appendChild(li);
+                        });
+                        
+                        lessonsSection.appendChild(lessonsLabel);
+                        lessonsSection.appendChild(lessonsList);
+                        
+                        // Assemble lists section
+                        listsSection.appendChild(roleSection);
+                        listsSection.appendChild(skillsSection);
+                        listsSection.appendChild(lessonsSection);
+                        
+                        // Assemble details section
+                        detailsSection.appendChild(headerSection);
+                        detailsSection.appendChild(dateSection);
+                        detailsSection.appendChild(goalSection);
+                        detailsSection.appendChild(listsSection);
+                        
+                        // Assemble grid
+                        grid.appendChild(imageSection);
+                        grid.appendChild(detailsSection);
+                        
+                        projectSection.appendChild(grid);
                         scrollContainer.appendChild(projectSection);
                     });
                     
@@ -1173,14 +1301,15 @@
                 thumbnails.forEach(thumb => {
                     thumb.addEventListener('click', (e) => {
                         const clickedThumb = e.target;
-                        const projectSection = clickedThumb.closest('.page-content, .active');
+                        // Find the closest project section (either single project or sub-project)
+                        const projectSection = clickedThumb.closest('.border-t-2, .page-content, .active');
                         const mainImage = projectSection.querySelector(`[data-main-image]`);
                         
                         if (mainImage) {
                             mainImage.src = clickedThumb.src;
                         }
 
-                        // Update active state for thumbnails within the same project
+                        // Update active state for thumbnails within the same project section
                         projectSection.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
                         clickedThumb.classList.add('active');
                     });
