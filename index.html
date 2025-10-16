@@ -134,6 +134,27 @@
                 width: 50px;
                 height: 50px;
             }
+            .circles-sidebar .flex.flex-col {
+                flex-direction: row !important;
+                gap: 0.5rem;
+            }
+        }
+        
+        /* Mobile responsiveness for home page circles */
+        @media (max-width: 768px) {
+            #circle-container {
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                gap: 1rem;
+            }
+            .portfolio-circle {
+                position: relative !important;
+                top: auto !important;
+                left: auto !important;
+                transform: none !important;
+                margin: 0 !important;
+            }
         }
          .thumbnail {
             cursor: pointer;
@@ -683,34 +704,62 @@
                 circles.length = 0;
                 const containerRect = container.getBoundingClientRect();
                 const containerSize = Math.min(containerRect.width, containerRect.height);
-                radius = containerSize * 0.25;
-                const circleSize = containerSize * 0.2;
+                const isMobile = window.innerWidth <= 768;
                 
-                // Generate positions dynamically based on number of projects
-                const positions = generateCirclePositions(projectsConfig.length);
+                if (isMobile) {
+                    // Mobile layout - horizontal arrangement
+                    const circleSize = Math.min(containerSize * 0.15, 80);
+                    
+                    projectsConfig.forEach((project, i) => {
+                        const circleLink = document.createElement('a');
+                        circleLink.dataset.target = project.id;
+                        circleLink.classList.add('nav-link');
+                        
+                        const circleEl = document.createElement('div');
+                        circleEl.classList.add('portfolio-circle');
+                        circleEl.style.width = `${circleSize}px`;
+                        circleEl.style.height = `${circleSize}px`;
+                        circleEl.style.backgroundImage = `url('${project.circleImage}')`;
+                        circleEl.style.position = 'relative';
+                        circleEl.style.top = 'auto';
+                        circleEl.style.left = 'auto';
+                        circleEl.style.transform = 'none';
+                        circleEl.style.margin = '0';
+                        
+                        circleLink.appendChild(circleEl);
+                        container.appendChild(circleLink);
+                        circles.push(circleEl);
+                    });
+                } else {
+                    // Desktop layout - triangular arrangement
+                    radius = containerSize * 0.25;
+                    const circleSize = containerSize * 0.2;
+                    const positions = generateCirclePositions(projectsConfig.length);
 
-                projectsConfig.forEach((project, i) => {
-                    const pos = positions[i];
-                    if (!pos) return;
-                    const x = pos.x * radius;
-                    const y = pos.y * radius;
-                    const circleLink = document.createElement('a');
-                    circleLink.dataset.target = project.id;
-                    circleLink.classList.add('nav-link');
-                    
-                    const circleEl = document.createElement('div');
-                    circleEl.classList.add('portfolio-circle');
-                    circleEl.style.width = `${circleSize}px`;
-                    circleEl.style.height = `${circleSize}px`;
-                    circleEl.style.backgroundImage = `url('${project.circleImage}')`;
-                    circleEl.dataset.baseX = x;
-                    circleEl.dataset.baseY = y;
-                    circleEl.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
-                    
-                    circleLink.appendChild(circleEl);
-                    container.appendChild(circleLink);
-                    circles.push(circleEl);
-                });
+                    projectsConfig.forEach((project, i) => {
+                        const pos = positions[i];
+                        if (!pos) return;
+                        const x = pos.x * radius;
+                        const y = pos.y * radius;
+                        const circleLink = document.createElement('a');
+                        circleLink.dataset.target = project.id;
+                        circleLink.classList.add('nav-link');
+                        
+                        const circleEl = document.createElement('div');
+                        circleEl.classList.add('portfolio-circle');
+                        circleEl.style.width = `${circleSize}px`;
+                        circleEl.style.height = `${circleSize}px`;
+                        circleEl.style.backgroundImage = `url('${project.circleImage}')`;
+                        circleEl.dataset.baseX = x;
+                        circleEl.dataset.baseY = y;
+                        circleEl.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
+                        
+                        circleLink.appendChild(circleEl);
+                        container.appendChild(circleLink);
+                        circles.push(circleEl);
+                    });
+                }
+                
                 console.log('Created', circles.length, 'circles');
                 addCircleEventListeners();
             }
