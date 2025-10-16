@@ -902,20 +902,20 @@
                         
                         dateSection.appendChild(date);
                         
-                        // 3) Goal
-                        const goalSection = document.createElement('div');
-                        goalSection.className = 'space-y-2';
+                        // 3) Description
+                        const descriptionSection = document.createElement('div');
+                        descriptionSection.className = 'space-y-2';
                         
-                        const goalLabel = document.createElement('h3');
-                        goalLabel.className = 'text-lg font-bold text-black';
-                        goalLabel.textContent = 'Design Focus:';
+                        const descriptionLabel = document.createElement('h3');
+                        descriptionLabel.className = 'text-lg font-bold text-black';
+                        descriptionLabel.textContent = 'Description:';
                         
-                        const goalText = document.createElement('p');
-                        goalText.className = 'text-white leading-relaxed';
-                        goalText.textContent = subProject.description;
+                        const descriptionText = document.createElement('p');
+                        descriptionText.className = 'text-white leading-relaxed';
+                        descriptionText.textContent = subProject.description;
                         
-                        goalSection.appendChild(goalLabel);
-                        goalSection.appendChild(goalText);
+                        descriptionSection.appendChild(descriptionLabel);
+                        descriptionSection.appendChild(descriptionText);
                         
                         // 4) Lists Section
                         const listsSection = document.createElement('div');
@@ -959,34 +959,14 @@
                         skillsSection.appendChild(skillsLabel);
                         skillsSection.appendChild(skillsList);
                         
-                        // Lessons Learned
-                        const lessonsSection = document.createElement('div');
-                        lessonsSection.className = 'space-y-2';
-                        
-                        const lessonsLabel = document.createElement('h3');
-                        lessonsLabel.className = 'text-lg font-bold text-black';
-                        lessonsLabel.textContent = 'Lessons Learned';
-                        
-                        const lessonsList = document.createElement('ul');
-                        lessonsList.className = 'space-y-1 text-white';
-                        project.lessons.forEach(lesson => {
-                            const li = document.createElement('li');
-                            li.textContent = `• ${lesson}`;
-                            lessonsList.appendChild(li);
-                        });
-                        
-                        lessonsSection.appendChild(lessonsLabel);
-                        lessonsSection.appendChild(lessonsList);
-                        
                         // Assemble lists section
                         listsSection.appendChild(roleSection);
                         listsSection.appendChild(skillsSection);
-                        listsSection.appendChild(lessonsSection);
                         
                         // Assemble details section
                         detailsSection.appendChild(headerSection);
                         detailsSection.appendChild(dateSection);
-                        detailsSection.appendChild(goalSection);
+                        detailsSection.appendChild(descriptionSection);
                         detailsSection.appendChild(listsSection);
                         
                         // Assemble grid
