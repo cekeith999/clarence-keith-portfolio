@@ -72,6 +72,7 @@
             overflow-y: auto;
             background-color: #FEFDEE;
             padding: 2rem;
+            min-height: 100%;
         }
         .circles-sidebar .portfolio-circle {
             position: relative;
@@ -534,20 +535,22 @@
 
             function displayProjectInSplitLayout(projectId) {
                 const projectContent = document.getElementById('project-content');
-                if (!projectContent) return;
+                if (!projectContent) {
+                    console.error('Project content container not found');
+                    return;
+                }
                 
                 // Get the original project section
                 const originalProject = document.getElementById(projectId);
-                if (!originalProject) return;
+                if (!originalProject) {
+                    console.error('Original project not found:', projectId);
+                    return;
+                }
                 
-                // Clone the project content (without the section wrapper)
-                const projectClone = originalProject.cloneNode(true);
-                projectClone.classList.remove('page-content');
-                projectClone.classList.add('active');
+                console.log('Displaying project:', projectId);
                 
-                // Clear and populate project content
+                // Clear project content first
                 projectContent.innerHTML = '';
-                projectContent.appendChild(projectClone);
                 
                 // Add back button at the top
                 const backButton = document.createElement('button');
@@ -559,8 +562,26 @@
                     </svg>
                     <span>Back to Portfolio</span>
                 `;
+                projectContent.appendChild(backButton);
                 
-                projectContent.insertBefore(backButton, projectContent.firstChild);
+                // Clone the project content (get the inner content, not the section wrapper)
+                const projectInnerContent = originalProject.querySelector('div');
+                if (projectInnerContent) {
+                    const projectClone = projectInnerContent.cloneNode(true);
+                    // Remove the back button from the cloned content since we're adding our own
+                    const existingBackButton = projectClone.querySelector('button[data-target="home"]');
+                    if (existingBackButton) {
+                        existingBackButton.remove();
+                    }
+                    projectContent.appendChild(projectClone);
+                    console.log('Project content cloned successfully');
+                } else {
+                    console.error('No inner content found in project');
+                    // Fallback: clone the entire section but remove page-content class
+                    const projectClone = originalProject.cloneNode(true);
+                    projectClone.classList.remove('page-content');
+                    projectContent.appendChild(projectClone);
+                }
             }
 
             function returnToHomeLayout() {
