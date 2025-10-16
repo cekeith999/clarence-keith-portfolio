@@ -241,6 +241,56 @@
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
+        
+        /* Contact Popup Styles */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .popup-content {
+            background: #F00000;
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: scale(0.7);
+            transition: transform 0.3s ease;
+        }
+        
+        .popup-overlay.active .popup-content {
+            transform: scale(1);
+        }
+        
+        .popup-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-[#F00000] text-white flex flex-col">
@@ -249,7 +299,7 @@
     <header class="w-full p-6 sm:p-8 sticky top-0 z-50 bg-[#F00000] shadow-sm">
         <nav class="flex justify-between items-center max-w-7xl mx-auto">
             <div class="flex-1">
-                <a class="text-lg font-medium nav-link text-white" data-target="contact">Reach out!</a>
+                <a class="text-lg font-medium nav-link text-white" id="contact-popup-trigger">Reach out!</a>
             </div>
             <div class="flex-1 text-center">
                 <a class="text-xl font-bold tracking-wider nav-link text-black" data-target="home">Clarence Keith</a>
@@ -300,21 +350,21 @@
                                     <div class="flex items-center space-x-2">
                                         <div class="w-2 h-2 bg-[#D9534F] rounded-full"></div>
                                         <span class="text-white">3D Modeling & Rendering</span>
-                                    </div>
+                        </div>
                                     <div class="flex items-center space-x-2">
                                         <div class="w-2 h-2 bg-[#D9534F] rounded-full"></div>
                                         <span class="text-white">Generative Design</span>
-                                    </div>
+                    </div>
                                     <div class="flex items-center space-x-2">
                                         <div class="w-2 h-2 bg-[#D9534F] rounded-full"></div>
                                         <span class="text-white">Additive Manufacturing</span>
-                                    </div>
-                                </div>
+                    </div>
+                </div>
                                 <div class="space-y-2">
                                     <div class="flex items-center space-x-2">
                                         <div class="w-2 h-2 bg-[#D9534F] rounded-full"></div>
                                         <span class="text-white">Footwear Design</span>
-                                    </div>
+            </div>
                                     <div class="flex items-center space-x-2">
                                         <div class="w-2 h-2 bg-[#D9534F] rounded-full"></div>
                                         <span class="text-white">Material Innovation</span>
@@ -336,11 +386,11 @@
                                         <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                                         </svg>
-                                    </div>
+                        </div>
                                     <h3 class="text-2xl font-bold mb-2">Clarence Keith</h3>
                                     <p class="text-lg opacity-90">Footwear Designer & 3D Artist</p>
-                                </div>
-                            </div>
+                        </div>
+                    </div>
                         </div>
                     </div>
                 </div>
@@ -367,22 +417,22 @@
                                 <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Name</label>
                                 <input type="text" id="name" name="name" required 
                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D9534F] focus:border-transparent transition-colors">
-                            </div>
+                        </div>
                             <div>
                                 <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
                                 <input type="email" id="email" name="email" required 
                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D9534F] focus:border-transparent transition-colors">
-                            </div>
+                        </div>
                             <div>
                                 <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">Subject</label>
                                 <input type="text" id="subject" name="subject" required 
                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D9534F] focus:border-transparent transition-colors">
-                        </div>
+                    </div>
                             <div>
                                 <label for="message" class="block text-sm font-medium text-gray-700 mb-2">Message</label>
                                 <textarea id="message" name="message" rows="5" required 
                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D9534F] focus:border-transparent transition-colors resize-none"></textarea>
-                        </div>
+                    </div>
                             <button type="submit" 
                                     class="w-full bg-[#D9534F] text-white py-3 rounded-lg font-semibold text-lg hover:bg-[#B8453C] transition-colors duration-300">
                                 Send Message
@@ -478,6 +528,35 @@
             <div class="marquee__item">Everything about life contradicts itself. We chase freedom through structure. We find identity in repetition. We call our screens a window to the world while the world keeps shrinking behind them. People want to escape systems but still need something to belong to. That's the joke, everything that frees us also traps us. We hate the artificial but live through it anyway. It's not fake, it's just another layer of survival. Pretending might be the only thing that keeps us human.</div>
             <div class="marquee__item">Every invention feels like an echo. We build machines to talk for us, then forget what silence sounds like. We automate feeling, and it leaves us starving for the real thing. We keep trying to design empathy into the system, but maybe the system was never supposed to care. It's all theater, but that doesn't make it meaningless. It's still a stage where we can rehearse being alive, over and over, until it feels right again.</div>
             <div class="marquee__item">I work inside that space, between art and survival, between code and soul. I'm not trying to fix the contradiction. I'm trying to live in it. The goal isn't harmony, it's awareness. To notice the glitch and still make something from it. To build a world that doesn't exist yet and remind myself that creation is the only honest way to lie. Every mask, every prototype, every render is proof that I'm still learning how to translate being into form.</div>
+        </div>
+    </div>
+
+    <!-- Contact Popup -->
+    <div id="contact-popup" class="popup-overlay">
+        <div class="popup-content">
+            <button class="popup-close" id="popup-close">&times;</button>
+            <h2 class="text-3xl font-bold text-black mb-6">Get In Touch</h2>
+            <form id="popup-contact-form" class="space-y-4">
+                <div>
+                    <label for="popup-name" class="block text-sm font-medium text-white mb-2">Name</label>
+                    <input type="text" id="popup-name" name="name" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-colors bg-white text-black">
+                </div>
+                <div>
+                    <label for="popup-email" class="block text-sm font-medium text-white mb-2">Email/Phone Number</label>
+                    <input type="text" id="popup-email" name="contact" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-colors bg-white text-black">
+                </div>
+                <div>
+                    <label for="popup-message" class="block text-sm font-medium text-white mb-2">Message</label>
+                    <textarea id="popup-message" name="message" rows="4" required 
+                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-colors resize-none bg-white text-black"></textarea>
+                </div>
+                <button type="submit" 
+                        class="w-full bg-black text-white py-3 rounded-lg font-bold text-lg hover:bg-gray-800 transition-colors duration-300">
+                    Send Message
+                </button>
+            </form>
         </div>
     </div>
 
@@ -1595,6 +1674,67 @@
                         `;
                     }
                 }
+            });
+
+            // Handle contact popup
+            const contactPopupTrigger = document.getElementById('contact-popup-trigger');
+            const contactPopup = document.getElementById('contact-popup');
+            const popupClose = document.getElementById('popup-close');
+            const popupForm = document.getElementById('popup-contact-form');
+
+            // Open popup
+            contactPopupTrigger.addEventListener('click', (e) => {
+                e.preventDefault();
+                contactPopup.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            });
+
+            // Close popup
+            function closePopup() {
+                contactPopup.classList.remove('active');
+                document.body.style.overflow = 'auto'; // Restore scrolling
+            }
+
+            popupClose.addEventListener('click', closePopup);
+            
+            // Close popup when clicking outside
+            contactPopup.addEventListener('click', (e) => {
+                if (e.target === contactPopup) {
+                    closePopup();
+                }
+            });
+
+            // Close popup with Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && contactPopup.classList.contains('active')) {
+                    closePopup();
+                }
+            });
+
+            // Handle form submission
+            popupForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Get form data
+                const formData = new FormData(popupForm);
+                const name = formData.get('name');
+                const contact = formData.get('contact');
+                const message = formData.get('message');
+                
+                // Show loading state
+                const submitButton = popupForm.querySelector('button[type="submit"]');
+                const originalText = submitButton.textContent;
+                submitButton.textContent = 'Sending...';
+                submitButton.disabled = true;
+                
+                // Simulate form submission (replace with actual form handling)
+                setTimeout(() => {
+                    alert('Thank you for your message! I\'ll get back to you soon.');
+                    popupForm.reset();
+                    closePopup();
+                    submitButton.textContent = originalText;
+                    submitButton.disabled = false;
+                }, 1000);
             });
         });
     </script>
