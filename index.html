@@ -11,22 +11,29 @@
         /* Yeezy Tstar Font Faces */
         @font-face {
             font-family: 'Yeezy Tstar';
-            src: url('fonts/yeezy_tstar-regular-webfont.ttf') format('truetype');
+            src: url('./fonts/yeezy_tstar-regular-webfont.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
+            font-display: swap;
         }
         
         @font-face {
             font-family: 'Yeezy Tstar';
-            src: url('fonts/yeezy_tstar-bold-webfont.ttf') format('truetype');
+            src: url('./fonts/yeezy_tstar-bold-webfont.ttf') format('truetype');
             font-weight: bold;
             font-style: normal;
+            font-display: swap;
         }
         
         body {
             font-family: 'Yeezy Tstar', sans-serif;
             background-color: #F00000;
             color: #333;
+        }
+        
+        /* Ensure Yeezy font is applied to all elements */
+        *, h1, h2, h3, h4, h5, h6, p, span, div, a, button, input, textarea, label {
+            font-family: 'Yeezy Tstar', sans-serif !important;
         }
         main { padding-bottom: var(--marquee-h); }
         .nav-link {
