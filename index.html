@@ -491,9 +491,9 @@
                 {
                     id: 'project1',
                     name: 'Footwear',
-                    tagline: 'Experimental Shoe Design',
+                    tagline: 'Experimental Shoe Design Collection',
                     date: 'Spring 2025',
-                    goal: 'This project explores innovative footwear design through experimental forms and materials...',
+                    goal: 'A collection of experimental footwear designs exploring innovative forms, materials, and manufacturing techniques.',
                     role: [
                         'Lead Designer',
                         '3D Modeling',
@@ -521,6 +521,52 @@
                         { src: 'images/okshoes (6).jpg', alt: 'Detail View' },
                         { src: 'images/okshoes (1).mov', alt: 'Video' },
                         { src: 'images/okshoes (3).jpg', alt: 'Alternative Angle' }
+                    ],
+                    projects: [
+                        {
+                            name: 'OK Shoes',
+                            description: 'Experimental red high-top design exploring sculptural forms and organic geometry.',
+                            images: [
+                                { src: 'images/okshoes.png', alt: 'Main View' },
+                                { src: 'images/okshoes (7).jpg', alt: 'Side View' },
+                                { src: 'images/okshoes (6).jpg', alt: 'Detail View' },
+                                { src: 'images/okshoes (1).mov', alt: 'Video' },
+                                { src: 'images/okshoes (3).jpg', alt: 'Alternative Angle' }
+                            ]
+                        },
+                        {
+                            name: 'Heel Boot Collection',
+                            description: 'A series of experimental heel boot designs pushing the boundaries of traditional footwear construction.',
+                            images: [
+                                { src: 'images/heel boot (8).png', alt: 'Main Design' },
+                                { src: 'images/heel boot (1).png', alt: 'Alternative View' },
+                                { src: 'images/heel boot (2).png', alt: 'Detail Shot' },
+                                { src: 'images/heel boot (3).png', alt: 'Side Profile' },
+                                { src: 'images/heel boot (4).png', alt: 'Construction Detail' }
+                            ]
+                        },
+                        {
+                            name: 'MyShoeBoot Series',
+                            description: 'Personal exploration of boot design combining functionality with avant-garde aesthetics.',
+                            images: [
+                                { src: 'images/MyShoeBoot Side View.png', alt: 'Side View' },
+                                { src: 'images/MyShoeBoot Front  View.png', alt: 'Front View' },
+                                { src: 'images/MyShoeBoot Quarter View.png', alt: 'Quarter View' },
+                                { src: 'images/MyShoeBoot Side View With My Last.png', alt: 'With Last' },
+                                { src: 'images/MyShoeBoot Top View With.png', alt: 'Top View' }
+                            ]
+                        },
+                        {
+                            name: 'TunsShoe Collection',
+                            description: 'Collaborative footwear design focusing on minimalist forms and clean lines.',
+                            images: [
+                                { src: 'images/TunsShoe Side View.png', alt: 'Side View' },
+                                { src: 'images/TunsShoe Front View.png', alt: 'Front View' },
+                                { src: 'images/TunsShoe Quarter View.png', alt: 'Quarter View' },
+                                { src: 'images/TunsShoe Side View With Last.png', alt: 'With Last' },
+                                { src: 'images/TunsShoe Top View.png', alt: 'Top View' }
+                            ]
+                        }
                     ]
                 },
                 {
@@ -761,6 +807,74 @@
                 const container = document.createElement('div');
                 container.className = 'w-full max-w-7xl mx-auto p-4';
                 
+                // Check if this project has multiple sub-projects
+                if (project.projects && project.projects.length > 0) {
+                    // Create a scrollable container for multiple projects
+                    const scrollContainer = document.createElement('div');
+                    scrollContainer.className = 'space-y-16';
+                    
+                    // Add main project header
+                    const headerSection = document.createElement('div');
+                    headerSection.className = 'text-center mb-12';
+                    
+                    const title = document.createElement('h1');
+                    title.className = 'text-4xl font-bold tracking-tight text-black mb-4';
+                    title.textContent = project.name;
+                    
+                    const tagline = document.createElement('p');
+                    tagline.className = 'text-xl text-white mb-6';
+                    tagline.textContent = project.tagline;
+                    
+                    const goal = document.createElement('p');
+                    goal.className = 'text-lg text-white max-w-3xl mx-auto';
+                    goal.textContent = project.goal;
+                    
+                    headerSection.appendChild(title);
+                    headerSection.appendChild(tagline);
+                    headerSection.appendChild(goal);
+                    scrollContainer.appendChild(headerSection);
+                    
+                    // Create sections for each sub-project
+                    project.projects.forEach((subProject, index) => {
+                        const projectSection = document.createElement('div');
+                        projectSection.className = 'border-t border-gray-300 pt-12';
+                        
+                        const projectTitle = document.createElement('h2');
+                        projectTitle.className = 'text-3xl font-bold text-black mb-4';
+                        projectTitle.textContent = subProject.name;
+                        
+                        const projectDescription = document.createElement('p');
+                        projectDescription.className = 'text-lg text-white mb-8';
+                        projectDescription.textContent = subProject.description;
+                        
+                        const imageGrid = document.createElement('div');
+                        imageGrid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
+                        
+                        subProject.images.forEach((image, imgIndex) => {
+                            const imageContainer = document.createElement('div');
+                            imageContainer.className = 'relative group cursor-pointer';
+                            
+                            const img = document.createElement('img');
+                            img.src = image.src;
+                            img.alt = image.alt;
+                            img.className = 'w-full h-64 object-cover rounded-lg shadow-lg transition-transform duration-300 group-hover:scale-105';
+                            
+                            imageContainer.appendChild(img);
+                            imageGrid.appendChild(imageContainer);
+                        });
+                        
+                        projectSection.appendChild(projectTitle);
+                        projectSection.appendChild(projectDescription);
+                        projectSection.appendChild(imageGrid);
+                        scrollContainer.appendChild(projectSection);
+                    });
+                    
+                    container.appendChild(scrollContainer);
+                    section.appendChild(container);
+                    return section;
+                }
+                
+                // Original single project layout
                 const grid = document.createElement('div');
                 grid.className = 'grid grid-cols-1 lg:grid-cols-2 gap-8';
                 
