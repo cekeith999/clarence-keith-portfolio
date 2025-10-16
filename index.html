@@ -180,9 +180,9 @@
             </div>
             <div class="flex-1 flex justify-end space-x-6">
                 <a class="text-lg font-medium nav-link" data-target="about">About</a>
-                <a href="#" class="text-gray-700 hover:text-[#D9534F] transition-colors duration-300">
+                 <a href="#" class="text-gray-700 hover:text-[#D9534F] transition-colors duration-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-                </a>
+                 </a>
             </div>
         </nav>
     </header>
@@ -298,12 +298,12 @@
                                 <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">Subject</label>
                                 <input type="text" id="subject" name="subject" required 
                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D9534F] focus:border-transparent transition-colors">
-                            </div>
+                        </div>
                             <div>
                                 <label for="message" class="block text-sm font-medium text-gray-700 mb-2">Message</label>
                                 <textarea id="message" name="message" rows="5" required 
                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D9534F] focus:border-transparent transition-colors resize-none"></textarea>
-                            </div>
+                        </div>
                             <button type="submit" 
                                     class="w-full bg-[#D9534F] text-white py-3 rounded-lg font-semibold text-lg hover:bg-[#B8453C] transition-colors duration-300">
                                 Send Message
@@ -348,9 +348,9 @@
                                     <div>
                                         <p class="font-medium">Location</p>
                                         <p class="text-gray-600">New York, NY</p>
-                                    </div>
-                                </div>
-                            </div>
+                    </div>
+                </div>
+            </div>
                         </div>
 
                         <!-- Social Links -->
@@ -431,6 +431,18 @@
                     thumbnails: [
                         { src: 'images/TunsShoe Side View.png', alt: 'Side View' },
                         { src: 'images/TunsShoe Front View.png', alt: 'Front View' }
+                    ]
+                },
+                {
+                    id: 'about',
+                    name: 'About Me',
+                    category: 'Personal Information',
+                    price: '',
+                    description: 'Learn more about my background, skills, and expertise in footwear design and 3D art.',
+                    circleImage: 'images/Mehead.png',
+                    mainImage: 'images/Mehead.png',
+                    thumbnails: [
+                        { src: 'images/Mehead.png', alt: 'Profile Photo' }
                     ]
                 }
             ];
@@ -569,7 +581,12 @@
                 projectContent.appendChild(backButton);
                 
                 // Generate project content dynamically
-                const projectSection = generateProjectContent(project);
+                let projectSection;
+                if (project.id === 'about') {
+                    projectSection = generateAboutContent();
+                } else {
+                    projectSection = generateProjectContent(project);
+                }
                 projectContent.appendChild(projectSection);
                 
                 // Attach thumbnail click handlers
@@ -632,13 +649,16 @@
                 category.className = 'text-base text-gray-600 mb-3';
                 category.textContent = project.category;
                 
-                const price = document.createElement('p');
-                price.className = 'text-2xl font-bold mb-4';
-                price.textContent = project.price;
+                if (project.price) {
+                    const price = document.createElement('p');
+                    price.className = 'text-2xl font-bold mb-4';
+                    price.textContent = project.price;
+                    detailsSection.appendChild(price);
+                }
                 
                 const button = document.createElement('button');
                 button.className = 'w-full bg-black text-white py-2 rounded-lg font-semibold hover:bg-gray-800 transition-colors duration-300 mb-4';
-                button.textContent = 'Contact for Purchase';
+                button.textContent = project.id === 'about' ? 'Get In Touch' : 'Contact for Purchase';
                 
                 const description = document.createElement('p');
                 description.className = 'text-gray-700 leading-relaxed text-sm';
@@ -646,12 +666,140 @@
                 
                 detailsSection.appendChild(title);
                 detailsSection.appendChild(category);
-                detailsSection.appendChild(price);
                 detailsSection.appendChild(button);
                 detailsSection.appendChild(description);
                 
                 grid.appendChild(imageSection);
                 grid.appendChild(detailsSection);
+                container.appendChild(grid);
+                section.appendChild(container);
+                
+                return section;
+            }
+            
+            function generateAboutContent() {
+                const section = document.createElement('section');
+                section.className = 'active';
+                section.id = 'about';
+                
+                const container = document.createElement('div');
+                container.className = 'w-full max-w-6xl mx-auto p-4';
+                
+                const grid = document.createElement('div');
+                grid.className = 'grid grid-cols-1 lg:grid-cols-2 gap-6 items-center';
+                
+                // Left side - About content
+                const aboutContent = document.createElement('div');
+                aboutContent.className = 'order-2 lg:order-1';
+                
+                const title = document.createElement('h1');
+                title.className = 'text-4xl font-extrabold tracking-tight mb-4';
+                title.textContent = 'About Me';
+                
+                const description1 = document.createElement('p');
+                description1.className = 'text-gray-700 leading-relaxed mb-4';
+                description1.textContent = "I'm Clarence Keith, a passionate footwear designer and 3D artist specializing in experimental design and additive manufacturing. My work explores the intersection of traditional craftsmanship and cutting-edge technology.";
+                
+                const description2 = document.createElement('p');
+                description2.className = 'text-gray-700 leading-relaxed mb-4';
+                description2.textContent = "With a background in industrial design and a fascination for generative design principles, I create footwear that challenges conventional form while maintaining functionality and aesthetic appeal.";
+                
+                const description3 = document.createElement('p');
+                description3.className = 'text-gray-700 leading-relaxed mb-6';
+                description3.textContent = "Each piece in my portfolio represents a unique exploration of materials, form, and manufacturing processes, pushing the boundaries of what's possible in contemporary footwear design.";
+                
+                // Skills section
+                const skillsTitle = document.createElement('h3');
+                skillsTitle.className = 'text-2xl font-bold mb-4';
+                skillsTitle.textContent = 'Skills & Expertise';
+                
+                const skillsGrid = document.createElement('div');
+                skillsGrid.className = 'grid grid-cols-2 gap-4';
+                
+                const skillsLeft = document.createElement('div');
+                skillsLeft.className = 'space-y-2';
+                const skillsRight = document.createElement('div');
+                skillsRight.className = 'space-y-2';
+                
+                const skills = [
+                    '3D Modeling & Rendering',
+                    'Generative Design',
+                    'Additive Manufacturing',
+                    'Footwear Design',
+                    'Material Innovation',
+                    'Concept Development'
+                ];
+                
+                skills.forEach((skill, index) => {
+                    const skillDiv = document.createElement('div');
+                    skillDiv.className = 'flex items-center space-x-2';
+                    
+                    const dot = document.createElement('div');
+                    dot.className = 'w-2 h-2 bg-[#D9534F] rounded-full';
+                    
+                    const skillText = document.createElement('span');
+                    skillText.className = 'text-gray-700';
+                    skillText.textContent = skill;
+                    
+                    skillDiv.appendChild(dot);
+                    skillDiv.appendChild(skillText);
+                    
+                    if (index < 3) {
+                        skillsLeft.appendChild(skillDiv);
+                    } else {
+                        skillsRight.appendChild(skillDiv);
+                    }
+                });
+                
+                skillsGrid.appendChild(skillsLeft);
+                skillsGrid.appendChild(skillsRight);
+                
+                aboutContent.appendChild(title);
+                aboutContent.appendChild(description1);
+                aboutContent.appendChild(description2);
+                aboutContent.appendChild(description3);
+                aboutContent.appendChild(skillsTitle);
+                aboutContent.appendChild(skillsGrid);
+                
+                // Right side - Profile image
+                const profileSection = document.createElement('div');
+                profileSection.className = 'order-1 lg:order-2';
+                
+                const profileContainer = document.createElement('div');
+                profileContainer.className = 'relative';
+                
+                const profileImage = document.createElement('div');
+                profileImage.className = 'aspect-square bg-gradient-to-br from-[#D9534F] to-[#B8453C] rounded-2xl shadow-2xl flex items-center justify-center';
+                
+                const profileContent = document.createElement('div');
+                profileContent.className = 'text-center text-white p-8';
+                
+                const profileIcon = document.createElement('div');
+                profileIcon.className = 'w-32 h-32 bg-white/20 rounded-full mx-auto mb-6 flex items-center justify-center';
+                
+                const profileImg = document.createElement('img');
+                profileImg.src = 'images/Mehead.png';
+                profileImg.alt = 'Clarence Keith';
+                profileImg.className = 'w-24 h-24 rounded-full object-cover';
+                
+                const profileName = document.createElement('h3');
+                profileName.className = 'text-2xl font-bold mb-2';
+                profileName.textContent = 'Clarence Keith';
+                
+                const profileTitle = document.createElement('p');
+                profileTitle.className = 'text-lg opacity-90';
+                profileTitle.textContent = 'Footwear Designer & 3D Artist';
+                
+                profileIcon.appendChild(profileImg);
+                profileContent.appendChild(profileIcon);
+                profileContent.appendChild(profileName);
+                profileContent.appendChild(profileTitle);
+                profileImage.appendChild(profileContent);
+                profileContainer.appendChild(profileImage);
+                profileSection.appendChild(profileContainer);
+                
+                grid.appendChild(aboutContent);
+                grid.appendChild(profileSection);
                 container.appendChild(grid);
                 section.appendChild(container);
                 
@@ -732,32 +880,32 @@
                     });
                 } else {
                     // Desktop layout - triangular arrangement
-                    radius = containerSize * 0.25;
-                    const circleSize = containerSize * 0.2;
+                radius = containerSize * 0.25;
+                const circleSize = containerSize * 0.2;
                     const positions = generateCirclePositions(projectsConfig.length);
 
                     projectsConfig.forEach((project, i) => {
                         const pos = positions[i];
-                        if (!pos) return;
-                        const x = pos.x * radius;
-                        const y = pos.y * radius;
-                        const circleLink = document.createElement('a');
+                    if (!pos) return;
+                    const x = pos.x * radius;
+                    const y = pos.y * radius;
+                    const circleLink = document.createElement('a');
                         circleLink.dataset.target = project.id;
-                        circleLink.classList.add('nav-link');
-                        
-                        const circleEl = document.createElement('div');
-                        circleEl.classList.add('portfolio-circle');
-                        circleEl.style.width = `${circleSize}px`;
-                        circleEl.style.height = `${circleSize}px`;
+                    circleLink.classList.add('nav-link');
+                    
+                    const circleEl = document.createElement('div');
+                    circleEl.classList.add('portfolio-circle');
+                    circleEl.style.width = `${circleSize}px`;
+                    circleEl.style.height = `${circleSize}px`;
                         circleEl.style.backgroundImage = `url('${project.circleImage}')`;
-                        circleEl.dataset.baseX = x;
-                        circleEl.dataset.baseY = y;
-                        circleEl.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
-                        
-                        circleLink.appendChild(circleEl);
-                        container.appendChild(circleLink);
-                        circles.push(circleEl);
-                    });
+                    circleEl.dataset.baseX = x;
+                    circleEl.dataset.baseY = y;
+                    circleEl.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
+                    
+                    circleLink.appendChild(circleEl);
+                    container.appendChild(circleLink);
+                    circles.push(circleEl);
+                });
                 }
                 
                 console.log('Created', circles.length, 'circles');
@@ -768,7 +916,12 @@
                 if (count === 1) return [{ x: 0, y: 0 }];
                 if (count === 2) return [{ x: -0.5, y: 0 }, { x: 0.5, y: 0 }];
                 if (count === 3) return [{ x: 0, y: -0.8 }, { x: -1, y: 0.8 }, { x: 1, y: 0.8 }];
-                if (count === 4) return [{ x: -0.7, y: -0.7 }, { x: 0.7, y: -0.7 }, { x: -0.7, y: 0.7 }, { x: 0.7, y: 0.7 }];
+                if (count === 4) return [
+                    { x: 0, y: -0.8 },    // Top
+                    { x: -1, y: 0.8 },    // Bottom left
+                    { x: 1, y: 0.8 },     // Bottom right
+                    { x: 0, y: 0 }        // Center (About)
+                ];
                 // For more than 4, arrange in a circle
                 const positions = [];
                 for (let i = 0; i < count; i++) {
@@ -782,7 +935,7 @@
             }
 
             function addCircleEventListeners() {
-                circles.forEach(hoveredCircle => {
+                 circles.forEach(hoveredCircle => {
                     hoveredCircle.addEventListener('mouseenter', () => {
                         if (isSplitLayout) return; // Don't animate in split layout
                         
@@ -839,7 +992,7 @@
                     const mainImage = projectSection.querySelector(`[data-main-image]`);
                     
                     if (mainImage) {
-                        mainImage.src = clickedThumb.src;
+                         mainImage.src = clickedThumb.src;
                     }
 
                     // Update active state for thumbnails within the same project
