@@ -859,6 +859,13 @@
                     const circleSize = Math.min(containerSize * 0.15, 80);
                     
                     projectsConfig.forEach((project, i) => {
+                        // Create wrapper for circle and label
+                        const circleWrapper = document.createElement('div');
+                        circleWrapper.style.display = 'flex';
+                        circleWrapper.style.flexDirection = 'column';
+                        circleWrapper.style.alignItems = 'center';
+                        circleWrapper.style.gap = '8px';
+                        
                         const circleLink = document.createElement('a');
                         circleLink.dataset.target = project.id;
                         circleLink.classList.add('nav-link');
@@ -874,8 +881,23 @@
                         circleEl.style.transform = 'none';
                         circleEl.style.margin = '0';
                         
+                        // Create label
+                        const label = document.createElement('div');
+                        label.classList.add('circle-label');
+                        label.textContent = project.name;
+                        label.style.color = '#333';
+                        label.style.fontSize = '12px';
+                        label.style.fontWeight = '500';
+                        label.style.textAlign = 'center';
+                        label.style.transition = 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)';
+                        label.style.opacity = '0.8';
+                        label.style.maxWidth = `${circleSize + 20}px`;
+                        label.style.wordWrap = 'break-word';
+                        
                         circleLink.appendChild(circleEl);
-                        container.appendChild(circleLink);
+                        circleWrapper.appendChild(circleLink);
+                        circleWrapper.appendChild(label);
+                        container.appendChild(circleWrapper);
                         circles.push(circleEl);
                     });
                 } else {
@@ -889,6 +911,18 @@
                     if (!pos) return;
                     const x = pos.x * radius;
                     const y = pos.y * radius;
+                    
+                    // Create wrapper for circle and label
+                    const circleWrapper = document.createElement('div');
+                    circleWrapper.style.position = 'absolute';
+                    circleWrapper.style.top = '50%';
+                    circleWrapper.style.left = '50%';
+                    circleWrapper.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
+                    circleWrapper.style.display = 'flex';
+                    circleWrapper.style.flexDirection = 'column';
+                    circleWrapper.style.alignItems = 'center';
+                    circleWrapper.style.gap = '12px';
+                    
                     const circleLink = document.createElement('a');
                         circleLink.dataset.target = project.id;
                     circleLink.classList.add('nav-link');
@@ -900,10 +934,29 @@
                         circleEl.style.backgroundImage = `url('${project.circleImage}')`;
                     circleEl.dataset.baseX = x;
                     circleEl.dataset.baseY = y;
-                    circleEl.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
+                    circleEl.style.transform = 'none';
+                    circleEl.style.position = 'relative';
+                    circleEl.style.top = 'auto';
+                    circleEl.style.left = 'auto';
+                    
+                    // Create label
+                    const label = document.createElement('div');
+                    label.classList.add('circle-label');
+                    label.textContent = project.name;
+                    label.style.color = '#333';
+                    label.style.fontSize = '14px';
+                    label.style.fontWeight = '500';
+                    label.style.textAlign = 'center';
+                    label.style.transition = 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)';
+                    label.style.opacity = '0.8';
+                    label.style.maxWidth = `${circleSize + 30}px`;
+                    label.style.wordWrap = 'break-word';
+                    label.style.whiteSpace = 'nowrap';
                     
                     circleLink.appendChild(circleEl);
-                    container.appendChild(circleLink);
+                    circleWrapper.appendChild(circleLink);
+                    circleWrapper.appendChild(label);
+                    container.appendChild(circleWrapper);
                     circles.push(circleEl);
                 });
                 }
@@ -944,6 +997,14 @@
                         hoveredCircle.style.transform = `translate(-50%, -50%) translate(${hoveredX}px, ${hoveredY}px) scale(1.5)`;
                         hoveredCircle.style.zIndex = '10';
                         hoveredCircle.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.2)';
+                        
+                        // Scale the label as well
+                        const label = hoveredCircle.parentElement.querySelector('.circle-label');
+                        if (label) {
+                            label.style.transform = 'scale(1.2)';
+                            label.style.opacity = '1';
+                            label.style.fontWeight = '600';
+                        }
                         circles.forEach(otherCircle => {
                             if (otherCircle === hoveredCircle) return;
                             const otherX = parseFloat(otherCircle.dataset.baseX);
@@ -970,6 +1031,14 @@
                             circle.style.transform = `translate(-50%, -50%) translate(${baseX}px, ${baseY}px) scale(1)`;
                             circle.style.zIndex = '1';
                             circle.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.1)';
+                            
+                            // Reset the label scaling
+                            const label = circle.parentElement.querySelector('.circle-label');
+                            if (label) {
+                                label.style.transform = 'scale(1)';
+                                label.style.opacity = '0.8';
+                                label.style.fontWeight = '500';
+                            }
                         });
                     });
                 });
