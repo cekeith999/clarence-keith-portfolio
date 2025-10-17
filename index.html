@@ -2065,6 +2065,7 @@
                     
                 } else {
                     const error = await response.json();
+                    console.error('API Error Response:', error);
                     throw new Error(error.message || 'Failed to save');
                 }
             } catch (error) {
@@ -2074,8 +2075,8 @@
                     cancelEdit(element);
                 }, 2000);
                 
-                // Show error notification
-                showErrorNotification(error.message);
+                // Show error notification with more details
+                showErrorNotification(error.message, error);
             }
         }
 
@@ -2150,13 +2151,25 @@
         }
 
         // Show error notification
-        function showErrorNotification(errorMessage) {
+        function showErrorNotification(errorMessage, errorDetails = null) {
             const notification = document.createElement('div');
             notification.className = 'fixed top-4 right-4 bg-red-600 text-white p-4 rounded-lg shadow-lg z-50 max-w-md';
+            
+            let debugInfo = '';
+            if (errorDetails && errorDetails.debug) {
+                debugInfo = `
+                    <details class="mt-2">
+                        <summary class="text-xs cursor-pointer">Debug Info</summary>
+                        <pre class="text-xs mt-1 bg-black bg-opacity-20 p-2 rounded overflow-auto">${JSON.stringify(errorDetails.debug, null, 2)}</pre>
+                    </details>
+                `;
+            }
+            
             notification.innerHTML = `
                 <h3 class="font-bold mb-2">❌ Error Saving</h3>
                 <p class="text-sm mb-2">${errorMessage}</p>
-                <p class="text-xs mb-2">Make sure the server is running on port 3001</p>
+                <p class="text-xs mb-2">Check browser console for more details</p>
+                ${debugInfo}
                 <button onclick="this.parentElement.remove()" class="mt-2 bg-red-500 hover:bg-red-400 px-3 py-1 rounded text-xs">
                     Close
                 </button>
@@ -2164,12 +2177,12 @@
             
             document.body.appendChild(notification);
             
-            // Auto-remove after 10 seconds
+            // Auto-remove after 15 seconds
             setTimeout(() => {
                 if (notification.parentElement) {
                     notification.remove();
                 }
-            }, 10000);
+            }, 15000);
         }
 
         // Function to export all changes for manual git operations

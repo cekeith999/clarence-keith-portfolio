@@ -33,7 +33,13 @@ export default async function handler(req, res) {
         console.error('Error saving edit:', error);
         res.status(500).json({
             success: false,
-            error: error.message
+            error: error.message,
+            debug: {
+                hasToken: !!process.env.GITHUB_TOKEN,
+                tokenLength: process.env.GITHUB_TOKEN ? process.env.GITHUB_TOKEN.length : 0,
+                errorType: error.constructor.name,
+                stack: error.stack
+            }
         });
     }
 }
