@@ -1909,6 +1909,220 @@
                 }
             });
         });
+
+        // Inline Text Editing Functionality
+        let isEditMode = false;
+        let currentEditElement = null;
+        let originalText = '';
+
+        // Track key states
+        let keysPressed = {
+            ctrl: false,
+            alt: false
+        };
+
+        // Keyboard event listeners
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Control') keysPressed.ctrl = true;
+            if (e.key === 'Alt') keysPressed.alt = true;
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'Control') keysPressed.ctrl = false;
+            if (e.key === 'Alt') keysPressed.alt = false;
+        });
+
+        // Double click with Ctrl+Alt to enable editing
+        document.addEventListener('dblclick', (e) => {
+            if (keysPressed.ctrl && keysPressed.alt) {
+                e.preventDefault();
+                enableTextEditing(e.target);
+            }
+        });
+
+        function enableTextEditing(element) {
+            // Only allow editing of text elements
+            const editableElements = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'div'];
+            if (!editableElements.includes(element.tagName.toLowerCase())) {
+                return;
+            }
+
+            // Don't edit if it's already in edit mode
+            if (element.classList.contains('editing')) {
+                return;
+            }
+
+            // Store original text and element
+            originalText = element.textContent.trim();
+            currentEditElement = element;
+
+            // Create input field
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = originalText;
+            input.className = 'edit-input bg-white text-black border-2 border-blue-500 px-2 py-1 rounded';
+            input.style.fontSize = window.getComputedStyle(element).fontSize;
+            input.style.fontWeight = window.getComputedStyle(element).fontWeight;
+            input.style.fontFamily = window.getComputedStyle(element).fontFamily;
+            input.style.width = '100%';
+            input.style.minWidth = '200px';
+
+            // Replace element content with input
+            element.innerHTML = '';
+            element.appendChild(input);
+            element.classList.add('editing');
+            input.focus();
+            input.select();
+
+            // Handle save on Enter
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    saveTextChange(element, input.value);
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    cancelEdit(element);
+                }
+            });
+
+            // Handle blur (click outside)
+            input.addEventListener('blur', () => {
+                saveTextChange(element, input.value);
+            });
+        }
+
+        function saveTextChange(element, newText) {
+            if (newText.trim() === originalText) {
+                // No change, just cancel
+                cancelEdit(element);
+                return;
+            }
+
+            // Show saving indicator
+            element.innerHTML = '<span class="text-blue-500">Saving...</span>';
+
+            // Send to backend to save
+            saveToBackend(element, newText.trim());
+        }
+
+        function cancelEdit(element) {
+            element.textContent = originalText;
+            element.classList.remove('editing');
+            currentEditElement = null;
+            originalText = '';
+        }
+
+        async function saveToBackend(element, newText) {
+            try {
+                // Determine what type of content this is
+                const elementInfo = getElementInfo(element);
+                
+                const response = await fetch('/api/update-content', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        elementInfo: elementInfo,
+                        newText: newText,
+                        originalText: originalText
+                    })
+                });
+
+                if (response.ok) {
+                    // Success - update the element
+                    element.textContent = newText;
+                    element.classList.remove('editing');
+                    element.innerHTML = `<span class="text-green-500">✓ ${newText}</span>`;
+                    
+                    // Remove success indicator after 2 seconds
+                    setTimeout(() => {
+                        element.textContent = newText;
+                    }, 2000);
+
+                    // Commit to git
+                    await commitChanges(elementInfo, newText);
+                    
+                } else {
+                    throw new Error('Failed to save');
+                }
+            } catch (error) {
+                console.error('Error saving text:', error);
+                element.innerHTML = '<span class="text-red-500">Error saving</span>';
+                setTimeout(() => {
+                    cancelEdit(element);
+                }, 2000);
+            }
+        }
+
+        function getElementInfo(element) {
+            // Try to determine what content this is based on context
+            const projectSection = element.closest('.page-content, .active');
+            const projectId = projectSection ? projectSection.id : null;
+            
+            // Check if it's in a specific project
+            if (projectId && projectId.startsWith('project')) {
+                return {
+                    type: 'project',
+                    projectId: projectId,
+                    elementType: element.tagName.toLowerCase(),
+                    text: element.textContent.trim()
+                };
+            }
+
+            // Check if it's in the about section
+            if (element.closest('#about')) {
+                return {
+                    type: 'about',
+                    elementType: element.tagName.toLowerCase(),
+                    text: element.textContent.trim()
+                };
+            }
+
+            // Default fallback
+            return {
+                type: 'general',
+                elementType: element.tagName.toLowerCase(),
+                text: element.textContent.trim()
+            };
+        }
+
+        async function commitChanges(elementInfo, newText) {
+            try {
+                const response = await fetch('/api/commit-changes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        elementInfo: elementInfo,
+                        newText: newText,
+                        originalText: originalText
+                    })
+                });
+
+                if (response.ok) {
+                    console.log('Changes committed to git successfully');
+                } else {
+                    console.error('Failed to commit changes to git');
+                }
+            } catch (error) {
+                console.error('Error committing to git:', error);
+            }
+        }
+
+        // Add visual indicator when in edit mode
+        document.addEventListener('keydown', (e) => {
+            if (keysPressed.ctrl && keysPressed.alt) {
+                document.body.style.cursor = 'text';
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (!keysPressed.ctrl || !keysPressed.alt) {
+                document.body.style.cursor = 'default';
+            }
+        });
     </script>
 </body>
 </html>
