@@ -302,7 +302,7 @@
         <div class="popup-content">
             <button class="popup-close" id="popup-close">&times;</button>
             <h2 class="text-3xl font-bold text-black mb-6">Get In Touch</h2>
-            <form id="popup-contact-form" class="space-y-4">
+            <form id="popup-contact-form" class="space-y-4" action="https://formspree.io/f/xpwnqkqr" method="POST">
                 <div>
                     <label for="popup-name" class="block text-sm font-medium text-white mb-2">Name</label>
                     <input type="text" id="popup-name" name="name" required 
@@ -318,6 +318,9 @@
                     <textarea id="popup-message" name="message" rows="4" required 
                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-colors resize-none bg-white text-black"></textarea>
                 </div>
+                <!-- Hidden field to send to both emails -->
+                <input type="hidden" name="_cc" value="jordankeith999@gmail.com">
+                <input type="hidden" name="_replyto" value="cekeith@usc.edu">
                 <button type="submit" 
                         class="w-full bg-black text-white py-3 rounded-lg font-bold text-lg hover:bg-gray-800 transition-colors duration-300">
                     Send Message
@@ -1714,14 +1717,8 @@
             });
 
             // Handle form submission
-            popupForm.addEventListener('submit', (e) => {
+            popupForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                
-                // Get form data
-                const formData = new FormData(popupForm);
-                const name = formData.get('name');
-                const contact = formData.get('contact');
-                const message = formData.get('message');
                 
                 // Show loading state
                 const submitButton = popupForm.querySelector('button[type="submit"]');
@@ -1729,14 +1726,30 @@
                 submitButton.textContent = 'Sending...';
                 submitButton.disabled = true;
                 
-                // Simulate form submission (replace with actual form handling)
-                setTimeout(() => {
-                    alert('Thank you for your message! I\'ll get back to you soon.');
-                    popupForm.reset();
-                    closePopup();
+                try {
+                    // Submit to Formspree
+                    const formData = new FormData(popupForm);
+                    const response = await fetch(popupForm.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        alert('Thank you for your message! I\'ll get back to you soon.');
+                        popupForm.reset();
+                        closePopup();
+                    } else {
+                        throw new Error('Form submission failed');
+                    }
+                } catch (error) {
+                    alert('Sorry, there was an error sending your message. Please try again or contact me directly.');
+                } finally {
                     submitButton.textContent = originalText;
                     submitButton.disabled = false;
-                }, 1000);
+                }
             });
         });
     </script>
