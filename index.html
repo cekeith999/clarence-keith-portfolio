@@ -329,6 +329,13 @@
         </div>
     </div>
 
+    <!-- Git Export Button (for editing functionality) -->
+    <div class="fixed bottom-4 left-4 z-50">
+        <button onclick="exportChanges()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-lg text-sm font-medium transition-colors">
+            Export Changes for Git
+        </button>
+    </div>
+
     <!-- Header Navigation -->
     <header class="w-full p-6 sm:p-8 sticky top-0 z-50 bg-[#F00000] shadow-sm">
         <nav class="flex justify-between items-center max-w-7xl mx-auto">
@@ -1978,16 +1985,23 @@
             input.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    saveTextChange(element, input.value);
+                    const value = input.value;
+                    saveTextChange(element, value);
                 } else if (e.key === 'Escape') {
                     e.preventDefault();
                     cancelEdit(element);
                 }
             });
 
-            // Handle blur (click outside)
-            input.addEventListener('blur', () => {
-                saveTextChange(element, input.value);
+            // Handle blur (click outside) - with delay to prevent conflicts
+            input.addEventListener('blur', (e) => {
+                // Small delay to prevent DOM manipulation conflicts
+                setTimeout(() => {
+                    if (element.classList.contains('editing')) {
+                        const value = input.value;
+                        saveTextChange(element, value);
+                    }
+                }, 100);
             });
         }
 
@@ -2017,35 +2031,25 @@
                 // Determine what type of content this is
                 const elementInfo = getElementInfo(element);
                 
-                const response = await fetch('/api/update-content', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        elementInfo: elementInfo,
-                        newText: newText,
-                        originalText: originalText
-                    })
-                });
-
-                if (response.ok) {
-                    // Success - update the element
+                // For now, we'll save the change locally and show instructions
+                // In a production environment, you'd want a proper backend
+                
+                // Update the element immediately
+                element.textContent = newText;
+                element.classList.remove('editing');
+                element.innerHTML = `<span class="text-green-500">✓ ${newText}</span>`;
+                
+                // Remove success indicator after 2 seconds
+                setTimeout(() => {
                     element.textContent = newText;
-                    element.classList.remove('editing');
-                    element.innerHTML = `<span class="text-green-500">✓ ${newText}</span>`;
-                    
-                    // Remove success indicator after 2 seconds
-                    setTimeout(() => {
-                        element.textContent = newText;
-                    }, 2000);
+                }, 2000);
 
-                    // Commit to git
-                    await commitChanges(elementInfo, newText);
-                    
-                } else {
-                    throw new Error('Failed to save');
-                }
+                // Store the change for potential git operations
+                storeChangeForGit(elementInfo, newText, originalText);
+                
+                // Show instructions for manual git operations
+                showGitInstructions(elementInfo, newText, originalText);
+                
             } catch (error) {
                 console.error('Error saving text:', error);
                 element.innerHTML = '<span class="text-red-500">Error saving</span>';
@@ -2087,28 +2091,68 @@
             };
         }
 
-        async function commitChanges(elementInfo, newText) {
-            try {
-                const response = await fetch('/api/commit-changes', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        elementInfo: elementInfo,
-                        newText: newText,
-                        originalText: originalText
-                    })
-                });
+        // Store changes for potential git operations
+        function storeChangeForGit(elementInfo, newText, originalText) {
+            const changes = JSON.parse(localStorage.getItem('portfolioChanges') || '[]');
+            changes.push({
+                timestamp: new Date().toISOString(),
+                elementInfo: elementInfo,
+                newText: newText,
+                originalText: originalText
+            });
+            localStorage.setItem('portfolioChanges', JSON.stringify(changes));
+        }
 
-                if (response.ok) {
-                    console.log('Changes committed to git successfully');
-                } else {
-                    console.error('Failed to commit changes to git');
+        // Show git instructions to the user
+        function showGitInstructions(elementInfo, newText, originalText) {
+            // Create a temporary notification
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-blue-600 text-white p-4 rounded-lg shadow-lg z-50 max-w-md';
+            notification.innerHTML = `
+                <h3 class="font-bold mb-2">Text Updated Successfully!</h3>
+                <p class="text-sm mb-2">Change: "${originalText}" → "${newText}"</p>
+                <p class="text-xs mb-3">To make this change permanent:</p>
+                <div class="bg-black bg-opacity-20 p-2 rounded text-xs font-mono">
+                    git add .<br>
+                    git commit -m "Update ${elementInfo.type} content"<br>
+                    git push origin main
+                </div>
+                <button onclick="this.parentElement.remove()" class="mt-2 bg-blue-500 hover:bg-blue-400 px-3 py-1 rounded text-xs">
+                    Close
+                </button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 10 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
                 }
-            } catch (error) {
-                console.error('Error committing to git:', error);
+            }, 10000);
+        }
+
+        // Function to export all changes for manual git operations
+        function exportChanges() {
+            const changes = JSON.parse(localStorage.getItem('portfolioChanges') || '[]');
+            if (changes.length === 0) {
+                alert('No changes to export');
+                return;
             }
+            
+            const changesText = changes.map(change => 
+                `- ${change.elementInfo.type}: "${change.originalText}" → "${change.newText}"`
+            ).join('\n');
+            
+            const commitMessage = `Update portfolio content:\n\n${changesText}`;
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(commitMessage).then(() => {
+                alert('Commit message copied to clipboard! Paste it when you run: git commit -m "..."');
+            }).catch(() => {
+                // Fallback: show in alert
+                prompt('Copy this commit message:', commitMessage);
+            });
         }
 
         // Add visual indicator when in edit mode
