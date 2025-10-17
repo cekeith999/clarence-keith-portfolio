@@ -2035,7 +2035,7 @@
                 element.innerHTML = '<span class="text-blue-500">Saving...</span>';
                 
                 // Send to backend to save and commit
-                const response = await fetch('http://localhost:3001/api/save-and-commit', {
+                const response = await fetch('/api/save-edit', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
