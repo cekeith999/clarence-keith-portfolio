@@ -31,6 +31,25 @@
             font-family: 'Yeezy Tstar', sans-serif;
             background-color: #A30000;
             color: #333;
+            cursor: none;
+        }
+        
+        /* Custom cursor */
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.1s ease;
+        }
+        
+        .custom-cursor.hover {
+            transform: scale(1.5);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 50%, transparent 100%);
         }
         
         /* Ensure Yeezy font is applied to all elements */
@@ -301,6 +320,42 @@
             transform: scale(1.05);
             border-color: #333;
         }
+        
+        /* Enhanced scrollable gallery */
+        .scrollable-gallery {
+            max-height: 400px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .scrollable-gallery:hover {
+            scrollbar-color: rgba(255, 255, 255, 0.6) transparent;
+        }
+        
+        .scrollable-gallery::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .scrollable-gallery::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .scrollable-gallery::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            transition: background 0.3s ease;
+        }
+        
+        .scrollable-gallery:hover::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.6);
+        }
+        
+        .scrollable-gallery::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.8);
+        }
         /* Marquee bar */
         .marquee {
             position: fixed;
@@ -419,6 +474,9 @@
     </div>
 
     <!-- Auto-Save Status Indicator -->
+
+    <!-- Custom Cursor -->
+    <div class="custom-cursor" id="custom-cursor"></div>
 
     <!-- Header Navigation -->
     <header class="w-full p-6 sm:p-8 sticky top-0 z-50 bg-[#A30000] shadow-sm">
@@ -1242,7 +1300,7 @@
                         
                         // Thumbnails container
                         const thumbnailsContainer = document.createElement('div');
-                        thumbnailsContainer.className = 'flex sm:flex-col gap-3 overflow-x-auto sm:overflow-y-auto pr-2';
+                        thumbnailsContainer.className = 'flex sm:flex-col gap-3 scrollable-gallery pr-2';
                         
                         mediaArray.forEach((image, imgIndex) => {
                             const isVideo = image.src.toLowerCase().includes('.mov') || image.src.toLowerCase().includes('.mp4') || image.src.toLowerCase().includes('.webm');
@@ -1414,7 +1472,7 @@
                 
                 // Thumbnails container
                 const thumbnailsContainer = document.createElement('div');
-                thumbnailsContainer.className = 'flex sm:flex-col gap-3 overflow-x-auto sm:overflow-y-auto pr-2';
+                thumbnailsContainer.className = 'flex sm:flex-col gap-3 scrollable-gallery pr-2';
                 
                 project.thumbnails.forEach((thumb, index) => {
                     const img = document.createElement('img');
@@ -2501,6 +2559,25 @@
             if (!keysPressed.ctrl || !keysPressed.alt) {
                 document.body.style.cursor = 'default';
             }
+        });
+
+        // Custom cursor functionality
+        const cursor = document.getElementById('custom-cursor');
+        
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX - 10 + 'px';
+            cursor.style.top = e.clientY - 10 + 'px';
+        });
+        
+        // Add hover effect for interactive elements
+        const interactiveElements = document.querySelectorAll('a, button, .portfolio-circle, .nav-link, .thumbnail');
+        interactiveElements.forEach(element => {
+            element.addEventListener('mouseenter', () => {
+                cursor.classList.add('hover');
+            });
+            element.addEventListener('mouseleave', () => {
+                cursor.classList.remove('hover');
+            });
         });
     </script>
 </body>
