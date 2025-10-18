@@ -1126,15 +1126,7 @@
                 container.className = 'w-full max-w-7xl mx-auto p-4';
                 
                 // Check if this project has multiple sub-projects
-                console.log('=== DEBUGGING PROJECT ===');
-                console.log('Project name:', project.name);
-                console.log('Project ID:', project.id);
-                console.log('Has projects array:', !!project.projects);
-                console.log('Projects length:', project.projects ? project.projects.length : 0);
-                console.log('Full project object:', project);
-                
                 if (project.projects && project.projects.length > 0) {
-                    console.log('ENTERING SUB-PROJECTS BRANCH');
                     // Create a scrollable container for multiple projects
                     const scrollContainer = document.createElement('div');
                     scrollContainer.className = 'space-y-20';
@@ -1173,6 +1165,9 @@
                         const imageSection = document.createElement('div');
                         imageSection.className = 'flex flex-col-reverse sm:flex-row gap-4 image-section';
                         
+                        // Get media array (images or thumbnails)
+                        const mediaArray = subProject.images || subProject.thumbnails;
+                        
                         // Thumbnails container
                         const thumbnailsContainer = document.createElement('div');
                         thumbnailsContainer.className = 'flex sm:flex-col gap-3 overflow-x-auto sm:overflow-y-auto pr-2';
@@ -1203,7 +1198,6 @@
                         const mainImageContainer = document.createElement('div');
                         mainImageContainer.className = 'flex-1';
                         
-                        const mediaArray = subProject.images || subProject.thumbnails;
                         const firstMedia = mediaArray[0];
                         const isFirstVideo = firstMedia.src.toLowerCase().includes('.mov') || firstMedia.src.toLowerCase().includes('.mp4') || firstMedia.src.toLowerCase().includes('.webm');
                         
@@ -1338,7 +1332,6 @@
                     return section;
                 }
                 
-                console.log('ENTERING SINGLE PROJECT BRANCH');
                 // Original single project layout
                 const grid = document.createElement('div');
                 grid.className = 'grid grid-cols-1 lg:grid-cols-2 gap-8';
