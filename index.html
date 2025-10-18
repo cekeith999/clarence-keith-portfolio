@@ -125,7 +125,7 @@
             width: 90%;
             overflow-y: auto;
             background-color: #F2F0EF;
-            padding: 1rem;
+            padding: 0;
             height: 100%;
             max-height: calc(100vh - 80px);
             transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -288,7 +288,7 @@
             .project-content {
                 width: 100%;
                 height: 85%;
-                padding: 1rem;
+                padding: 0;
             }
             .circles-sidebar .portfolio-circle {
                 margin: 0 0.5rem;
@@ -541,7 +541,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen bg-[#F00000] text-white flex flex-col">
+<body class="min-h-screen bg-[#F00000] text-black flex flex-col">
 
     <!-- Contact Popup -->
     <div id="contact-popup" class="popup-overlay">
@@ -550,17 +550,17 @@
             <h2 class="text-3xl font-bold text-[#A30000] mb-6">Get In Touch</h2>
             <form id="popup-contact-form" class="space-y-4" action="https://formspree.io/f/mkgqyjaa" method="POST">
                 <div>
-                    <label for="popup-name" class="block text-sm font-medium text-white mb-2">Name</label>
+                    <label for="popup-name" class="block text-sm font-medium text-black mb-2">Name</label>
                     <input type="text" id="popup-name" name="name" required 
                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-colors bg-white text-[#A30000]">
                 </div>
                 <div>
-                    <label for="popup-email" class="block text-sm font-medium text-white mb-2">Email/Phone Number</label>
+                    <label for="popup-email" class="block text-sm font-medium text-black mb-2">Email/Phone Number</label>
                     <input type="text" id="popup-email" name="contact" required 
                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-colors bg-white text-[#A30000]">
                 </div>
                 <div>
-                    <label for="popup-message" class="block text-sm font-medium text-white mb-2">Message</label>
+                    <label for="popup-message" class="block text-sm font-medium text-black mb-2">Message</label>
                     <textarea id="popup-message" name="message" rows="4" required 
                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-colors resize-none bg-white text-[#A30000]"></textarea>
                 </div>
@@ -592,7 +592,7 @@
     <header class="w-full p-6 sm:p-8 sticky top-0 z-50 bg-[#A30000] shadow-sm">
         <nav class="flex justify-between items-center max-w-7xl mx-auto">
             <div class="flex-1">
-                <a class="text-lg font-medium nav-link text-black" id="contact-popup-trigger">Reach out!</a>
+                <a class="text-lg font-bold nav-link text-black" id="contact-popup-trigger">Reach out!</a>
             </div>
             <div class="flex-1 text-center">
                 <a class="text-3xl font-bold tracking-wider nav-link text-black" data-target="home">Clarence Keith</a>
@@ -621,13 +621,13 @@
                     <div class="order-2 lg:order-1">
                         <h1 class="text-5xl font-bold tracking-tight mb-6 text-[#A30000]">About Me</h1>
                         <div class="space-y-6 text-lg leading-relaxed">
-                            <p class="text-white">
+                            <p class="text-black">
                                 I'm Clarence Keith, a passionate footwear designer and 3D artist specializing in experimental design and additive manufacturing. My work explores the intersection of traditional craftsmanship and cutting-edge technology.
                             </p>
-                            <p class="text-white">
+                            <p class="text-black">
                                 With a background in industrial design and a fascination for generative design principles, I create footwear that challenges conventional form while maintaining functionality and aesthetic appeal.
                             </p>
-                            <p class="text-white">
+                            <p class="text-black">
                                 Each piece in my portfolio represents a unique exploration of materials, form, and manufacturing processes, pushing the boundaries of what's possible in contemporary footwear design.
                             </p>
                         </div>
@@ -641,29 +641,29 @@
                                 <div class="space-y-2">
                                     <div class="flex items-center space-x-2">
                                         <div class="w-2 h-2 bg-[#F2F0EF] rounded-full"></div>
-                                        <span class="text-white">3D Modeling & Rendering</span>
+                                        <span class="text-black">3D Modeling & Rendering</span>
                         </div>
                                     <div class="flex items-center space-x-2">
                                         <div class="w-2 h-2 bg-[#F2F0EF] rounded-full"></div>
-                                        <span class="text-white">Generative Design</span>
+                                        <span class="text-black">Generative Design</span>
                     </div>
                                     <div class="flex items-center space-x-2">
                                         <div class="w-2 h-2 bg-[#F2F0EF] rounded-full"></div>
-                                        <span class="text-white">Additive Manufacturing</span>
+                                        <span class="text-black">Additive Manufacturing</span>
                     </div>
                 </div>
                                 <div class="space-y-2">
                                     <div class="flex items-center space-x-2">
                                         <div class="w-2 h-2 bg-[#F2F0EF] rounded-full"></div>
-                                        <span class="text-white">Footwear Design</span>
+                                        <span class="text-black">Footwear Design</span>
             </div>
                                     <div class="flex items-center space-x-2">
                                         <div class="w-2 h-2 bg-[#F2F0EF] rounded-full"></div>
-                                        <span class="text-white">Material Innovation</span>
+                                        <span class="text-black">Material Innovation</span>
                                     </div>
                                     <div class="flex items-center space-x-2">
                                         <div class="w-2 h-2 bg-[#F2F0EF] rounded-full"></div>
-                                        <span class="text-white">Concept Development</span>
+                                        <span class="text-black">Concept Development</span>
                                     </div>
                                 </div>
                             </div>
@@ -695,7 +695,7 @@
             <div class="w-full max-w-6xl mx-auto p-6 sm:p-8">
                 <div class="text-center mb-12">
                     <h1 class="text-5xl font-bold tracking-tight mb-4 text-[#A30000]">Get In Touch</h1>
-                    <p class="text-xl text-white max-w-2xl mx-auto">
+                    <p class="text-xl text-black max-w-2xl mx-auto">
                         Ready to collaborate on your next footwear project? Let's discuss how we can bring your vision to life.
                     </p>
                 </div>
@@ -739,7 +739,7 @@
                             <div class="space-y-4">
                                 <div class="flex items-center space-x-4">
                                     <div class="w-12 h-12 bg-[#F2F0EF] rounded-full flex items-center justify-center">
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                                         </svg>
                                     </div>
@@ -750,7 +750,7 @@
                                 </div>
                                 <div class="flex items-center space-x-4">
                                     <div class="w-12 h-12 bg-[#F2F0EF] rounded-full flex items-center justify-center">
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                                         </svg>
                                     </div>
@@ -761,7 +761,7 @@
                                 </div>
                                 <div class="flex items-center space-x-4">
                                     <div class="w-12 h-12 bg-[#F2F0EF] rounded-full flex items-center justify-center">
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                         </svg>
@@ -1383,11 +1383,11 @@
                     title.textContent = project.name;
                     
                     const tagline = document.createElement('p');
-                    tagline.className = 'text-2xl text-white mb-8';
+                    tagline.className = 'text-2xl text-black mb-8';
                     tagline.textContent = project.tagline;
                     
                     const goal = document.createElement('p');
-                    goal.className = 'text-lg text-white max-w-4xl mx-auto leading-relaxed';
+                    goal.className = 'text-lg text-black max-w-4xl mx-auto leading-relaxed';
                     goal.textContent = project.goal;
                     
                     headerSection.appendChild(title);
@@ -1530,7 +1530,7 @@
                         projectTitle.textContent = subProject.name;
                         
                         const projectTagline = document.createElement('p');
-                        projectTagline.className = 'text-lg text-white font-medium';
+                        projectTagline.className = 'text-lg text-black font-medium';
                         projectTagline.textContent = subProject.description;
                         
                         headerSection.appendChild(projectTitle);
@@ -1541,7 +1541,7 @@
                         dateSection.className = 'space-y-1';
                         
                         const date = document.createElement('p');
-                        date.className = 'text-base text-white';
+                        date.className = 'text-base text-black';
                         date.textContent = project.date;
                         
                         dateSection.appendChild(date);
@@ -1574,7 +1574,7 @@
                         roleLabel.textContent = 'Role';
                         
                         const roleList = document.createElement('ul');
-                        roleList.className = 'space-y-1 text-white';
+                        roleList.className = 'space-y-1 text-black';
                         project.role.forEach(role => {
                             const li = document.createElement('li');
                             li.textContent = `• ${role}`;
@@ -1593,7 +1593,7 @@
                         skillsLabel.textContent = 'Skills';
                         
                         const skillsList = document.createElement('ul');
-                        skillsList.className = 'space-y-1 text-white';
+                        skillsList.className = 'space-y-1 text-black';
                         project.skills.forEach(skill => {
                             const li = document.createElement('li');
                             li.textContent = `• ${skill}`;
@@ -1707,7 +1707,7 @@
                 title.textContent = project.name;
                 
                 const tagline = document.createElement('p');
-                tagline.className = 'text-lg text-white font-medium';
+                tagline.className = 'text-lg text-black font-medium';
                 tagline.textContent = project.tagline;
                 
                 headerSection.appendChild(title);
@@ -1718,7 +1718,7 @@
                 dateSection.className = 'space-y-1';
                 
                 const date = document.createElement('p');
-                date.className = 'text-base text-white';
+                date.className = 'text-base text-black';
                 date.textContent = project.date;
                 
                 dateSection.appendChild(date);
@@ -1751,7 +1751,7 @@
                 roleLabel.textContent = 'Role';
                 
                 const roleList = document.createElement('ul');
-                roleList.className = 'space-y-1 text-white';
+                roleList.className = 'space-y-1 text-black';
                 project.role.forEach(role => {
                     const li = document.createElement('li');
                     li.textContent = `• ${role}`;
@@ -1770,7 +1770,7 @@
                 skillsLabel.textContent = 'Skills';
                 
                 const skillsList = document.createElement('ul');
-                skillsList.className = 'space-y-1 text-white';
+                skillsList.className = 'space-y-1 text-black';
                 project.skills.forEach(skill => {
                     const li = document.createElement('li');
                     li.textContent = `• ${skill}`;
@@ -1789,7 +1789,7 @@
                 lessonsLabel.textContent = 'Lessons Learned';
                 
                 const lessonsList = document.createElement('ul');
-                lessonsList.className = 'space-y-1 text-white';
+                lessonsList.className = 'space-y-1 text-black';
                 project.lessons.forEach(lesson => {
                     const li = document.createElement('li');
                     li.textContent = `• ${lesson}`;
@@ -1893,7 +1893,7 @@
                     dot.className = 'w-2 h-2 bg-[#F2F0EF] rounded-full';
                     
                     const skillText = document.createElement('span');
-                    skillText.className = 'text-white';
+                    skillText.className = 'text-black';
                     skillText.textContent = skill;
                     
                     skillDiv.appendChild(dot);
@@ -1929,7 +1929,7 @@
                 profileImage.className = 'aspect-square bg-gradient-to-br from-[#F2F0EF] to-[#E8E6E4] rounded-2xl shadow-2xl flex items-center justify-center';
                 
                 const profileContent = document.createElement('div');
-                profileContent.className = 'text-center text-white p-8';
+                profileContent.className = 'text-center text-black p-8';
                 
                 const profileIcon = document.createElement('div');
                 profileIcon.className = 'w-32 h-32 bg-white/20 rounded-full mx-auto mb-6 flex items-center justify-center';
@@ -1944,7 +1944,7 @@
                 profileName.textContent = 'Clarence Keith';
                 
                 const profileTitle = document.createElement('p');
-                profileTitle.className = 'text-lg opacity-90 text-white';
+                profileTitle.className = 'text-lg opacity-90 text-black';
                 profileTitle.textContent = 'designer';
                 
                 profileIcon.appendChild(profileImg);
