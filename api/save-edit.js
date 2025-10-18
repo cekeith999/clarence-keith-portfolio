@@ -54,59 +54,87 @@ async function updateFileViaGitHub(elementInfo, newText, originalText) {
         throw new Error('GitHub token not configured');
     }
 
-    // Get current file content
-    const getFileResponse = await fetch(
-        `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`,
-        {
-            headers: {
-                'Authorization': `token ${GITHUB_TOKEN}`,
-                'Accept': 'application/vnd.github.v3+json'
+    // Retry logic for SHA mismatches
+    let attempts = 0;
+    const maxAttempts = 3;
+
+    while (attempts < maxAttempts) {
+        try {
+            // Get current file content
+            const getFileResponse = await fetch(
+                `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`,
+                {
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                }
+            );
+
+            if (!getFileResponse.ok) {
+                throw new Error(`Failed to get file: ${getFileResponse.statusText}`);
             }
+
+            const fileData = await getFileResponse.json();
+            const currentContent = Buffer.from(fileData.content, 'base64').toString('utf8');
+
+            // Update the content
+            const updatedContent = updateContentInHTML(currentContent, elementInfo, newText, originalText);
+
+            // Create commit message
+            const commitMessage = `Update ${elementInfo.type} content: "${originalText}" → "${newText}"`;
+
+            // Update file via GitHub API
+            const updateResponse = await fetch(
+                `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: commitMessage,
+                        content: Buffer.from(updatedContent).toString('base64'),
+                        sha: fileData.sha
+                    })
+                }
+            );
+
+            if (!updateResponse.ok) {
+                const errorData = await updateResponse.json();
+                
+                // Check if it's a SHA mismatch error
+                if (errorData.message && errorData.message.includes('does not match')) {
+                    attempts++;
+                    if (attempts < maxAttempts) {
+                        console.log(`SHA mismatch, retrying... (attempt ${attempts}/${maxAttempts})`);
+                        // Wait a bit before retrying
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        continue;
+                    }
+                }
+                
+                throw new Error(`Failed to update file: ${errorData.message}`);
+            }
+
+            const updateResult = await updateResponse.json();
+
+            return {
+                commitHash: updateResult.commit.sha,
+                commitMessage: commitMessage
+            };
+
+        } catch (error) {
+            if (attempts >= maxAttempts - 1) {
+                throw error;
+            }
+            attempts++;
+            console.log(`Error on attempt ${attempts}, retrying...`);
+            await new Promise(resolve => setTimeout(resolve, 1000));
         }
-    );
-
-    if (!getFileResponse.ok) {
-        throw new Error(`Failed to get file: ${getFileResponse.statusText}`);
     }
-
-    const fileData = await getFileResponse.json();
-    const currentContent = Buffer.from(fileData.content, 'base64').toString('utf8');
-
-    // Update the content
-    const updatedContent = updateContentInHTML(currentContent, elementInfo, newText, originalText);
-
-    // Create commit message
-    const commitMessage = `Update ${elementInfo.type} content: "${originalText}" → "${newText}"`;
-
-    // Update file via GitHub API
-    const updateResponse = await fetch(
-        `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`,
-        {
-            method: 'PUT',
-            headers: {
-                'Authorization': `token ${GITHUB_TOKEN}`,
-                'Accept': 'application/vnd.github.v3+json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                message: commitMessage,
-                content: Buffer.from(updatedContent).toString('base64'),
-                sha: fileData.sha
-            })
-        }
-    );
-
-    if (!updateResponse.ok) {
-        const errorData = await updateResponse.json();
-        throw new Error(`Failed to update file: ${errorData.message}`);
-    }
-
-    const updateResult = await updateResponse.json();
-
-    return {
-        commitHash: updateResult.commit.sha,
-        commitMessage: commitMessage
-    };
 }
 
 function updateContentInHTML(content, elementInfo, newText, originalText) {
