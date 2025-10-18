@@ -370,13 +370,13 @@
             right: 8px;
             width: 24px;
             height: 24px;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            opacity: 0;
+            opacity: 0.3;
             transition: opacity 0.3s ease, transform 0.2s ease;
             z-index: 10;
         }
@@ -384,6 +384,7 @@
         .image-container:hover .zoom-icon {
             opacity: 1;
             transform: scale(1.1);
+            background: rgba(0, 0, 0, 0.9);
         }
         
         .zoom-icon svg {
@@ -1423,11 +1424,28 @@
                                 video.preload = 'metadata';
                                 thumbnailsContainer.appendChild(video);
                             } else {
+                                // Create image container
+                                const imageContainer = document.createElement('div');
+                                imageContainer.className = 'image-container';
+                                
                                 const img = document.createElement('img');
                                 img.src = image.src;
                                 img.alt = image.alt;
                                 img.className = `thumbnail w-20 h-20 object-cover rounded-md ${imgIndex === 0 ? 'active' : ''}`;
-                                thumbnailsContainer.appendChild(img);
+                                
+                                // Create zoom icon
+                                const zoomIcon = document.createElement('div');
+                                zoomIcon.className = 'zoom-icon';
+                                zoomIcon.innerHTML = `
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                                        <path d="M12 10h-2v3H9v-3H7V9h2V6h1v3h2v1z"/>
+                                    </svg>
+                                `;
+                                
+                                imageContainer.appendChild(img);
+                                imageContainer.appendChild(zoomIcon);
+                                thumbnailsContainer.appendChild(imageContainer);
                             }
                         });
                         
@@ -1439,6 +1457,10 @@
                         const isFirstVideo = firstMedia.src.toLowerCase().includes('.mov') || firstMedia.src.toLowerCase().includes('.mp4') || firstMedia.src.toLowerCase().includes('.webm');
                         
                         if (isFirstVideo) {
+                            // Create main video container with zoom
+                            const mainVideoWrapper = document.createElement('div');
+                            mainVideoWrapper.className = 'image-container';
+                            
                             const mainVideo = document.createElement('video');
                             mainVideo.src = firstMedia.src;
                             mainVideo.alt = subProject.name;
@@ -1447,14 +1469,44 @@
                             mainVideo.controls = true;
                             mainVideo.muted = false;
                             mainVideo.loop = false;
-                            mainImageContainer.appendChild(mainVideo);
+                            
+                            // Create zoom icon for video
+                            const mainZoomIcon = document.createElement('div');
+                            mainZoomIcon.className = 'zoom-icon';
+                            mainZoomIcon.innerHTML = `
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                                    <path d="M12 10h-2v3H9v-3H7V9h2V6h1v3h2v1z"/>
+                                </svg>
+                            `;
+                            
+                            mainVideoWrapper.appendChild(mainVideo);
+                            mainVideoWrapper.appendChild(mainZoomIcon);
+                            mainImageContainer.appendChild(mainVideoWrapper);
                         } else {
+                            // Create main image container with zoom
+                            const mainImageWrapper = document.createElement('div');
+                            mainImageWrapper.className = 'image-container';
+                            
                             const mainImage = document.createElement('img');
                             mainImage.src = firstMedia.src;
                             mainImage.alt = subProject.name;
                             mainImage.setAttribute('data-main-image', subProject.name.toLowerCase().replace(/\s+/g, '-'));
                             mainImage.className = 'w-full h-auto object-cover rounded-lg shadow-lg';
-                            mainImageContainer.appendChild(mainImage);
+                            
+                            // Create zoom icon for main image
+                            const mainZoomIcon = document.createElement('div');
+                            mainZoomIcon.className = 'zoom-icon';
+                            mainZoomIcon.innerHTML = `
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                                    <path d="M12 10h-2v3H9v-3H7V9h2V6h1v3h2v1z"/>
+                                </svg>
+                            `;
+                            
+                            mainImageWrapper.appendChild(mainImage);
+                            mainImageWrapper.appendChild(mainZoomIcon);
+                            mainImageContainer.appendChild(mainImageWrapper);
                         }
                         
                         imageSection.appendChild(thumbnailsContainer);
