@@ -1847,8 +1847,16 @@
                 // Thoughts button
                 const thoughtsButton = document.createElement('button');
                 thoughtsButton.id = 'thoughts-button';
-                thoughtsButton.className = 'mb-6 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors duration-300 text-sm';
+                thoughtsButton.className = 'mb-4 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors duration-300 text-sm';
                 thoughtsButton.textContent = 'Click if you\'d like to read some of my thoughts recently';
+                
+                // Resume button
+                const resumeButton = document.createElement('a');
+                resumeButton.href = 'https://drive.google.com/file/d/1vJrn9kZ1_pAaGeUCdLIFPutGEXJ3-3Lg/view?usp=sharing';
+                resumeButton.target = '_blank';
+                resumeButton.rel = 'noopener noreferrer';
+                resumeButton.className = 'mb-6 inline-block px-6 py-3 bg-[#FAFAC6] text-black rounded-lg hover:bg-[#E6E6B8] transition-colors duration-300 text-sm font-semibold border-2 border-black';
+                resumeButton.textContent = 'View My Resume';
                 
                 // Skills section
                 const skillsTitle = document.createElement('h3');
@@ -1901,6 +1909,7 @@
                 aboutContent.appendChild(description2);
                 aboutContent.appendChild(description3);
                 aboutContent.appendChild(thoughtsButton);
+                aboutContent.appendChild(resumeButton);
                 aboutContent.appendChild(skillsTitle);
                 aboutContent.appendChild(skillsGrid);
                 
