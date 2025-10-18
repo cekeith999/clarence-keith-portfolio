@@ -1126,6 +1126,7 @@
                 container.className = 'w-full max-w-7xl mx-auto p-4';
                 
                 // Check if this project has multiple sub-projects
+                console.log('Project:', project.name, 'Has projects:', project.projects ? project.projects.length : 0);
                 if (project.projects && project.projects.length > 0) {
                     // Create a scrollable container for multiple projects
                     const scrollContainer = document.createElement('div');
