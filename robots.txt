@@ -1,0 +1,27 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://www.clarencekeith.com/sitemap.xml
+
+# Allow all AI crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+# Disallow crawling of image directories (optional - remove if you want images indexed)
+# Disallow: /shoeimages/
+# Disallow: /accessoryimages/
+# Disallow: /maskimages/
+# Disallow: /meimages/
