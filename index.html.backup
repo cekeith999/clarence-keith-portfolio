@@ -1,0 +1,2345 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clarence Keith - Portfolio</title>
+    <link rel="icon" type="image/png" href="meimages/mehead favicon.png">
+    <link rel="shortcut icon" type="image/png" href="meimages/mehead favicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root { --marquee-h: 48px; }
+        
+        /* Yeezy Tstar Font Faces */
+        @font-face {
+            font-family: 'Yeezy Tstar';
+            src: url('./fonts/yeezy_tstar-regular-webfont.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        
+        @font-face {
+            font-family: 'Yeezy Tstar';
+            src: url('./fonts/yeezy_tstar-bold-webfont.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+            font-display: swap;
+        }
+        
+        body {
+            font-family: 'Yeezy Tstar', sans-serif;
+            background-color: #F00000;
+            color: #333;
+        }
+        
+        /* Ensure Yeezy font is applied to all elements */
+        *, h1, h2, h3, h4, h5, h6, p, span, div, a, button, input, textarea, label {
+            font-family: 'Yeezy Tstar', sans-serif !important;
+        }
+        main { padding-bottom: var(--marquee-h); }
+        .nav-link {
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+        .nav-link:hover {
+            color: #D9534F;
+        }
+        #circle-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: calc(100vh - 80px - var(--marquee-h));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .portfolio-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            background-color: #D9534F; /* Fallback color */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s ease;
+            cursor: pointer;
+            will-change: transform;
+            z-index: 2;
+            border: 4px solid #FEFDEE;
+        }
+        .page-content {
+            display: none; /* Hide all pages by default */
+        }
+        .page-content.active {
+            display: block; /* Show the active page */
+        }
+        
+        /* Split screen layout when project is active */
+        .split-layout {
+            display: flex;
+            height: calc(100vh - 80px); /* Account for header height */
+            margin-top: 80px; /* Offset for fixed header */
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .circles-sidebar {
+            width: 10%;
+            min-width: 80px;
+            background-color: #F00000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem 0.5rem;
+            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border-right: 1px solid #e5e7eb;
+        }
+        .project-content {
+            width: 90%;
+            overflow-y: auto;
+            background-color: #F00000;
+            padding: 1rem;
+            height: 100%;
+            max-height: calc(100vh - 80px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .project-content .image-section {
+            position: sticky;
+            top: 80px; /* matches header height */
+            align-self: start;
+            height: calc(100vh - 80px);
+            overflow: hidden;
+        }
+        .project-content .details-section {
+            max-height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+        .circle-label {
+            position: relative;
+            z-index: 1;
+            margin-top: 8px;
+            pointer-events: none;
+        }
+        .project-content .page-content {
+            display: block !important;
+        }
+        .project-content .active {
+            display: block !important;
+        }
+        .project-content img[data-main-image] {
+            max-height: 400px;
+            object-fit: contain;
+        }
+        .project-content .grid {
+            height: 100%;
+        }
+        .project-content .flex.flex-col.justify-center {
+            height: 100%;
+            justify-content: space-between;
+        }
+        .circles-sidebar .portfolio-circle {
+            position: relative;
+            top: auto;
+            left: auto;
+            transform: none;
+            margin: 0.75rem 0;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 3px solid #FEFDEE;
+        }
+        .circles-sidebar .portfolio-circle:hover {
+            transform: scale(1.15);
+            border-color: #D9534F;
+            box-shadow: 0 8px 25px rgba(217, 83, 79, 0.3);
+        }
+        
+        /* Mobile responsiveness for split layout */
+        @media (max-width: 768px) {
+            .split-layout {
+                flex-direction: column;
+                height: calc(100vh - 60px);
+                margin-top: 60px;
+            }
+            .circles-sidebar {
+                width: 100%;
+                min-width: auto;
+                height: 15%;
+                flex-direction: row;
+                justify-content: center;
+                padding: 0.5rem;
+                border-right: none;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            .project-content {
+                width: 100%;
+                height: 85%;
+                padding: 1rem;
+            }
+            .circles-sidebar .portfolio-circle {
+                margin: 0 0.5rem;
+                width: 50px;
+                height: 50px;
+            }
+            .circles-sidebar .flex.flex-col {
+                flex-direction: row !important;
+                gap: 0.5rem;
+            }
+        }
+        
+        /* Mobile responsiveness for home page circles */
+        @media (max-width: 768px) {
+            #circle-container {
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                gap: 1rem;
+            }
+            .portfolio-circle {
+                position: relative !important;
+                top: auto !important;
+                left: auto !important;
+                transform: none !important;
+                margin: 0 !important;
+            }
+        }
+         .thumbnail {
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+            border: 2px solid transparent;
+        }
+        .thumbnail:hover, .thumbnail.active {
+            transform: scale(1.05);
+            border-color: #333;
+        }
+        /* Marquee bar */
+        .marquee {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: var(--marquee-h);
+            background: #F00000;
+            color: #ffffff;
+            border-top: 1px solid #e5e7eb;
+            overflow: hidden;
+            z-index: 100;
+        }
+        .marquee__track {
+            display: flex;
+            width: max-content;
+            white-space: nowrap;
+            animation: marquee-scroll 120s linear infinite;
+            will-change: transform;
+        }
+        .marquee__item {
+            padding: 0 2rem;
+            line-height: var(--marquee-h);
+            font-weight: bold;
+        }
+        @keyframes marquee-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        /* Contact Popup Styles */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .popup-content {
+            background: #F00000;
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: scale(0.7);
+            transition: transform 0.3s ease;
+            position: relative;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .popup-overlay.active .popup-content {
+            transform: scale(1);
+        }
+        
+        .popup-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-[#F00000] text-white flex flex-col">
+
+    <!-- Contact Popup -->
+    <div id="contact-popup" class="popup-overlay">
+        <div class="popup-content">
+            <button class="popup-close" id="popup-close">&times;</button>
+            <h2 class="text-3xl font-bold text-black mb-6">Get In Touch</h2>
+            <form id="popup-contact-form" class="space-y-4" action="https://formspree.io/f/mkgqyjaa" method="POST">
+                <div>
+                    <label for="popup-name" class="block text-sm font-medium text-white mb-2">Name</label>
+                    <input type="text" id="popup-name" name="name" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-colors bg-white text-black">
+                </div>
+                <div>
+                    <label for="popup-email" class="block text-sm font-medium text-white mb-2">Email/Phone Number</label>
+                    <input type="text" id="popup-email" name="contact" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-colors bg-white text-black">
+                </div>
+                <div>
+                    <label for="popup-message" class="block text-sm font-medium text-white mb-2">Message</label>
+                    <textarea id="popup-message" name="message" rows="4" required 
+                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-colors resize-none bg-white text-black"></textarea>
+                </div>
+                <!-- Hidden field to send to both emails -->
+                <input type="hidden" name="_cc" value="jordankeith999@gmail.com">
+                <input type="hidden" name="_replyto" value="cekeith@usc.edu">
+                <button type="submit" 
+                        class="w-full bg-black text-white py-3 rounded-lg font-bold text-lg hover:bg-gray-800 transition-colors duration-300">
+                    Send Message
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Auto-Save Status Indicator -->
+
+    <!-- Header Navigation -->
+    <header class="w-full p-6 sm:p-8 sticky top-0 z-50 bg-[#F00000] shadow-sm">
+        <nav class="flex justify-between items-center max-w-7xl mx-auto">
+            <div class="flex-1">
+                <a class="text-lg font-medium nav-link text-white" id="contact-popup-trigger">Reach out!</a>
+            </div>
+            <div class="flex-1 text-center">
+                <a class="text-xl font-bold tracking-wider nav-link text-black" data-target="home">Clarence Keith</a>
+            </div>
+            <div class="flex-1 flex justify-end space-x-6">
+                <a class="text-lg font-medium nav-link text-white" data-target="about">About</a>
+                <a href="https://www.instagram.com/ck.mdvs/" target="_blank" rel="noopener noreferrer" class="text-white hover:text-[#D9534F] transition-colors duration-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Page Container -->
+    <main class="flex-grow" id="main-container">
+        <!-- Home Page (Circles) -->
+        <section id="home" class="page-content active h-full flex items-center justify-center relative">
+            <div id="circle-container">
+                <!-- Circles will be dynamically generated by JavaScript here -->
+            </div>
+        </section>
+
+        <!-- About Page -->
+        <section id="about" class="page-content">
+            <div class="w-full max-w-6xl mx-auto p-6 sm:p-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div class="order-2 lg:order-1">
+                        <h1 class="text-5xl font-bold tracking-tight mb-6 text-black">About Me</h1>
+                        <div class="space-y-6 text-lg leading-relaxed">
+                            <p class="text-white">
+                                I'm Clarence Keith, a passionate footwear designer and 3D artist specializing in experimental design and additive manufacturing. My work explores the intersection of traditional craftsmanship and cutting-edge technology.
+                            </p>
+                            <p class="text-white">
+                                With a background in industrial design and a fascination for generative design principles, I create footwear that challenges conventional form while maintaining functionality and aesthetic appeal.
+                            </p>
+                            <p class="text-white">
+                                Each piece in my portfolio represents a unique exploration of materials, form, and manufacturing processes, pushing the boundaries of what's possible in contemporary footwear design.
+                            </p>
+                        </div>
+                        
+                        <div class="mt-8">
+                            <button id="thoughts-button" class="mb-6 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors duration-300 text-sm">
+                                Click if you'd like to read some of my thoughts recently
+                            </button>
+                            <h3 class="text-2xl font-bold mb-4 text-black">Skills & Expertise</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-2 h-2 bg-[#D9534F] rounded-full"></div>
+                                        <span class="text-white">3D Modeling & Rendering</span>
+                        </div>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-2 h-2 bg-[#D9534F] rounded-full"></div>
+                                        <span class="text-white">Generative Design</span>
+                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-2 h-2 bg-[#D9534F] rounded-full"></div>
+                                        <span class="text-white">Additive Manufacturing</span>
+                    </div>
+                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-2 h-2 bg-[#D9534F] rounded-full"></div>
+                                        <span class="text-white">Footwear Design</span>
+            </div>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-2 h-2 bg-[#D9534F] rounded-full"></div>
+                                        <span class="text-white">Material Innovation</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-2 h-2 bg-[#D9534F] rounded-full"></div>
+                                        <span class="text-white">Concept Development</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-1 lg:order-2">
+                        <div class="relative">
+                            <div class="aspect-square bg-gradient-to-br from-[#D9534F] to-[#B8453C] rounded-2xl shadow-2xl flex items-center justify-center">
+                                <div class="text-center text-white p-8">
+                                    <div class="w-32 h-32 bg-white/20 rounded-full mx-auto mb-6 flex items-center justify-center">
+                                        <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                        </svg>
+                        </div>
+                                    <h3 class="text-2xl font-bold mb-2">Clarence Keith</h3>
+                                    <p class="text-lg opacity-90">Footwear Designer & 3D Artist</p>
+                        </div>
+                    </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Contact Page -->
+        <section id="contact" class="page-content">
+            <div class="w-full max-w-6xl mx-auto p-6 sm:p-8">
+                <div class="text-center mb-12">
+                    <h1 class="text-5xl font-bold tracking-tight mb-4 text-black">Get In Touch</h1>
+                    <p class="text-xl text-white max-w-2xl mx-auto">
+                        Ready to collaborate on your next footwear project? Let's discuss how we can bring your vision to life.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <!-- Contact Form -->
+                    <div class="bg-white rounded-2xl shadow-lg p-8">
+                        <h2 class="text-2xl font-bold mb-6 text-black">Send a Message</h2>
+                        <form id="contact-form" class="space-y-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                                <input type="text" id="name" name="name" required 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D9534F] focus:border-transparent transition-colors">
+                        </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                <input type="email" id="email" name="email" required 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D9534F] focus:border-transparent transition-colors">
+                        </div>
+                            <div>
+                                <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">Subject</label>
+                                <input type="text" id="subject" name="subject" required 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D9534F] focus:border-transparent transition-colors">
+                    </div>
+                            <div>
+                                <label for="message" class="block text-sm font-medium text-gray-700 mb-2">Message</label>
+                                <textarea id="message" name="message" rows="5" required 
+                                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D9534F] focus:border-transparent transition-colors resize-none"></textarea>
+                    </div>
+                            <button type="submit" 
+                                    class="w-full bg-[#D9534F] text-white py-3 rounded-lg font-semibold text-lg hover:bg-[#B8453C] transition-colors duration-300">
+                                Send Message
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="space-y-8">
+                        <div>
+                            <h2 class="text-2xl font-bold mb-6 text-black">Contact Information</h2>
+                            <div class="space-y-4">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-[#D9534F] rounded-full flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">Email</p>
+                                        <p class="text-gray-600">clarence@example.com</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-[#D9534F] rounded-full flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">Phone</p>
+                                        <p class="text-gray-600">+1 (555) 123-4567</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-[#D9534F] rounded-full flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">Location</p>
+                                        <p class="text-gray-600">New York, NY</p>
+                    </div>
+                </div>
+            </div>
+                        </div>
+
+                        <!-- Social Links -->
+                        <div>
+                            <h3 class="text-xl font-bold mb-4 text-black">Follow Me</h3>
+                            <div class="flex space-x-4">
+                                <a href="https://twitter.com/ckmdvs" target="_blank" rel="noopener noreferrer" class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center hover:bg-[#D9534F] hover:text-white transition-colors duration-300">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                                    </svg>
+                                </a>
+                                <a href="https://www.facebook.com/ckmdvs" target="_blank" rel="noopener noreferrer" class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center hover:bg-[#D9534F] hover:text-white transition-colors duration-300">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/>
+                                    </svg>
+                                </a>
+                                <a href="https://www.linkedin.com/in/ckmdvs" target="_blank" rel="noopener noreferrer" class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center hover:bg-[#D9534F] hover:text-white transition-colors duration-300">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                    </svg>
+                                </a>
+                                <a href="https://www.instagram.com/ck.mdvs/" target="_blank" rel="noopener noreferrer" class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center hover:bg-[#D9534F] hover:text-white transition-colors duration-300">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Fixed bottom marquee -->
+    <div class="marquee" aria-hidden="true">
+        <div class="marquee__track">
+            <div class="marquee__item">Some of my thoughts recently: People wear clothes like armor, not because they're cold but because they're scared of being seen for what they are, unfinished. Every thread says something about how far we've drifted from our own expression. Fashion started as protection, then communication, now it's performance. We forgot what we were trying to say. People talk about wanting authenticity, but no one really wants to be seen mid-process. We like the illusion of rawness, not the mess it takes to get there.</div>
+            <div class="marquee__item">Everything about life contradicts itself. We chase freedom through structure. We find identity in repetition. We call our screens a window to the world while the world keeps shrinking behind them. People want to escape systems but still need something to belong to. That's the joke, everything that frees us also traps us. We hate the artificial but live through it anyway. It's not fake, it's just another layer of survival. Pretending might be the only thing that keeps us human.</div>
+            <div class="marquee__item">Every invention feels like an echo. We build machines to talk for us, then forget what silence sounds like. We automate feeling, and it leaves us starving for the real thing. We keep trying to design empathy into the system, but maybe the system was never supposed to care. It's all theater, but that doesn't make it meaningless. It's still a stage where we can rehearse being alive, over and over, until it feels right again.</div>
+            <div class="marquee__item">I work inside that space, between art and survival, between code and soul. I'm not trying to fix the contradiction. I'm trying to live in it. The goal isn't harmony, it's awareness. To notice the glitch and still make something from it. To build a world that doesn't exist yet and remind myself that creation is the only honest way to lie. Every mask, every prototype, every render is proof that I'm still learning how to translate being into form.</div>
+            <!-- duplicate for seamless loop -->
+            <div class="marquee__item">Some of my thoughts recently: People wear clothes like armor, not because they're cold but because they're scared of being seen for what they are, unfinished. Every thread says something about how far we've drifted from our own expression. Fashion started as protection, then communication, now it's performance. We forgot what we were trying to say. People talk about wanting authenticity, but no one really wants to be seen mid-process. We like the illusion of rawness, not the mess it takes to get there.</div>
+            <div class="marquee__item">Everything about life contradicts itself. We chase freedom through structure. We find identity in repetition. We call our screens a window to the world while the world keeps shrinking behind them. People want to escape systems but still need something to belong to. That's the joke, everything that frees us also traps us. We hate the artificial but live through it anyway. It's not fake, it's just another layer of survival. Pretending might be the only thing that keeps us human.</div>
+            <div class="marquee__item">Every invention feels like an echo. We build machines to talk for us, then forget what silence sounds like. We automate feeling, and it leaves us starving for the real thing. We keep trying to design empathy into the system, but maybe the system was never supposed to care. It's all theater, but that doesn't make it meaningless. It's still a stage where we can rehearse being alive, over and over, until it feels right again.</div>
+            <div class="marquee__item">I work inside that space, between art and survival, between code and soul. I'm not trying to fix the contradiction. I'm trying to live in it. The goal isn't harmony, it's awareness. To notice the glitch and still make something from it. To build a world that doesn't exist yet and remind myself that creation is the only honest way to lie. Every mask, every prototype, every render is proof that I'm still learning how to translate being into form.</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('circle-container');
+            const mainContainer = document.getElementById('main-container');
+            
+            // PROJECTS CONFIGURATION - Easy to add/remove projects here
+            const projectsConfig = [
+                {
+                    id: 'project1',
+                    name: 'Footwear',
+                    tagline: 'Experimental Shoe Design Collection',
+                    date: 'Spring 2025',
+                    goal: 'A collection of experimental footwear designs exploring innovative forms, materials, and manufacturing techniques.',
+                    role: [
+                        'Lead Designer',
+                        '3D Modeling',
+                        'Material Research',
+                        'Prototype Development'
+                    ],
+                    skills: [
+                        '3D Printing',
+                        'Generative Design',
+                        'CAD Modeling',
+                        'Material Science',
+                        'Rapid Prototyping',
+                        'Design Iteration'
+                    ],
+                    lessons: [
+                        'Material selection critical for structural integrity',
+                        'Iterative testing improves final design',
+                        'User feedback drives meaningful improvements'
+                    ],
+                    circleImage: 'shoeimages/okshoes.png',
+                    mainImage: 'shoeimages/okshoes.png',
+                    thumbnails: [
+                        { src: 'shoeimages/okshoes.png', alt: 'Main View' },
+                        { src: 'shoeimages/okshoes (7).jpg', alt: 'Side View' },
+                        { src: 'shoeimages/okshoes (6).jpg', alt: 'Detail View' },
+                        { src: 'shoeimages/okshoes (1).mov', alt: 'Video' },
+                        { src: 'shoeimages/okshoes (3).jpg', alt: 'Alternative Angle' }
+                    ],
+                    projects: [
+                        {
+                            name: 'OK Shoes',
+                            description: 'Experimental red high-top design exploring sculptural forms and organic geometry.',
+                            images: [
+                                { src: 'shoeimages/okshoes.png', alt: 'Main View' },
+                                { src: 'shoeimages/okshoes (7).jpg', alt: 'Side View' },
+                                { src: 'shoeimages/okshoes (6).jpg', alt: 'Detail View' },
+                                { src: 'shoeimages/okshoes (1).mov', alt: 'Video' },
+                                { src: 'shoeimages/okshoes (3).jpg', alt: 'Alternative Angle' }
+                            ]
+                        },
+                        {
+                            name: 'Heel Boot Collection',
+                            description: 'A series of experimental heel boot designs pushing the boundaries of traditional footwear construction.',
+                            images: [
+                                { src: 'shoeimages/heel boot (8).png', alt: 'Main Design' },
+                                { src: 'shoeimages/heel boot (1).png', alt: 'Alternative View' },
+                                { src: 'shoeimages/heel boot (2).png', alt: 'Detail Shot' },
+                                { src: 'shoeimages/heel boot (3).png', alt: 'Side Profile' },
+                                { src: 'shoeimages/heel boot (4).png', alt: 'Construction Detail' },
+                                { src: 'shoeimages/heel boot sketches (1).png', alt: 'Design Sketch 1' },
+                                { src: 'shoeimages/heel boot sketches (2).png', alt: 'Design Sketch 2' },
+                                { src: 'shoeimages/heel boot sketches (3).png', alt: 'Design Sketch 3' }
+                            ]
+                        },
+                        {
+                            name: 'MyShoeBoot Series',
+                            description: 'Personal exploration of boot design combining functionality with avant-garde aesthetics.',
+                            images: [
+                                { src: 'shoeimages/MyShoeBoot Side View.png', alt: 'Side View' },
+                                { src: 'shoeimages/MyShoeBoot Front  View.png', alt: 'Front View' },
+                                { src: 'shoeimages/MyShoeBoot Quarter View.png', alt: 'Quarter View' },
+                                { src: 'shoeimages/MyShoeBoot Side View With My Last.png', alt: 'With Last' },
+                                { src: 'shoeimages/MyShoeBoot Top View With.png', alt: 'Top View' }
+                            ]
+                        },
+                        {
+                            name: 'TunsShoe Collection',
+                            description: 'Collaborative footwear design focusing on minimalist forms and clean lines.',
+                            images: [
+                                { src: 'shoeimages/TunsShoe Side View.png', alt: 'Side View' },
+                                { src: 'shoeimages/TunsShoe Front View.png', alt: 'Front View' },
+                                { src: 'shoeimages/TunsShoe Quarter View.png', alt: 'Quarter View' },
+                                { src: 'shoeimages/TunsShoe Side View With Last.png', alt: 'With Last' },
+                                { src: 'shoeimages/TunsShoe Top View.png', alt: 'Top View' }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: 'project2',
+                    name: 'Accessories',
+                    tagline: 'Experimental Wearable Objects',
+                    date: 'Fall 2024',
+                    goal: 'A collection of experimental accessories exploring the intersection of form, function, and personal expression through wearable design objects.',
+                    role: [
+                        'Concept Development',
+                        '3D Modeling & Sculpting',
+                        'Material Exploration',
+                        'Visual Design',
+                        'Photography & Rendering'
+                    ],
+                    skills: [
+                        '3D Sculpting',
+                        'Jewelry Design',
+                        'Concept Art',
+                        'Digital Rendering',
+                        'Form Exploration',
+                        'Visual Storytelling',
+                        'Photography',
+                        'Material Studies'
+                    ],
+                    lessons: [
+                        'Wearable objects require intimate understanding of human form',
+                        'Scale and proportion dramatically affect user experience',
+                        'Materials communicate beyond their physical properties'
+                    ],
+                    circleImage: 'accessoryimages/buldgeglasses (1).jpg',
+                    mainImage: 'accessoryimages/buldgeglasses (1).jpg',
+                    thumbnails: [
+                        { src: 'accessoryimages/buldgeglasses (1).jpg', alt: 'Buldge Glasses' },
+                        { src: 'accessoryimages/golden eye (1).jpg', alt: 'Golden Eye' },
+                        { src: 'accessoryimages/hands glasses (1).jpg', alt: 'Hands Glasses' },
+                        { src: 'accessoryimages/idchain (1).jpg', alt: 'ID Chain' },
+                        { src: 'accessoryimages/liquidy glasses (1).jpg', alt: 'Liquidy Glasses' },
+                        { src: 'accessoryimages/silvernecklace (1).jpg', alt: 'Silver Necklace' }
+                    ],
+                    projects: [
+                        {
+                            name: 'Buldge Glasses',
+                            description: 'Experimental eyewear exploring organic forms and unconventional proportions. These glasses challenge traditional notions of functionality while maintaining wearability.',
+                            images: [
+                                { src: 'accessoryimages/buldgeglasses (1).jpg', alt: 'Front View' },
+                                { src: 'accessoryimages/buldgeglasses (2).jpg', alt: 'Side Profile' },
+                                { src: 'accessoryimages/buldgeglasses (3).jpg', alt: 'Detail Shot' }
+                            ]
+                        },
+                        {
+                            name: 'Golden Eye',
+                            description: 'A sculptural piece that blurs the line between jewelry and art object. The golden eye motif explores themes of perception and identity.',
+                            images: [
+                                { src: 'accessoryimages/golden eye (1).jpg', alt: 'Main View' },
+                                { src: 'accessoryimages/golden eye (2).jpg', alt: 'Detail' },
+                                { src: 'accessoryimages/golden eye (3).jpg', alt: 'Alternative Angle' },
+                                { src: 'accessoryimages/golden eye (4).jpg', alt: 'Close-up' }
+                            ]
+                        },
+                        {
+                            name: 'Hands Glasses',
+                            description: 'Conceptual eyewear featuring hand motifs that explore themes of touch, vision, and human connection through wearable design.',
+                            images: [
+                                { src: 'accessoryimages/hands glasses (1).jpg', alt: 'Front View' },
+                                { src: 'accessoryimages/hands glasses (2).jpg', alt: 'Side View' },
+                                { src: 'accessoryimages/hands glasses (3).jpg', alt: 'Detail' },
+                                { src: 'accessoryimages/hands glasses (4).jpg', alt: 'Alternative Angle' }
+                            ]
+                        },
+                        {
+                            name: 'ID Chain',
+                            description: 'A comprehensive collection of chain designs exploring different textures, weights, and forms. Each piece represents a different aspect of personal identity.',
+                            images: [
+                                { src: 'accessoryimages/idchain (1).jpg', alt: 'Chain 1' },
+                                { src: 'accessoryimages/idchain (2).jpg', alt: 'Chain 2' },
+                                { src: 'accessoryimages/idchain (3).jpg', alt: 'Chain 3' },
+                                { src: 'accessoryimages/idchain (4).jpg', alt: 'Chain 4' },
+                                { src: 'accessoryimages/idchain (5).jpg', alt: 'Chain 5' },
+                                { src: 'accessoryimages/idchain (6).jpg', alt: 'Chain 6' },
+                                { src: 'accessoryimages/idchain (7).jpg', alt: 'Chain 7' },
+                                { src: 'accessoryimages/idchain (8).jpg', alt: 'Chain 8' },
+                                { src: 'accessoryimages/idchain (9).jpg', alt: 'Chain 9' }
+                            ]
+                        },
+                        {
+                            name: 'Liquidy Glasses',
+                            description: 'Fluid-inspired eyewear that captures the essence of movement and transformation. These glasses explore the relationship between solid form and liquid motion.',
+                            images: [
+                                { src: 'accessoryimages/liquidy glasses (1).jpg', alt: 'Main View' },
+                                { src: 'accessoryimages/liquidy glasses (2).jpg', alt: 'Side View' },
+                                { src: 'accessoryimages/liquidy glasses (3).jpg', alt: 'Detail' }
+                            ]
+                        },
+                        {
+                            name: 'Silver Necklace',
+                            description: 'Elegant silver necklace designs that balance minimalism with statement-making presence. Each piece explores different approaches to form and texture.',
+                            images: [
+                                { src: 'accessoryimages/silvernecklace (1).jpg', alt: 'Necklace 1' },
+                                { src: 'accessoryimages/silvernecklace (2).jpg', alt: 'Necklace 2' },
+                                { src: 'accessoryimages/silvernecklace (3).jpg', alt: 'Necklace 3' },
+                                { src: 'accessoryimages/silvernecklace (4).jpg', alt: 'Necklace 4' }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: 'project3',
+                    name: 'Masks',
+                    tagline: 'Experimental Face Coverings',
+                    date: 'Winter 2024',
+                    goal: 'A collection of experimental face coverings exploring identity, protection, and artistic expression through wearable sculpture.',
+                    role: [
+                        'Lead Designer',
+                        '3D Modeling',
+                        'Material Research',
+                        'Prototype Development',
+                        'Concept Development'
+                    ],
+                    skills: [
+                        '3D Printing',
+                        'Generative Design',
+                        'CAD Modeling',
+                        'Material Science',
+                        'Rapid Prototyping',
+                        'Design Iteration',
+                        'Sculptural Design'
+                    ],
+                    circleImage: 'maskimages/red mask (first mask) (1).webp',
+                    mainImage: 'maskimages/red mask (first mask) (1).webp',
+                    thumbnails: [
+                        { src: 'maskimages/red mask (first mask) (1).webp', alt: 'Red Mask 1' },
+                        { src: 'maskimages/red mask (first mask) (2).webp', alt: 'Red Mask 2' },
+                        { src: 'maskimages/red mask (first mask) (3).webp', alt: 'Red Mask 3' },
+                        { src: 'maskimages/red mask (first mask) (4).webp', alt: 'Red Mask 4' },
+                        { src: 'maskimages/red mask (first mask) (5).webp', alt: 'Red Mask 5' }
+                    ],
+                    projects: [
+                        {
+                            id: 'red-mask',
+                            name: 'Red Mask Collection',
+                            tagline: 'First Experimental Mask',
+                            date: 'Fall 2024',
+                            goal: 'Exploring the intersection of protection and identity through bold, sculptural forms.',
+                            role: [
+                                'Lead Designer',
+                                '3D Modeling',
+                                'Material Selection',
+                                'Prototype Testing'
+                            ],
+                            skills: [
+                                '3D Printing',
+                                'Generative Design',
+                                'CAD Modeling',
+                                'Material Science',
+                                'Rapid Prototyping'
+                            ],
+                            description: 'The first in the mask series, exploring bold geometric forms and the relationship between protection and identity.',
+                            mainImage: 'maskimages/red mask (first mask) (1).webp',
+                            thumbnails: [
+                                { src: 'maskimages/red mask (first mask) (1).webp', alt: 'Red Mask 1' },
+                                { src: 'maskimages/red mask (first mask) (2).webp', alt: 'Red Mask 2' },
+                                { src: 'maskimages/red mask (first mask) (3).webp', alt: 'Red Mask 3' },
+                                { src: 'maskimages/red mask (first mask) (4).webp', alt: 'Red Mask 4' },
+                                { src: 'maskimages/red mask (first mask) (5).webp', alt: 'Red Mask 5' }
+                            ]
+                        },
+                        {
+                            id: 'chrome-mask',
+                            name: 'Chrome Mask Collection',
+                            tagline: 'Reflective Identity',
+                            date: 'Winter 2024',
+                            goal: 'Investigating the concept of reflection and distortion through metallic surfaces and organic forms.',
+                            role: [
+                                'Lead Designer',
+                                '3D Modeling',
+                                'Surface Treatment',
+                                'Photography Direction'
+                            ],
+                            skills: [
+                                '3D Printing',
+                                'Surface Finishing',
+                                'CAD Modeling',
+                                'Material Science',
+                                'Photography',
+                                'Lighting Design'
+                            ],
+                            description: 'A series exploring reflective surfaces and the distortion of identity through metallic finishes and organic shapes.',
+                            mainImage: 'maskimages/chrome masks for ok.webp',
+                            thumbnails: [
+                                { src: 'maskimages/chrome masks for ok.webp', alt: 'Chrome Mask Main' },
+                                { src: 'maskimages/chrome masks for ok (1).webp', alt: 'Chrome Mask 1' },
+                                { src: 'maskimages/chrome masks for ok (2).webp', alt: 'Chrome Mask 2' },
+                                { src: 'maskimages/chrome masks for ok (3).webp', alt: 'Chrome Mask 3' },
+                                { src: 'maskimages/chrome masks for ok (4).webp', alt: 'Chrome Mask 4' },
+                                { src: 'maskimages/chrome masks for ok (5).webp', alt: 'Chrome Mask 5' },
+                                { src: 'maskimages/chrome masks for ok (6).webp', alt: 'Chrome Mask 6' },
+                                { src: 'maskimages/chrome masks for ok (7).webp', alt: 'Chrome Mask 7' }
+                            ]
+                        },
+                        {
+                            id: 'hamsa-mask',
+                            name: 'Hamsa Mask Collection',
+                            tagline: 'Symbolic Protection',
+                            date: 'Spring 2025',
+                            goal: 'Integrating cultural symbolism with contemporary design through the protective Hamsa symbol.',
+                            role: [
+                                'Lead Designer',
+                                'Cultural Research',
+                                '3D Modeling',
+                                'Symbol Integration'
+                            ],
+                            skills: [
+                                '3D Printing',
+                                'Cultural Design',
+                                'CAD Modeling',
+                                'Symbolic Design',
+                                'Material Science',
+                                'Prototype Development'
+                            ],
+                            description: 'A collection that merges the protective symbolism of the Hamsa with modern sculptural forms and contemporary materials.',
+                            mainImage: 'maskimages/hamsa (1).webp',
+                            thumbnails: [
+                                { src: 'maskimages/hamsa (1).webp', alt: 'Hamsa Mask 1' },
+                                { src: 'maskimages/hamsa (2).webp', alt: 'Hamsa Mask 2' },
+                                { src: 'maskimages/hamsa (3).webp', alt: 'Hamsa Mask 3' },
+                                { src: 'maskimages/hamsa (4).webp', alt: 'Hamsa Mask 4' },
+                                { src: 'maskimages/hamsa (5).webp', alt: 'Hamsa Mask 5' },
+                                { src: 'maskimages/hamsa (6).webp', alt: 'Hamsa Mask 6' }
+                            ]
+                        },
+                        {
+                            id: 'blackeye-mask',
+                            name: 'Black Eye Mask Collection',
+                            tagline: 'Minimalist Expression',
+                            date: 'Summer 2025',
+                            goal: 'Exploring minimalism and negative space through simple, powerful forms.',
+                            role: [
+                                'Lead Designer',
+                                'Minimalist Design',
+                                '3D Modeling',
+                                'Form Simplification'
+                            ],
+                            skills: [
+                                '3D Printing',
+                                'Minimalist Design',
+                                'CAD Modeling',
+                                'Form Reduction',
+                                'Material Science',
+                                'Negative Space Design'
+                            ],
+                            description: 'A minimalist approach to mask design, focusing on essential forms and the power of negative space.',
+                            mainImage: 'maskimages/blackeye (1).webp',
+                            thumbnails: [
+                                { src: 'maskimages/blackeye (1).webp', alt: 'Black Eye Mask 1' },
+                                { src: 'maskimages/blackeye (2).webp', alt: 'Black Eye Mask 2' },
+                                { src: 'maskimages/blackeye (3).webp', alt: 'Black Eye Mask 3' },
+                                { src: 'maskimages/blackeye (4).webp', alt: 'Black Eye Mask 4' }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: 'about',
+                    name: 'About Me',
+                    tagline: 'Personal Information',
+                    date: '',
+                    goal: 'Learn more about my background, skills, and expertise in footwear design and 3D art.',
+                    role: [],
+                    skills: [],
+                    lessons: [],
+                    circleImage: 'meimages/Mehead.png',
+                    mainImage: 'meimages/Mehead.png',
+                    thumbnails: [
+                        { src: 'meimages/Mehead.png', alt: 'Profile Photo' }
+                    ]
+                }
+            ];
+            
+            const circles = [];
+            let radius = 0;
+            let isSplitLayout = false;
+
+            function showPage(targetId) {
+                console.log('showPage called with:', targetId, 'isSplitLayout:', isSplitLayout);
+                
+                // Hide all pages
+                document.querySelectorAll('.page-content').forEach(page => {
+                    page.classList.remove('active');
+                });
+
+                if (targetId === 'home') {
+                    // Return to home layout
+                    if (isSplitLayout) {
+                        returnToHomeLayout();
+                    }
+                    document.getElementById('home').classList.add('active');
+                } else if (isProjectPage(targetId)) {
+                    // Show project in split layout
+                    console.log('Showing project page:', targetId);
+                    if (!isSplitLayout) {
+                        console.log('Creating split layout');
+                        createSplitLayout();
+                    }
+                    displayProjectInSplitLayout(targetId);
+                } else {
+                    // Other pages (about, contact) - full screen
+                    if (isSplitLayout) {
+                        returnToHomeLayout();
+                    }
+                    document.getElementById(targetId).classList.add('active');
+                }
+                
+                window.scrollTo(0, 0);
+            }
+            
+            function isProjectPage(targetId) {
+                return projectsConfig.some(project => project.id === targetId);
+            }
+
+            function createSplitLayout() {
+                isSplitLayout = true;
+                
+                // Create split layout structure
+                const splitLayout = document.createElement('div');
+                splitLayout.className = 'split-layout';
+                splitLayout.id = 'split-layout';
+                
+                // Create circles sidebar
+                const circlesSidebar = document.createElement('div');
+                circlesSidebar.className = 'circles-sidebar';
+                circlesSidebar.id = 'circles-sidebar';
+                
+                // Create project content area
+                const projectContent = document.createElement('div');
+                projectContent.className = 'project-content';
+                projectContent.id = 'project-content';
+                
+                // Move circles to sidebar
+                const circlesContainer = document.createElement('div');
+                circlesContainer.className = 'flex flex-col items-center space-y-4';
+                
+                projectsConfig.forEach((project, index) => {
+                    // Create new circle element for sidebar
+                    const circleLink = document.createElement('a');
+                    circleLink.dataset.target = project.id;
+                    circleLink.classList.add('nav-link');
+                    
+                    const circleEl = document.createElement('div');
+                    circleEl.classList.add('portfolio-circle');
+                    circleEl.style.width = '60px';
+                    circleEl.style.height = '60px';
+                    circleEl.style.position = 'relative';
+                    circleEl.style.top = 'auto';
+                    circleEl.style.left = 'auto';
+                    circleEl.style.transform = 'none';
+                    circleEl.style.margin = '0.75rem 0';
+                    circleEl.style.border = '3px solid #FEFDEE';
+                    circleEl.style.backgroundImage = `url('${project.circleImage}')`;
+                    
+                    circleLink.appendChild(circleEl);
+                    
+                    // Add click handler
+                    circleLink.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        console.log('Circle clicked in sidebar:', project.id);
+                        showPage(project.id);
+                    });
+                    
+                    circlesContainer.appendChild(circleLink);
+                });
+                
+                circlesSidebar.appendChild(circlesContainer);
+                splitLayout.appendChild(circlesSidebar);
+                splitLayout.appendChild(projectContent);
+                
+                // Replace main content
+                mainContainer.innerHTML = '';
+                mainContainer.appendChild(splitLayout);
+            }
+
+            function displayProjectInSplitLayout(projectId) {
+                const projectContent = document.getElementById('project-content');
+                if (!projectContent) {
+                    console.error('Project content container not found');
+                    return;
+                }
+                
+                // Find the project configuration
+                const project = projectsConfig.find(p => p.id === projectId);
+                if (!project) {
+                    console.error('Project not found in configuration:', projectId);
+                    return;
+                }
+                
+                console.log('Displaying project:', project.name);
+                
+                // Completely clear project content
+                projectContent.innerHTML = '';
+                
+                // Add back button at the top
+                const backButton = document.createElement('button');
+                backButton.className = 'mb-4 flex items-center space-x-2 text-gray-600 hover:text-[#D9534F] transition-colors duration-300 nav-link';
+                backButton.setAttribute('data-target', 'home');
+                backButton.innerHTML = `
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    <span>Back to Portfolio</span>
+                `;
+                projectContent.appendChild(backButton);
+                
+                // Generate project content dynamically
+                let projectSection;
+                if (project.id === 'about') {
+                    projectSection = generateAboutContent();
+                } else {
+                    projectSection = generateProjectContent(project);
+                }
+                projectContent.appendChild(projectSection);
+                
+                // Attach thumbnail click handlers
+                attachThumbnailHandlers(projectContent);
+                
+                // Force a reflow to ensure content is visible
+                projectContent.offsetHeight;
+            }
+            
+            function generateProjectContent(project) {
+                const section = document.createElement('section');
+                section.className = 'active';
+                section.id = project.id;
+                
+                const container = document.createElement('div');
+                container.className = 'w-full max-w-7xl mx-auto p-4';
+                
+                // Check if this project has multiple sub-projects
+                if (project.projects && project.projects.length > 0) {
+                    // Create a scrollable container for multiple projects
+                    const scrollContainer = document.createElement('div');
+                    scrollContainer.className = 'space-y-20';
+                    
+                    // Add main project header
+                    const headerSection = document.createElement('div');
+                    headerSection.className = 'text-center mb-16';
+                    
+                    const title = document.createElement('h1');
+                    title.className = 'text-5xl font-bold tracking-tight text-black mb-6';
+                    title.textContent = project.name;
+                    
+                    const tagline = document.createElement('p');
+                    tagline.className = 'text-2xl text-white mb-8';
+                    tagline.textContent = project.tagline;
+                    
+                    const goal = document.createElement('p');
+                    goal.className = 'text-lg text-white max-w-4xl mx-auto leading-relaxed';
+                    goal.textContent = project.goal;
+                    
+                    headerSection.appendChild(title);
+                    headerSection.appendChild(tagline);
+                    headerSection.appendChild(goal);
+                    scrollContainer.appendChild(headerSection);
+                    
+                    // Create full product pages for each sub-project
+                    project.projects.forEach((subProject, index) => {
+                        const projectSection = document.createElement('div');
+                        projectSection.className = 'border-t-2 border-gray-400 pt-16';
+                        
+                        // Create the same grid layout as individual projects
+                        const grid = document.createElement('div');
+                        grid.className = 'grid grid-cols-1 lg:grid-cols-2 gap-12';
+                        
+                        // Image gallery section (left side)
+                        const imageSection = document.createElement('div');
+                        imageSection.className = 'flex flex-col-reverse sm:flex-row gap-4 image-section';
+                        
+                        // Thumbnails container
+                        const thumbnailsContainer = document.createElement('div');
+                        thumbnailsContainer.className = 'flex sm:flex-col gap-3 overflow-x-auto sm:overflow-y-auto pr-2';
+                        
+                        subProject.images.forEach((image, imgIndex) => {
+                            const isVideo = image.src.toLowerCase().includes('.mov') || image.src.toLowerCase().includes('.mp4') || image.src.toLowerCase().includes('.webm');
+                            
+                            if (isVideo) {
+                                const video = document.createElement('video');
+                                video.src = image.src;
+                                video.alt = image.alt;
+                                video.className = `thumbnail w-20 h-20 object-cover rounded-md ${imgIndex === 0 ? 'active' : ''}`;
+                                video.controls = false;
+                                video.muted = true;
+                                video.loop = true;
+                                video.preload = 'metadata';
+                                thumbnailsContainer.appendChild(video);
+                            } else {
+                                const img = document.createElement('img');
+                                img.src = image.src;
+                                img.alt = image.alt;
+                                img.className = `thumbnail w-20 h-20 object-cover rounded-md ${imgIndex === 0 ? 'active' : ''}`;
+                                thumbnailsContainer.appendChild(img);
+                            }
+                        });
+                        
+                        // Main image container
+                        const mainImageContainer = document.createElement('div');
+                        mainImageContainer.className = 'flex-1';
+                        
+                        const firstMedia = subProject.images[0];
+                        const isFirstVideo = firstMedia.src.toLowerCase().includes('.mov') || firstMedia.src.toLowerCase().includes('.mp4') || firstMedia.src.toLowerCase().includes('.webm');
+                        
+                        if (isFirstVideo) {
+                            const mainVideo = document.createElement('video');
+                            mainVideo.src = firstMedia.src;
+                            mainVideo.alt = subProject.name;
+                            mainVideo.setAttribute('data-main-image', subProject.name.toLowerCase().replace(/\s+/g, '-'));
+                            mainVideo.className = 'w-full h-auto object-cover rounded-lg shadow-lg';
+                            mainVideo.controls = true;
+                            mainVideo.muted = false;
+                            mainVideo.loop = false;
+                            mainImageContainer.appendChild(mainVideo);
+                        } else {
+                            const mainImage = document.createElement('img');
+                            mainImage.src = firstMedia.src;
+                            mainImage.alt = subProject.name;
+                            mainImage.setAttribute('data-main-image', subProject.name.toLowerCase().replace(/\s+/g, '-'));
+                            mainImage.className = 'w-full h-auto object-cover rounded-lg shadow-lg';
+                            mainImageContainer.appendChild(mainImage);
+                        }
+                        
+                        imageSection.appendChild(thumbnailsContainer);
+                        imageSection.appendChild(mainImageContainer);
+                        
+                        // Project details section (right side)
+                        const detailsSection = document.createElement('div');
+                        detailsSection.className = 'flex flex-col space-y-6 details-section';
+                        
+                        // 1) Header
+                        const headerSection = document.createElement('div');
+                        headerSection.className = 'space-y-2';
+                        
+                        const projectTitle = document.createElement('h2');
+                        projectTitle.className = 'text-4xl font-bold tracking-tight text-black';
+                        projectTitle.textContent = subProject.name;
+                        
+                        const projectTagline = document.createElement('p');
+                        projectTagline.className = 'text-lg text-white font-medium';
+                        projectTagline.textContent = subProject.description;
+                        
+                        headerSection.appendChild(projectTitle);
+                        headerSection.appendChild(projectTagline);
+                        
+                        // 2) Date
+                        const dateSection = document.createElement('div');
+                        dateSection.className = 'space-y-1';
+                        
+                        const date = document.createElement('p');
+                        date.className = 'text-base text-white';
+                        date.textContent = project.date;
+                        
+                        dateSection.appendChild(date);
+                        
+                        // 3) Description
+                        const descriptionSection = document.createElement('div');
+                        descriptionSection.className = 'space-y-2';
+                        
+                        const descriptionLabel = document.createElement('h3');
+                        descriptionLabel.className = 'text-lg font-bold text-black';
+                        descriptionLabel.textContent = 'Description:';
+                        
+                        const descriptionText = document.createElement('p');
+                        descriptionText.className = 'text-white leading-relaxed';
+                        descriptionText.textContent = subProject.description;
+                        
+                        descriptionSection.appendChild(descriptionLabel);
+                        descriptionSection.appendChild(descriptionText);
+                        
+                        // 4) Lists Section
+                        const listsSection = document.createElement('div');
+                        listsSection.className = 'space-y-6';
+                        
+                        // Role
+                        const roleSection = document.createElement('div');
+                        roleSection.className = 'space-y-2';
+                        
+                        const roleLabel = document.createElement('h3');
+                        roleLabel.className = 'text-lg font-bold text-black';
+                        roleLabel.textContent = 'Role';
+                        
+                        const roleList = document.createElement('ul');
+                        roleList.className = 'space-y-1 text-white';
+                        project.role.forEach(role => {
+                            const li = document.createElement('li');
+                            li.textContent = `• ${role}`;
+                            roleList.appendChild(li);
+                        });
+                        
+                        roleSection.appendChild(roleLabel);
+                        roleSection.appendChild(roleList);
+                        
+                        // Skills
+                        const skillsSection = document.createElement('div');
+                        skillsSection.className = 'space-y-2';
+                        
+                        const skillsLabel = document.createElement('h3');
+                        skillsLabel.className = 'text-lg font-bold text-black';
+                        skillsLabel.textContent = 'Skills';
+                        
+                        const skillsList = document.createElement('ul');
+                        skillsList.className = 'space-y-1 text-white';
+                        project.skills.forEach(skill => {
+                            const li = document.createElement('li');
+                            li.textContent = `• ${skill}`;
+                            skillsList.appendChild(li);
+                        });
+                        
+                        skillsSection.appendChild(skillsLabel);
+                        skillsSection.appendChild(skillsList);
+                        
+                        // Assemble lists section
+                        listsSection.appendChild(roleSection);
+                        listsSection.appendChild(skillsSection);
+                        
+                        // Assemble details section
+                        detailsSection.appendChild(headerSection);
+                        detailsSection.appendChild(dateSection);
+                        detailsSection.appendChild(descriptionSection);
+                        detailsSection.appendChild(listsSection);
+                        
+                        // Assemble grid
+                        grid.appendChild(imageSection);
+                        grid.appendChild(detailsSection);
+                        
+                        projectSection.appendChild(grid);
+                        scrollContainer.appendChild(projectSection);
+                    });
+                    
+                    container.appendChild(scrollContainer);
+                    section.appendChild(container);
+                    return section;
+                }
+                
+                // Original single project layout
+                const grid = document.createElement('div');
+                grid.className = 'grid grid-cols-1 lg:grid-cols-2 gap-8';
+                
+                // Image gallery section
+                const imageSection = document.createElement('div');
+                imageSection.className = 'flex flex-col-reverse sm:flex-row gap-4 image-section';
+                
+                // Thumbnails container
+                const thumbnailsContainer = document.createElement('div');
+                thumbnailsContainer.className = 'flex sm:flex-col gap-3 overflow-x-auto sm:overflow-y-auto pr-2';
+                
+                project.thumbnails.forEach((thumb, index) => {
+                    const img = document.createElement('img');
+                    img.src = thumb.src;
+                    img.alt = thumb.alt;
+                    img.className = `thumbnail w-20 h-20 object-cover rounded-md ${index === 0 ? 'active' : ''}`;
+                    thumbnailsContainer.appendChild(img);
+                });
+                
+                // Main image container
+                const mainImageContainer = document.createElement('div');
+                mainImageContainer.className = 'flex-1';
+                
+                const mainImage = document.createElement('img');
+                mainImage.src = project.mainImage;
+                mainImage.alt = project.name;
+                mainImage.setAttribute('data-main-image', project.id);
+                mainImage.className = 'w-full h-auto object-cover rounded-lg shadow-lg';
+                mainImageContainer.appendChild(mainImage);
+                
+                imageSection.appendChild(thumbnailsContainer);
+                imageSection.appendChild(mainImageContainer);
+                
+                // Project details section with new structure
+                const detailsSection = document.createElement('div');
+                detailsSection.className = 'flex flex-col space-y-6 details-section';
+                
+                // 1) Header
+                const headerSection = document.createElement('div');
+                headerSection.className = 'space-y-2';
+                
+                const title = document.createElement('h1');
+                title.className = 'text-3xl font-bold tracking-tight text-black';
+                title.textContent = project.name;
+                
+                const tagline = document.createElement('p');
+                tagline.className = 'text-lg text-white font-medium';
+                tagline.textContent = project.tagline;
+                
+                headerSection.appendChild(title);
+                headerSection.appendChild(tagline);
+                
+                // 2) Date
+                const dateSection = document.createElement('div');
+                dateSection.className = 'space-y-1';
+                
+                const date = document.createElement('p');
+                date.className = 'text-base text-white';
+                date.textContent = project.date;
+                
+                dateSection.appendChild(date);
+                
+                // 3) Goal
+                const goalSection = document.createElement('div');
+                goalSection.className = 'space-y-2';
+                
+                const goalLabel = document.createElement('h3');
+                goalLabel.className = 'text-lg font-bold text-black';
+                goalLabel.textContent = 'Goal:';
+                
+                const goalText = document.createElement('p');
+                goalText.className = 'text-white leading-relaxed';
+                goalText.textContent = project.goal;
+                
+                goalSection.appendChild(goalLabel);
+                goalSection.appendChild(goalText);
+                
+                // 4) Lists Section
+                const listsSection = document.createElement('div');
+                listsSection.className = 'space-y-6';
+                
+                // Role
+                const roleSection = document.createElement('div');
+                roleSection.className = 'space-y-2';
+                
+                const roleLabel = document.createElement('h3');
+                roleLabel.className = 'text-lg font-bold text-black';
+                roleLabel.textContent = 'Role';
+                
+                const roleList = document.createElement('ul');
+                roleList.className = 'space-y-1 text-white';
+                project.role.forEach(role => {
+                    const li = document.createElement('li');
+                    li.textContent = `• ${role}`;
+                    roleList.appendChild(li);
+                });
+                
+                roleSection.appendChild(roleLabel);
+                roleSection.appendChild(roleList);
+                
+                // Skills
+                const skillsSection = document.createElement('div');
+                skillsSection.className = 'space-y-2';
+                
+                const skillsLabel = document.createElement('h3');
+                skillsLabel.className = 'text-lg font-bold text-black';
+                skillsLabel.textContent = 'Skills';
+                
+                const skillsList = document.createElement('ul');
+                skillsList.className = 'space-y-1 text-white';
+                project.skills.forEach(skill => {
+                    const li = document.createElement('li');
+                    li.textContent = `• ${skill}`;
+                    skillsList.appendChild(li);
+                });
+                
+                skillsSection.appendChild(skillsLabel);
+                skillsSection.appendChild(skillsList);
+                
+                // Lessons Learned
+                const lessonsSection = document.createElement('div');
+                lessonsSection.className = 'space-y-2';
+                
+                const lessonsLabel = document.createElement('h3');
+                lessonsLabel.className = 'text-lg font-bold text-black';
+                lessonsLabel.textContent = 'Lessons Learned';
+                
+                const lessonsList = document.createElement('ul');
+                lessonsList.className = 'space-y-1 text-white';
+                project.lessons.forEach(lesson => {
+                    const li = document.createElement('li');
+                    li.textContent = `• ${lesson}`;
+                    lessonsList.appendChild(li);
+                });
+                
+                lessonsSection.appendChild(lessonsLabel);
+                lessonsSection.appendChild(lessonsList);
+                
+                // Assemble lists section
+                listsSection.appendChild(roleSection);
+                listsSection.appendChild(skillsSection);
+                listsSection.appendChild(lessonsSection);
+                
+                // Assemble details section
+                detailsSection.appendChild(headerSection);
+                detailsSection.appendChild(dateSection);
+                detailsSection.appendChild(goalSection);
+                detailsSection.appendChild(listsSection);
+                
+                grid.appendChild(imageSection);
+                grid.appendChild(detailsSection);
+                container.appendChild(grid);
+                section.appendChild(container);
+                
+                return section;
+            }
+            
+            function generateAboutContent() {
+                const section = document.createElement('section');
+                section.className = 'active';
+                section.id = 'about';
+                
+                const container = document.createElement('div');
+                container.className = 'w-full max-w-6xl mx-auto p-4';
+                
+                const grid = document.createElement('div');
+                grid.className = 'grid grid-cols-1 lg:grid-cols-2 gap-6 items-center';
+                
+                // Left side - About content
+                const aboutContent = document.createElement('div');
+                aboutContent.className = 'order-2 lg:order-1';
+                
+                const title = document.createElement('h1');
+                title.className = 'text-4xl font-bold tracking-tight mb-4 text-black';
+                title.textContent = 'About Me';
+                
+                const description1 = document.createElement('p');
+                description1.className = 'text-white leading-relaxed mb-4';
+                description1.textContent = "I'm Clarence Keith, a passionate footwear biggie smalls and 3D artist specializing in experimental design and additive manufacturing. My work explores the intersection of traditional craftsmanship and cutting-edge technology.";
+                
+                const description2 = document.createElement('p');
+                description2.className = 'text-white leading-relaxed mb-4';
+                description2.textContent = "With a background in industrial design and a fascination for generative design principles, I create footwear that challenges conventional form while maintaining functionality and aesthetic appeal.";
+                
+                const description3 = document.createElement('p');
+                description3.className = 'text-white leading-relaxed mb-6';
+                description3.textContent = "Each piece in my portfolio represents a unique exploration of materials, form, and manufacturing processes, pushing the boundaries of what's possible in contemporary footwear design.";
+                
+                // Thoughts button
+                const thoughtsButton = document.createElement('button');
+                thoughtsButton.id = 'thoughts-button';
+                thoughtsButton.className = 'mb-6 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors duration-300 text-sm';
+                thoughtsButton.textContent = 'Click if you\'d like to read some of my thoughts recently';
+                
+                // Skills section
+                const skillsTitle = document.createElement('h3');
+                skillsTitle.className = 'text-2xl font-bold mb-4 text-black';
+                skillsTitle.textContent = 'Skills & Expertise';
+                
+                const skillsGrid = document.createElement('div');
+                skillsGrid.className = 'grid grid-cols-2 gap-4';
+                
+                const skillsLeft = document.createElement('div');
+                skillsLeft.className = 'space-y-2';
+                const skillsRight = document.createElement('div');
+                skillsRight.className = 'space-y-2';
+                
+                const skills = [
+                    '3D Modeling & Rendering',
+                    'Generative Design',
+                    'Additive Manufacturing',
+                    'Footwear Design',
+                    'Material Innovation',
+                    'Concept Development'
+                ];
+                
+                skills.forEach((skill, index) => {
+                    const skillDiv = document.createElement('div');
+                    skillDiv.className = 'flex items-center space-x-2';
+                    
+                    const dot = document.createElement('div');
+                    dot.className = 'w-2 h-2 bg-[#D9534F] rounded-full';
+                    
+                    const skillText = document.createElement('span');
+                    skillText.className = 'text-white';
+                    skillText.textContent = skill;
+                    
+                    skillDiv.appendChild(dot);
+                    skillDiv.appendChild(skillText);
+                    
+                    if (index < 3) {
+                        skillsLeft.appendChild(skillDiv);
+                    } else {
+                        skillsRight.appendChild(skillDiv);
+                    }
+                });
+                
+                skillsGrid.appendChild(skillsLeft);
+                skillsGrid.appendChild(skillsRight);
+                
+                aboutContent.appendChild(title);
+                aboutContent.appendChild(description1);
+                aboutContent.appendChild(description2);
+                aboutContent.appendChild(description3);
+                aboutContent.appendChild(thoughtsButton);
+                aboutContent.appendChild(skillsTitle);
+                aboutContent.appendChild(skillsGrid);
+                
+                // Right side - Profile image
+                const profileSection = document.createElement('div');
+                profileSection.className = 'order-1 lg:order-2';
+                
+                const profileContainer = document.createElement('div');
+                profileContainer.className = 'relative';
+                
+                const profileImage = document.createElement('div');
+                profileImage.className = 'aspect-square bg-gradient-to-br from-[#D9534F] to-[#B8453C] rounded-2xl shadow-2xl flex items-center justify-center';
+                
+                const profileContent = document.createElement('div');
+                profileContent.className = 'text-center text-white p-8';
+                
+                const profileIcon = document.createElement('div');
+                profileIcon.className = 'w-32 h-32 bg-white/20 rounded-full mx-auto mb-6 flex items-center justify-center';
+                
+                const profileImg = document.createElement('img');
+                profileImg.src = 'meimages/Mehead.png';
+                profileImg.alt = 'Clarence Keith';
+                profileImg.className = 'w-24 h-24 rounded-full object-cover';
+                
+                const profileName = document.createElement('h3');
+                profileName.className = 'text-2xl font-bold mb-2 text-black';
+                profileName.textContent = 'Clarence Keith';
+                
+                const profileTitle = document.createElement('p');
+                profileTitle.className = 'text-lg opacity-90 text-white';
+                profileTitle.textContent = 'designer';
+                
+                profileIcon.appendChild(profileImg);
+                profileContent.appendChild(profileIcon);
+                profileContent.appendChild(profileName);
+                profileContent.appendChild(profileTitle);
+                profileImage.appendChild(profileContent);
+                profileContainer.appendChild(profileImage);
+                profileSection.appendChild(profileContainer);
+                
+                grid.appendChild(aboutContent);
+                grid.appendChild(profileSection);
+                container.appendChild(grid);
+                section.appendChild(container);
+                
+                return section;
+            }
+            
+            function attachThumbnailHandlers(container) {
+                const thumbnails = container.querySelectorAll('.thumbnail');
+                thumbnails.forEach(thumb => {
+                    thumb.addEventListener('click', (e) => {
+                        const clickedThumb = e.target;
+                        // Find the closest project section (either single project or sub-project)
+                        const projectSection = clickedThumb.closest('.border-t-2, .page-content, .active');
+                        const mainMedia = projectSection.querySelector(`[data-main-image]`);
+                        
+                        if (mainMedia) {
+                            const isVideo = clickedThumb.tagName === 'VIDEO';
+                            const isMainVideo = mainMedia.tagName === 'VIDEO';
+                            
+                            if (isVideo && isMainVideo) {
+                                // Both are videos, just change src
+                                mainMedia.src = clickedThumb.src;
+                            } else if (isVideo && !isMainVideo) {
+                                // Thumbnail is video, main is image - replace with video
+                                const newVideo = document.createElement('video');
+                                newVideo.src = clickedThumb.src;
+                                newVideo.alt = clickedThumb.alt;
+                                newVideo.className = mainMedia.className;
+                                newVideo.setAttribute('data-main-image', mainMedia.getAttribute('data-main-image'));
+                                newVideo.controls = true;
+                                newVideo.muted = false;
+                                newVideo.loop = false;
+                                mainMedia.parentNode.replaceChild(newVideo, mainMedia);
+                            } else if (!isVideo && isMainVideo) {
+                                // Thumbnail is image, main is video - replace with image
+                                const newImg = document.createElement('img');
+                                newImg.src = clickedThumb.src;
+                                newImg.alt = clickedThumb.alt;
+                                newImg.className = mainMedia.className;
+                                newImg.setAttribute('data-main-image', mainMedia.getAttribute('data-main-image'));
+                                mainMedia.parentNode.replaceChild(newImg, mainMedia);
+                            } else {
+                                // Both are images, just change src
+                                mainMedia.src = clickedThumb.src;
+                            }
+                        }
+
+                        // Update active state for thumbnails within the same project section
+                        projectSection.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+                        clickedThumb.classList.add('active');
+                    });
+                });
+            }
+
+            function returnToHomeLayout() {
+                isSplitLayout = false;
+                
+                mainContainer.innerHTML = `
+                    <section id="home" class="page-content active h-full flex items-center justify-center relative">
+                        <div id="circle-container">
+                            <!-- Circles will be dynamically generated by JavaScript here -->
+                        </div>
+                    </section>
+                `;
+                
+                // Re-setup circles
+                setupCircles();
+            }
+
+            function setupCircles() {
+                const container = document.getElementById('circle-container');
+                if (!container) {
+                    console.error('Circle container not found');
+                    return;
+                }
+                
+                console.log('Setting up circles for', projectsConfig.length, 'projects');
+                container.innerHTML = '';
+                circles.length = 0;
+                const containerRect = container.getBoundingClientRect();
+                const containerSize = Math.min(containerRect.width, containerRect.height);
+                const isMobile = window.innerWidth <= 768;
+                
+                if (isMobile) {
+                    // Mobile layout - horizontal arrangement
+                    const circleSize = Math.min(containerSize * 0.15, 80);
+                    
+                    projectsConfig.forEach((project, i) => {
+                        // Create wrapper for circle and label
+                        const circleWrapper = document.createElement('div');
+                        circleWrapper.style.display = 'flex';
+                        circleWrapper.style.flexDirection = 'column';
+                        circleWrapper.style.alignItems = 'center';
+                        circleWrapper.style.gap = '8px';
+                        
+                        const circleLink = document.createElement('a');
+                        circleLink.dataset.target = project.id;
+                        circleLink.classList.add('nav-link');
+                        
+                        const circleEl = document.createElement('div');
+                        circleEl.classList.add('portfolio-circle');
+                        circleEl.style.width = `${circleSize}px`;
+                        circleEl.style.height = `${circleSize}px`;
+                        circleEl.style.backgroundImage = `url('${project.circleImage}')`;
+                        circleEl.style.position = 'relative';
+                        circleEl.style.top = 'auto';
+                        circleEl.style.left = 'auto';
+                        circleEl.style.transform = 'none';
+                        circleEl.style.margin = '0';
+                        
+                        // Create label
+                        const label = document.createElement('div');
+                        label.classList.add('circle-label');
+                        label.textContent = project.name;
+                        label.style.color = '#333';
+                        label.style.fontSize = '12px';
+                        label.style.fontWeight = '500';
+                        label.style.textAlign = 'center';
+                        label.style.transition = 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)';
+                        label.style.opacity = '0.8';
+                        label.style.maxWidth = `${circleSize + 20}px`;
+                        label.style.wordWrap = 'break-word';
+                        
+                        circleLink.appendChild(circleEl);
+                        circleWrapper.appendChild(circleLink);
+                        circleWrapper.appendChild(label);
+                        container.appendChild(circleWrapper);
+                        circles.push(circleEl);
+                    });
+                } else {
+                    // Desktop layout - triangular arrangement
+                radius = containerSize * 0.25;
+                const circleSize = containerSize * 0.2;
+                    const positions = generateCirclePositions(projectsConfig.length);
+
+                    projectsConfig.forEach((project, i) => {
+                        const pos = positions[i];
+                    if (!pos) return;
+                    const x = pos.x * radius;
+                    const y = pos.y * radius;
+                    
+                    // Create wrapper for circle and label
+                    const circleWrapper = document.createElement('div');
+                    circleWrapper.style.position = 'absolute';
+                    circleWrapper.style.top = '50%';
+                    circleWrapper.style.left = '50%';
+                    circleWrapper.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
+                    circleWrapper.style.display = 'flex';
+                    circleWrapper.style.flexDirection = 'column';
+                    circleWrapper.style.alignItems = 'center';
+                    circleWrapper.style.gap = '12px';
+                    
+                    const circleLink = document.createElement('a');
+                        circleLink.dataset.target = project.id;
+                    circleLink.classList.add('nav-link');
+                    
+                    const circleEl = document.createElement('div');
+                    circleEl.classList.add('portfolio-circle');
+                    circleEl.style.width = `${circleSize}px`;
+                    circleEl.style.height = `${circleSize}px`;
+                        circleEl.style.backgroundImage = `url('${project.circleImage}')`;
+                    circleEl.dataset.baseX = x;
+                    circleEl.dataset.baseY = y;
+                    circleEl.style.transform = 'none';
+                    circleEl.style.position = 'relative';
+                    circleEl.style.top = 'auto';
+                    circleEl.style.left = 'auto';
+                    
+                    // Create label
+                    const label = document.createElement('div');
+                    label.classList.add('circle-label');
+                    label.textContent = project.name;
+                    label.style.color = '#333';
+                    label.style.fontSize = '14px';
+                    label.style.fontWeight = '500';
+                    label.style.textAlign = 'center';
+                    label.style.transition = 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)';
+                    label.style.opacity = '0.8';
+                    label.style.maxWidth = `${circleSize + 30}px`;
+                    label.style.wordWrap = 'break-word';
+                    label.style.whiteSpace = 'nowrap';
+                    
+                    circleLink.appendChild(circleEl);
+                    circleWrapper.appendChild(circleLink);
+                    circleWrapper.appendChild(label);
+                    container.appendChild(circleWrapper);
+                    circles.push(circleEl);
+                });
+                }
+                
+                console.log('Created', circles.length, 'circles');
+                addCircleEventListeners();
+            }
+            
+            function generateCirclePositions(count) {
+                if (count === 1) return [{ x: 0, y: 0 }];
+                if (count === 2) return [{ x: -0.5, y: 0 }, { x: 0.5, y: 0 }];
+                if (count === 3) return [{ x: 0, y: -0.8 }, { x: -1, y: 0.8 }, { x: 1, y: 0.8 }];
+                if (count === 4) return [
+                    { x: 0, y: -0.9 },    // Top a bit higher
+                    { x: -1.2, y: 1.1 },  // Bottom left
+                    { x: 1.2, y: 1.1 },   // Bottom right
+                    { x: 0, y: 0.15 }     // Center (About) lowered slightly
+                ];
+                // For more than 4, arrange in a circle
+                const positions = [];
+                for (let i = 0; i < count; i++) {
+                    const angle = (i / count) * 2 * Math.PI - Math.PI / 2;
+                    positions.push({
+                        x: Math.cos(angle) * 0.8,
+                        y: Math.sin(angle) * 0.8
+                    });
+                }
+                return positions;
+            }
+
+            function addCircleEventListeners() {
+                 circles.forEach(hoveredCircle => {
+                    hoveredCircle.addEventListener('mouseenter', () => {
+                        if (isSplitLayout) return; // Don't animate in split layout
+                        
+                        // Scale the hovered circle only (no push effect)
+                        hoveredCircle.style.transform = 'scale(1.15)';
+                        hoveredCircle.style.zIndex = '10';
+                        hoveredCircle.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.2)';
+                        
+                        // Scale the label as well
+                        const label = hoveredCircle.parentElement.querySelector('.circle-label');
+                        if (label) {
+                            label.style.transform = 'scale(1.1)';
+                            label.style.opacity = '1';
+                            label.style.fontWeight = '600';
+                        }
+                    });
+
+                    hoveredCircle.addEventListener('mouseleave', () => {
+                        if (isSplitLayout) return; // Don't animate in split layout
+                        
+                        // Reset all circles back to scale(1) without translation
+                        circles.forEach(circle => {
+                            circle.style.transform = 'scale(1)';
+                            circle.style.zIndex = '1';
+                            circle.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.1)';
+                            
+                            // Reset the label scaling
+                            const label = circle.parentElement.querySelector('.circle-label');
+                            if (label) {
+                                label.style.transform = 'scale(1)';
+                                label.style.opacity = '0.8';
+                                label.style.fontWeight = '500';
+                            }
+                        });
+                    });
+                });
+            }
+            
+            // Global Navigation
+            document.body.addEventListener('click', (e) => {
+                const targetLink = e.target.closest('.nav-link');
+                if (targetLink && targetLink.dataset.target) {
+                    e.preventDefault();
+                    showPage(targetLink.dataset.target);
+                }
+            });
+
+            // Thumbnail click logic
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('thumbnail')) {
+                    const clickedThumb = e.target;
+                    const projectSection = clickedThumb.closest('.page-content, .active');
+                    const mainMedia = projectSection.querySelector(`[data-main-image]`);
+                    
+                    if (mainMedia) {
+                        const isVideo = clickedThumb.tagName === 'VIDEO';
+                        const isMainVideo = mainMedia.tagName === 'VIDEO';
+                        
+                        if (isVideo && isMainVideo) {
+                            // Both are videos, just change src
+                            mainMedia.src = clickedThumb.src;
+                        } else if (isVideo && !isMainVideo) {
+                            // Thumbnail is video, main is image - replace with video
+                            const newVideo = document.createElement('video');
+                            newVideo.src = clickedThumb.src;
+                            newVideo.alt = clickedThumb.alt;
+                            newVideo.className = mainMedia.className;
+                            newVideo.setAttribute('data-main-image', mainMedia.getAttribute('data-main-image'));
+                            newVideo.controls = true;
+                            newVideo.muted = false;
+                            newVideo.loop = false;
+                            mainMedia.parentNode.replaceChild(newVideo, mainMedia);
+                        } else if (!isVideo && isMainVideo) {
+                            // Thumbnail is image, main is video - replace with image
+                            const newImg = document.createElement('img');
+                            newImg.src = clickedThumb.src;
+                            newImg.alt = clickedThumb.alt;
+                            newImg.className = mainMedia.className;
+                            newImg.setAttribute('data-main-image', mainMedia.getAttribute('data-main-image'));
+                            mainMedia.parentNode.replaceChild(newImg, mainMedia);
+                        } else {
+                            // Both are images, just change src
+                            mainMedia.src = clickedThumb.src;
+                        }
+                    }
+
+                    // Update active state for thumbnails within the same project
+                    projectSection.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+                    clickedThumb.classList.add('active');
+                }
+            });
+
+            // Contact form handling
+            const contactForm = document.getElementById('contact-form');
+            if (contactForm) {
+                contactForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    
+                    // Get form data
+                    const formData = new FormData(contactForm);
+                    const data = {
+                        name: formData.get('name'),
+                        email: formData.get('email'),
+                        subject: formData.get('subject'),
+                        message: formData.get('message')
+                    };
+                    
+                    // Show loading state
+                    const submitBtn = contactForm.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.textContent;
+                    submitBtn.textContent = 'Sending...';
+                    submitBtn.disabled = true;
+                    
+                    // Simulate form submission
+                    setTimeout(() => {
+                        alert('Thank you for your message! I\'ll get back to you soon.');
+                        contactForm.reset();
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                    }, 1500);
+                });
+            }
+
+            // Initial setup
+            console.log('Portfolio initialized with', projectsConfig.length, 'projects');
+            setupCircles();
+            window.addEventListener('resize', () => {
+                if (!isSplitLayout) {
+                    setupCircles();
+                }
+            });
+
+            // Handle thoughts button click using event delegation
+            document.addEventListener('click', (e) => {
+                if (e.target && e.target.id === 'thoughts-button') {
+                    const aboutSection = document.getElementById('about');
+                    if (aboutSection) {
+                        aboutSection.innerHTML = `
+                            <div class="w-full max-w-4xl mx-auto p-6 sm:p-8">
+                                <div class="text-center">
+                                    <h1 class="text-4xl font-bold mb-8 text-black">Some of my thoughts recently</h1>
+                                    <div class="space-y-6 text-left max-w-3xl mx-auto">
+                                        <p class="text-white text-lg leading-relaxed">
+                                            People wear clothes like armor, not because they're cold but because they're scared of being seen for what they are, unfinished. Every thread says something about how far we've drifted from our own expression. Fashion started as protection, then communication, now it's performance. We forgot what we were trying to say. People talk about wanting authenticity, but no one really wants to be seen mid-process. We like the illusion of rawness, not the mess it takes to get there.
+                                        </p>
+                                        <p class="text-white text-lg leading-relaxed">
+                                            Everything about life contradicts itself. We chase freedom through structure. We find identity in repetition. We call our screens a window to the world while the world keeps shrinking behind them. People want to escape systems but still need something to belong to. That's the joke, everything that frees us also traps us. We hate the artificial but live through it anyway. It's not fake, it's just another layer of survival. Pretending might be the only thing that keeps us human.
+                                        </p>
+                                        <p class="text-white text-lg leading-relaxed">
+                                            Every invention feels like an echo. We build machines to talk for us, then forget what silence sounds like. We automate feeling, and it leaves us starving for the real thing. We keep trying to design empathy into the system, but maybe the system was never supposed to care. It's all theater, but that doesn't make it meaningless. It's still a stage where we can rehearse being alive, over and over, until it feels right again.
+                                        </p>
+                                        <p class="text-white text-lg leading-relaxed">
+                                            I work inside that space, between art and survival, between code and soul. I'm not trying to fix the contradiction. I'm trying to live in it. The goal isn't harmony, it's awareness. To notice the glitch and still make something from it. To build a world that doesn't exist yet and remind myself that creation is the only honest way to lie. Every mask, every prototype, every render is proof that I'm still learning how to translate being into form.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+            });
+
+            // Handle contact popup
+            const contactPopupTrigger = document.getElementById('contact-popup-trigger');
+            const contactPopup = document.getElementById('contact-popup');
+            const popupClose = document.getElementById('popup-close');
+            const popupForm = document.getElementById('popup-contact-form');
+
+            // Open popup
+            contactPopupTrigger.addEventListener('click', (e) => {
+                e.preventDefault();
+                contactPopup.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            });
+
+            // Close popup
+            function closePopup() {
+                contactPopup.classList.remove('active');
+                document.body.style.overflow = 'auto'; // Restore scrolling
+            }
+
+            popupClose.addEventListener('click', closePopup);
+            
+            // Close popup when clicking outside
+            contactPopup.addEventListener('click', (e) => {
+                if (e.target === contactPopup) {
+                    closePopup();
+                }
+            });
+
+            // Close popup with Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && contactPopup.classList.contains('active')) {
+                    closePopup();
+                }
+            });
+
+            // Handle form submission
+            popupForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Show loading state
+                const submitButton = popupForm.querySelector('button[type="submit"]');
+                const originalText = submitButton.textContent;
+                submitButton.textContent = 'Sending...';
+                submitButton.disabled = true;
+                
+                try {
+                    // Submit to Formspree
+                    const formData = new FormData(popupForm);
+                    const response = await fetch(popupForm.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        alert('Thank you for your message! I\'ll get back to you soon.');
+                        popupForm.reset();
+                        closePopup();
+                    } else {
+                        throw new Error('Form submission failed');
+                    }
+                } catch (error) {
+                    alert('Sorry, there was an error sending your message. Please try again or contact me directly.');
+                } finally {
+                    submitButton.textContent = originalText;
+                    submitButton.disabled = false;
+                }
+            });
+        });
+
+        // Inline Text Editing Functionality
+        let isEditMode = false;
+        let currentEditElement = null;
+        let originalText = '';
+
+        // Track key states
+        let keysPressed = {
+            ctrl: false,
+            alt: false
+        };
+
+        // Keyboard event listeners
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Control') keysPressed.ctrl = true;
+            if (e.key === 'Alt') keysPressed.alt = true;
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'Control') keysPressed.ctrl = false;
+            if (e.key === 'Alt') keysPressed.alt = false;
+        });
+
+        // Double click with Ctrl+Alt to enable editing
+        document.addEventListener('dblclick', (e) => {
+            if (keysPressed.ctrl && keysPressed.alt) {
+                e.preventDefault();
+                enableTextEditing(e.target);
+            }
+        });
+
+        function enableTextEditing(element) {
+            // Only allow editing of text elements
+            const editableElements = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'div'];
+            if (!editableElements.includes(element.tagName.toLowerCase())) {
+                return;
+            }
+
+            // Don't edit if it's already in edit mode
+            if (element.classList.contains('editing')) {
+                return;
+            }
+
+            // Store original text and element
+            originalText = element.textContent.trim();
+            currentEditElement = element;
+
+            // Create input field
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = originalText;
+            input.className = 'edit-input bg-white text-black border-2 border-blue-500 px-2 py-1 rounded';
+            input.style.fontSize = window.getComputedStyle(element).fontSize;
+            input.style.fontWeight = window.getComputedStyle(element).fontWeight;
+            input.style.fontFamily = window.getComputedStyle(element).fontFamily;
+            input.style.width = '100%';
+            input.style.minWidth = '200px';
+
+            // Replace element content with input
+            element.innerHTML = '';
+            element.appendChild(input);
+            element.classList.add('editing');
+            input.focus();
+            input.select();
+
+            // Handle save on Enter
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const value = input.value;
+                    saveTextChange(element, value);
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    cancelEdit(element);
+                }
+            });
+
+            // Handle blur (click outside) - with delay to prevent conflicts
+            input.addEventListener('blur', (e) => {
+                // Small delay to prevent DOM manipulation conflicts
+                setTimeout(() => {
+                    if (element.classList.contains('editing')) {
+                        const value = input.value;
+                        saveTextChange(element, value);
+                    }
+                }, 100);
+            });
+        }
+
+        function saveTextChange(element, newText) {
+            if (newText.trim() === originalText) {
+                // No change, just cancel
+                cancelEdit(element);
+                return;
+            }
+
+            // Show saving indicator
+            element.innerHTML = '<span class="text-blue-500">Saving...</span>';
+
+            // Send to backend to save
+            saveToBackend(element, newText.trim());
+        }
+
+        function cancelEdit(element) {
+            element.textContent = originalText;
+            element.classList.remove('editing');
+            currentEditElement = null;
+            originalText = '';
+        }
+
+        async function saveToBackend(element, newText) {
+            try {
+                // Determine what type of content this is
+                const elementInfo = getElementInfo(element);
+                
+                // Show saving indicator
+                element.innerHTML = '<span class="text-blue-500">Saving...</span>';
+                
+                // Send to backend to save and commit
+                const response = await fetch('/api/save-edit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        elementInfo: elementInfo,
+                        newText: newText,
+                        originalText: originalText
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    
+                    // Success - update the element
+                    element.textContent = newText;
+                    element.classList.remove('editing');
+                    element.innerHTML = `<span class="text-green-500">✓ ${newText}</span>`;
+                    
+                    // Remove success indicator after 2 seconds
+                    setTimeout(() => {
+                        element.textContent = newText;
+                    }, 2000);
+
+                    // Show success notification
+                    showSuccessNotification(elementInfo, newText, originalText, result.commitHash);
+                    
+                } else {
+                    const error = await response.json();
+                    console.error('API Error Response:', error);
+                    throw new Error(error.message || 'Failed to save');
+                }
+            } catch (error) {
+                console.error('Error saving text:', error);
+                element.innerHTML = '<span class="text-red-500">Error saving</span>';
+                setTimeout(() => {
+                    cancelEdit(element);
+                }, 2000);
+                
+                // Show error notification with more details
+                showErrorNotification(error.message, error);
+            }
+        }
+
+        function getElementInfo(element) {
+            // Try to determine what content this is based on context
+            const projectSection = element.closest('.page-content, .active');
+            const projectId = projectSection ? projectSection.id : null;
+            
+            // Check if it's in a specific project
+            if (projectId && projectId.startsWith('project')) {
+                return {
+                    type: 'project',
+                    projectId: projectId,
+                    elementType: element.tagName.toLowerCase(),
+                    text: element.textContent.trim()
+                };
+            }
+
+            // Check if it's in the about section
+            if (element.closest('#about')) {
+                return {
+                    type: 'about',
+                    elementType: element.tagName.toLowerCase(),
+                    text: element.textContent.trim()
+                };
+            }
+
+            // Default fallback
+            return {
+                type: 'general',
+                elementType: element.tagName.toLowerCase(),
+                text: element.textContent.trim()
+            };
+        }
+
+        // Store changes for potential git operations
+        function storeChangeForGit(elementInfo, newText, originalText) {
+            const changes = JSON.parse(localStorage.getItem('portfolioChanges') || '[]');
+            changes.push({
+                timestamp: new Date().toISOString(),
+                elementInfo: elementInfo,
+                newText: newText,
+                originalText: originalText
+            });
+            localStorage.setItem('portfolioChanges', JSON.stringify(changes));
+        }
+
+        // Show success notification
+        function showSuccessNotification(elementInfo, newText, originalText, commitHash) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-green-600 text-white p-4 rounded-lg shadow-lg z-50 max-w-md';
+            notification.innerHTML = `
+                <h3 class="font-bold mb-2">✅ Text Saved & Committed!</h3>
+                <p class="text-sm mb-2">Change: "${originalText}" → "${newText}"</p>
+                <p class="text-xs mb-2">✅ File updated automatically</p>
+                <p class="text-xs mb-2">✅ Changes committed to git</p>
+                <p class="text-xs mb-2">✅ Pushed to GitHub</p>
+                <p class="text-xs text-green-200">Commit: ${commitHash ? commitHash.substring(0, 7) : 'N/A'}</p>
+                <button onclick="this.parentElement.remove()" class="mt-2 bg-green-500 hover:bg-green-400 px-3 py-1 rounded text-xs">
+                    Close
+                </button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 8 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 8000);
+        }
+
+        // Show error notification
+        function showErrorNotification(errorMessage, errorDetails = null) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-red-600 text-white p-4 rounded-lg shadow-lg z-50 max-w-md';
+            
+            let debugInfo = '';
+            if (errorDetails && errorDetails.debug) {
+                debugInfo = `
+                    <details class="mt-2">
+                        <summary class="text-xs cursor-pointer">Debug Info</summary>
+                        <pre class="text-xs mt-1 bg-black bg-opacity-20 p-2 rounded overflow-auto">${JSON.stringify(errorDetails.debug, null, 2)}</pre>
+                    </details>
+                `;
+            }
+            
+            notification.innerHTML = `
+                <h3 class="font-bold mb-2">❌ Error Saving</h3>
+                <p class="text-sm mb-2">${errorMessage}</p>
+                <p class="text-xs mb-2">Check browser console for more details</p>
+                ${debugInfo}
+                <button onclick="this.parentElement.remove()" class="mt-2 bg-red-500 hover:bg-red-400 px-3 py-1 rounded text-xs">
+                    Close
+                </button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 15 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 15000);
+        }
+
+        // Function to export all changes for manual git operations
+        function exportChanges() {
+            const changes = JSON.parse(localStorage.getItem('portfolioChanges') || '[]');
+            if (changes.length === 0) {
+                alert('No changes to export');
+                return;
+            }
+            
+            const changesText = changes.map(change => 
+                `- ${change.elementInfo.type}: "${change.originalText}" → "${change.newText}"`
+            ).join('\n');
+            
+            const commitMessage = `Update portfolio content:\n\n${changesText}`;
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(commitMessage).then(() => {
+                alert('Commit message copied to clipboard! Paste it when you run: git commit -m "..."');
+            }).catch(() => {
+                // Fallback: show in alert
+                prompt('Copy this commit message:', commitMessage);
+            });
+        }
+
+        // Add visual indicator when in edit mode
+        document.addEventListener('keydown', (e) => {
+            if (keysPressed.ctrl && keysPressed.alt) {
+                document.body.style.cursor = 'text';
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (!keysPressed.ctrl || !keysPressed.alt) {
+                document.body.style.cursor = 'default';
+            }
+        });
+    </script>
+</body>
+</html>
+
