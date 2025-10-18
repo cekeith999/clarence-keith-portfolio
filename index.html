@@ -29,7 +29,7 @@
         
         body {
             font-family: 'Yeezy Tstar', sans-serif;
-            background-color: #F00000;
+            background-color: #A30000;
             color: #333;
         }
         
@@ -87,7 +87,7 @@
         .circles-sidebar {
             width: 10%;
             min-width: 80px;
-            background-color: #F00000;
+            background-color: #A30000;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -99,7 +99,7 @@
         .project-content {
             width: 90%;
             overflow-y: auto;
-            background-color: #F00000;
+            background-color: #A30000;
             padding: 1rem;
             height: 100%;
             max-height: calc(100vh - 80px);
@@ -181,6 +181,65 @@
         /* Enhanced transitions for all circles */
         .portfolio-circle {
             transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s ease;
+        }
+        
+        /* Animated underline for Reach out button */
+        #contact-popup-trigger {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #contact-popup-trigger::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #D9534F;
+            transition: width 0.3s ease;
+            animation: underlinePulse 3s infinite;
+        }
+        
+        @keyframes underlinePulse {
+            0%, 80% {
+                width: 0;
+            }
+            85%, 95% {
+                width: 100%;
+            }
+            100% {
+                width: 0;
+            }
+        }
+        
+        /* Connecting lines from project circles to about me circle */
+        .connecting-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .connecting-line::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: lineFlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes lineFlow {
+            0%, 100% {
+                transform: translateX(-100%);
+            }
+            50% {
+                transform: translateX(100%);
+            }
         }
         
         
@@ -368,10 +427,9 @@
                 <a class="text-lg font-medium nav-link text-white" id="contact-popup-trigger">Reach out!</a>
             </div>
             <div class="flex-1 text-center">
-                <a class="text-xl font-bold tracking-wider nav-link text-black" data-target="home">Clarence Keith</a>
+                <a class="text-3xl font-bold tracking-wider nav-link text-black" data-target="home">Clarence Keith</a>
             </div>
             <div class="flex-1 flex justify-end space-x-6">
-                <a class="text-lg font-medium nav-link text-white" data-target="about">About</a>
                 <a href="https://www.instagram.com/ck.mdvs/" target="_blank" rel="noopener noreferrer" class="text-white hover:text-[#D9534F] transition-colors duration-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
                  </a>
@@ -1105,7 +1163,7 @@
                 
                 // Add back button at the top
                 const backButton = document.createElement('button');
-                backButton.className = 'mb-4 flex items-center space-x-2 text-gray-600 hover:text-[#D9534F] transition-colors duration-300 nav-link';
+                backButton.className = 'mb-4 flex items-center space-x-2 text-black hover:text-gray-700 transition-colors duration-300 nav-link';
                 backButton.setAttribute('data-target', 'home');
                 backButton.innerHTML = `
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1831,6 +1889,56 @@
                 
                 console.log('Created', circles.length, 'circles');
                 addCircleEventListeners();
+                
+                // Add connecting lines from project circles to about me circle (desktop only)
+                if (!isMobile && projectsConfig.length >= 4) {
+                    setTimeout(() => {
+                        createConnectingLines();
+                    }, 100);
+                }
+            }
+            
+            function createConnectingLines() {
+                const container = document.getElementById('circle-container');
+                if (!container) return;
+                
+                // Find the about me circle (should be the last one)
+                const aboutCircle = document.querySelector('[data-target="about"] .portfolio-circle');
+                if (!aboutCircle) return;
+                
+                const aboutRect = aboutCircle.getBoundingClientRect();
+                const containerRect = container.getBoundingClientRect();
+                
+                // Get about circle center position relative to container
+                const aboutCenterX = aboutRect.left + aboutRect.width / 2 - containerRect.left;
+                const aboutCenterY = aboutRect.top + aboutRect.height / 2 - containerRect.top;
+                
+                // Create lines from the first 3 project circles to about circle
+                for (let i = 0; i < 3; i++) {
+                    const projectCircle = document.querySelector(`[data-target="project${i + 1}"] .portfolio-circle`);
+                    if (!projectCircle) continue;
+                    
+                    const projectRect = projectCircle.getBoundingClientRect();
+                    const projectCenterX = projectRect.left + projectRect.width / 2 - containerRect.left;
+                    const projectCenterY = projectRect.top + projectRect.height / 2 - containerRect.top;
+                    
+                    // Calculate line properties
+                    const deltaX = aboutCenterX - projectCenterX;
+                    const deltaY = aboutCenterY - projectCenterY;
+                    const length = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                    const angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
+                    
+                    // Create line element
+                    const line = document.createElement('div');
+                    line.className = 'connecting-line';
+                    line.style.width = `${length}px`;
+                    line.style.left = `${projectCenterX}px`;
+                    line.style.top = `${projectCenterY}px`;
+                    line.style.transform = `rotate(${angle}deg)`;
+                    line.style.transformOrigin = '0 0';
+                    
+                    container.appendChild(line);
+                }
             }
             
             function generateCirclePositions(count) {
