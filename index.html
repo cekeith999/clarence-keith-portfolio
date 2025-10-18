@@ -238,6 +238,38 @@
             }
         }
         
+        /* Instagram icon hover effect */
+        .instagram-link {
+            position: relative;
+            transition: opacity 0.3s ease;
+        }
+        
+        .instagram-icon {
+            transition: opacity 0.3s ease;
+        }
+        
+        .instagram-link:hover .instagram-icon {
+            opacity: 0;
+        }
+        
+        .instagram-link::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 24px;
+            height: 24px;
+            background-image: url('instagram icon.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .instagram-link:hover::after {
+            opacity: 1;
+        }
+
         /* Connecting lines from project circles to about me circle */
         .connecting-line {
             position: absolute;
@@ -598,8 +630,8 @@
                 <a class="text-3xl font-bold tracking-wider nav-link text-white hover:text-black transition-colors duration-300" data-target="home">Clarence Keith</a>
             </div>
             <div class="flex-1 flex justify-end space-x-6">
-                <a href="https://www.instagram.com/ck.mdvs/" target="_blank" rel="noopener noreferrer" class="text-white hover:text-black transition-colors duration-300">
-                    <img src="instagram icon.png" alt="Instagram" class="w-6 h-6">
+                <a href="https://www.instagram.com/ck.mdvs/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                    <img src="white instagram icon.webp" alt="Instagram" class="w-6 h-6 instagram-icon">
                  </a>
             </div>
         </nav>
