@@ -121,6 +121,7 @@
             z-index: 1;
             margin-top: 8px;
             pointer-events: none;
+            font-weight: bold;
         }
         .project-content .page-content {
             display: block !important;
@@ -152,6 +153,21 @@
             transform: scale(1.15);
             border-color: #D9534F;
             box-shadow: 0 8px 25px rgba(217, 83, 79, 0.3);
+        }
+        
+        /* Active state for current page */
+        .portfolio-circle.active {
+            opacity: 0.6;
+            filter: grayscale(50%);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .circles-sidebar .portfolio-circle.active {
+            opacity: 0.6;
+            filter: grayscale(50%);
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
         
         /* Mobile responsiveness for split layout */
@@ -344,7 +360,7 @@
                 <a class="text-lg font-medium nav-link text-white" data-target="about">About</a>
                 <a href="https://www.instagram.com/ck.mdvs/" target="_blank" rel="noopener noreferrer" class="text-white hover:text-[#D9534F] transition-colors duration-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-                </a>
+                 </a>
             </div>
         </nav>
     </header>
@@ -1037,6 +1053,20 @@
                 mainContainer.appendChild(splitLayout);
             }
 
+            // Function to update active circle state
+            function updateActiveCircle(activeProjectId) {
+                // Remove active class from all circles
+                document.querySelectorAll('.portfolio-circle').forEach(circle => {
+                    circle.classList.remove('active');
+                });
+                
+                // Add active class to the current project's circle
+                const activeCircle = document.querySelector(`[data-target="${activeProjectId}"] .portfolio-circle`);
+                if (activeCircle) {
+                    activeCircle.classList.add('active');
+                }
+            }
+
             function displayProjectInSplitLayout(projectId) {
                 const projectContent = document.getElementById('project-content');
                 if (!projectContent) {
@@ -1052,6 +1082,9 @@
                 }
                 
                 console.log('Displaying project:', project.name);
+                
+                // Update active state for circles
+                updateActiveCircle(projectId);
                 
                 // Completely clear project content
                 projectContent.innerHTML = '';
@@ -1641,6 +1674,11 @@
             function returnToHomeLayout() {
                 isSplitLayout = false;
                 
+                // Remove active state from all circles
+                document.querySelectorAll('.portfolio-circle').forEach(circle => {
+                    circle.classList.remove('active');
+                });
+                
                 mainContainer.innerHTML = `
                     <section id="home" class="page-content active h-full flex items-center justify-center relative">
                         <div id="circle-container">
@@ -1700,7 +1738,7 @@
                         label.textContent = project.name;
                         label.style.color = '#333';
                         label.style.fontSize = '12px';
-                        label.style.fontWeight = '500';
+                        label.style.fontWeight = 'bold';
                         label.style.textAlign = 'center';
                         label.style.transition = 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)';
                         label.style.opacity = '0.8';
@@ -1758,7 +1796,7 @@
                     label.textContent = project.name;
                     label.style.color = '#333';
                     label.style.fontSize = '14px';
-                    label.style.fontWeight = '500';
+                                label.style.fontWeight = 'bold';
                     label.style.textAlign = 'center';
                     label.style.transition = 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)';
                     label.style.opacity = '0.8';
@@ -1815,7 +1853,7 @@
                         if (label) {
                             label.style.transform = 'scale(1.1)';
                             label.style.opacity = '1';
-                            label.style.fontWeight = '600';
+                            label.style.fontWeight = '900';
                         }
                     });
 
@@ -1833,7 +1871,7 @@
                             if (label) {
                                 label.style.transform = 'scale(1)';
                                 label.style.opacity = '0.8';
-                                label.style.fontWeight = '500';
+                                label.style.fontWeight = 'bold';
                             }
                         });
                     });
