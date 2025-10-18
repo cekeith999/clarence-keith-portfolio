@@ -64,7 +64,7 @@
             background-position: center;
             background-color: #D9534F; /* Fallback color */
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s ease;
             cursor: pointer;
             will-change: transform;
             z-index: 2;
@@ -146,7 +146,7 @@
             left: auto;
             transform: none;
             margin: 0.75rem 0;
-            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s ease;
             border: 3px solid #FEFDEE;
         }
         .circles-sidebar .portfolio-circle:hover {
@@ -165,7 +165,6 @@
                 0 0 20px rgba(0, 0, 0, 0.3);
             border: 3px solid rgba(255, 255, 255, 0.7);
             transform: scale(1.05);
-            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
         
         .circles-sidebar .portfolio-circle.active {
@@ -177,38 +176,13 @@
                 0 0 0 4px rgba(0, 0, 0, 0.2),
                 0 0 20px rgba(0, 0, 0, 0.3);
             transform: scale(1.1);
-            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
         
         /* Enhanced transitions for all circles */
         .portfolio-circle {
-            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s ease;
         }
         
-        /* Pulse animation for active circle */
-        @keyframes pulse {
-            0% {
-                transform: scale(1.05);
-                box-shadow: 
-                    0 8px 25px rgba(0, 0, 0, 0.4), 
-                    0 0 0 4px rgba(0, 0, 0, 0.2),
-                    0 0 20px rgba(0, 0, 0, 0.3);
-            }
-            50% {
-                transform: scale(1.1);
-                box-shadow: 
-                    0 12px 35px rgba(0, 0, 0, 0.5), 
-                    0 0 0 6px rgba(0, 0, 0, 0.3),
-                    0 0 30px rgba(0, 0, 0, 0.4);
-            }
-            100% {
-                transform: scale(1.05);
-                box-shadow: 
-                    0 8px 25px rgba(0, 0, 0, 0.4), 
-                    0 0 0 4px rgba(0, 0, 0, 0.2),
-                    0 0 20px rgba(0, 0, 0, 0.3);
-            }
-        }
         
         /* Mobile responsiveness for split layout */
         @media (max-width: 768px) {
@@ -1093,45 +1067,17 @@
                 mainContainer.appendChild(splitLayout);
             }
 
-            // Function to update active circle state with smooth transitions
+            // Function to update active circle state
             function updateActiveCircle(activeProjectId) {
-                // Get all circles
-                const allCircles = document.querySelectorAll('.portfolio-circle');
-                const activeCircle = document.querySelector(`[data-target="${activeProjectId}"] .portfolio-circle`);
-                const previousActiveCircle = document.querySelector('.portfolio-circle.active');
-                
-                // Create a smooth transition effect
-                allCircles.forEach(circle => {
-                    if (circle === activeCircle) {
-                        // Add active class with a slight delay for smooth transition
-                        setTimeout(() => {
-                            circle.classList.add('active');
-                        }, 50);
-                    } else {
-                        // Remove active class immediately
-                        circle.classList.remove('active');
-                    }
+                // Remove active class from all circles
+                document.querySelectorAll('.portfolio-circle').forEach(circle => {
+                    circle.classList.remove('active');
                 });
                 
-                // Add a subtle pulse effect to the newly active circle
+                // Add active class to the current project's circle
+                const activeCircle = document.querySelector(`[data-target="${activeProjectId}"] .portfolio-circle`);
                 if (activeCircle) {
-                    setTimeout(() => {
-                        activeCircle.style.animation = 'pulse 0.6s ease-in-out';
-                        setTimeout(() => {
-                            activeCircle.style.animation = '';
-                        }, 600);
-                    }, 100);
-                }
-                
-                // Add a special effect if transitioning from one circle to another
-                if (previousActiveCircle && previousActiveCircle !== activeCircle) {
-                    // Create a brief "trail" effect
-                    previousActiveCircle.style.transition = 'all 0.3s ease-out';
-                    setTimeout(() => {
-                        if (previousActiveCircle) {
-                            previousActiveCircle.style.transition = 'all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)';
-                        }
-                    }, 300);
+                    activeCircle.classList.add('active');
                 }
             }
 
