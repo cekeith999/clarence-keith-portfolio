@@ -273,10 +273,11 @@
         /* Connecting lines from project circles to about me circle */
         .connecting-line {
             position: absolute;
-            height: 2px;
-            background: black;
-            z-index: -1;
+            height: 3px;
+            background: #000000;
+            z-index: 1;
             pointer-events: none;
+            opacity: 0.8;
         }
         
         .connecting-line::before {
@@ -286,7 +287,7 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.3), transparent);
             animation: lineFlow 3s ease-in-out infinite;
         }
         
