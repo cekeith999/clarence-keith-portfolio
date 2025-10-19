@@ -663,6 +663,12 @@
                 width: 33.333%;
             }
         }
+        
+        /* Rotate specific images that are sideways */
+        .carousel-item img[src*="IMG_3850"],
+        .carousel-item img[src*="IMG_4151"] {
+            transform: rotate(90deg);
+        }
         /* Marquee bar */
         .marquee {
             position: fixed;
