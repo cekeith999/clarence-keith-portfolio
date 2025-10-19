@@ -2291,8 +2291,10 @@
                 
                 console.log('Initializing carousel with', items.length, 'items');
                 
-                let currentIndex = 0;
+                let currentPosition = 0;
+                let isPaused = false;
                 const totalItems = items.length;
+                const speed = 0.5; // pixels per frame (adjust for speed)
                 
                 // Get the width of one item (responsive)
                 function getItemWidth() {
@@ -2306,45 +2308,44 @@
                     }
                 }
                 
-                function updateCarousel() {
-                    const itemWidth = getItemWidth();
-                    const translateX = -currentIndex * itemWidth;
-                    carouselTrack.style.transform = `translateX(${translateX}px)`;
-                    console.log('Carousel updated - index:', currentIndex, 'translateX:', translateX);
-                }
-                
-                function nextSlide() {
-                    const itemWidth = getItemWidth();
-                    const itemsPerView = Math.floor(carouselTrack.parentElement.offsetWidth / itemWidth);
-                    const maxIndex = Math.max(0, totalItems - itemsPerView);
+                function animateCarousel() {
+                    if (!isPaused) {
+                        currentPosition -= speed;
+                        
+                        // Reset position when we've moved past all items
+                        const itemWidth = getItemWidth();
+                        const totalWidth = totalItems * itemWidth;
+                        
+                        if (Math.abs(currentPosition) >= totalWidth) {
+                            currentPosition = 0;
+                        }
+                        
+                        carouselTrack.style.transform = `translateX(${currentPosition}px)`;
+                    }
                     
-                    currentIndex = (currentIndex + 1) % (maxIndex + 1);
-                    updateCarousel();
+                    requestAnimationFrame(animateCarousel);
                 }
-                
-                // Auto-spin every 3 seconds
-                let autoSpinInterval = setInterval(nextSlide, 3000);
-                console.log('Carousel auto-spin started');
                 
                 // Pause on hover
                 carouselTrack.parentElement.addEventListener('mouseenter', () => {
-                    clearInterval(autoSpinInterval);
+                    isPaused = true;
                     console.log('Carousel paused on hover');
                 });
                 
                 carouselTrack.parentElement.addEventListener('mouseleave', () => {
-                    // Restart auto-spin
-                    autoSpinInterval = setInterval(nextSlide, 3000);
+                    isPaused = false;
                     console.log('Carousel resumed');
                 });
                 
                 // Handle window resize
                 window.addEventListener('resize', () => {
-                    updateCarousel();
+                    // Reset position on resize
+                    currentPosition = 0;
                 });
                 
-                // Initial positioning
-                updateCarousel();
+                // Start the continuous animation
+                console.log('Carousel continuous animation started');
+                animateCarousel();
             }
 
             function returnToHomeLayout() {
