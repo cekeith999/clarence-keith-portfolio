@@ -588,15 +588,10 @@
             max-height: 100%;
             object-fit: contain;
             border-radius: 8px;
-            transform: scale(1.5);
+            transform: scale(0.5);
             transform-origin: center;
             transition: transform 0.3s ease;
-            cursor: grab;
-        }
-        
-        .zoom-modal img:active,
-        .zoom-modal video:active {
-            cursor: grabbing;
+            cursor: default;
         }
         
         .zoom-close {
@@ -2971,7 +2966,7 @@
         const zoomImage = document.getElementById('zoom-image');
         const zoomClose = document.getElementById('zoom-close');
         
-        let currentZoom = 1.5; // Start at 150%
+        let currentZoom = 0.5; // Start at 50%
         let isDragging = false;
         let startX = 0;
         let startY = 0;
@@ -2984,7 +2979,7 @@
             document.body.style.overflow = 'hidden';
             
             // Reset zoom and position
-            currentZoom = 1.5;
+            currentZoom = 0.5;
             translateX = 0;
             translateY = 0;
             updateImageTransform();
@@ -3021,7 +3016,7 @@
         
         // Touch events for pinch zoom
         let initialDistance = 0;
-        let initialZoom = 1.5;
+        let initialZoom = 0.5;
         
         zoomModal.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
