@@ -615,6 +615,54 @@
         .zoom-close:hover {
             background: rgba(255, 255, 255, 0.3);
         }
+        
+        /* Carousel styles */
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem;
+        }
+        
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        
+        .carousel-item {
+            flex-shrink: 0;
+            padding: 0 0.5rem;
+        }
+        
+        .carousel-item img {
+            width: 100%;
+            height: 16rem;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .carousel-item img:hover {
+            transform: scale(1.02);
+        }
+        
+        @media (max-width: 768px) {
+            .carousel-item {
+                width: 100%;
+            }
+        }
+        
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .carousel-item {
+                width: 50%;
+            }
+        }
+        
+        @media (min-width: 1025px) {
+            .carousel-item {
+                width: 33.333%;
+            }
+        }
         /* Marquee bar */
         .marquee {
             position: fixed;
@@ -2011,7 +2059,7 @@
                 
                 const description1 = document.createElement('p');
                 description1.className = 'text-black leading-relaxed mb-4';
-                description1.textContent = "I'm Clarence Keith, a passionate footwear biggie smalls and 3D artist specializing in experimental design and additive manufacturing. My work explores the intersection of traditional craftsmanship and cutting-edge technology.";
+                description1.textContent = "I'm Clarence Keith, a passionate footwear designer and 3D artist specializing in experimental design and additive manufacturing. My work explores the intersection of traditional craftsmanship and cutting-edge technology.";
                 
                 const description2 = document.createElement('p');
                 description2.className = 'text-black leading-relaxed mb-4';
@@ -2090,7 +2138,7 @@
                 aboutContent.appendChild(skillsTitle);
                 aboutContent.appendChild(skillsGrid);
                 
-                // Right side - Profile image
+                // Right side - Full body profile image
                 const profileSection = document.createElement('div');
                 profileSection.className = 'order-1 lg:order-2';
                 
@@ -2098,38 +2146,78 @@
                 profileContainer.className = 'relative';
                 
                 const profileImage = document.createElement('div');
-                profileImage.className = 'aspect-square bg-gradient-to-br from-[#F2F0EF] to-[#E8E6E4] rounded-2xl shadow-2xl flex items-center justify-center';
-                
-                const profileContent = document.createElement('div');
-                profileContent.className = 'text-center text-black p-8';
-                
-                const profileIcon = document.createElement('div');
-                profileIcon.className = 'w-32 h-32 bg-white/20 rounded-full mx-auto mb-6 flex items-center justify-center';
+                profileImage.className = 'bg-gradient-to-br from-[#F2F0EF] to-[#E8E6E4] rounded-2xl shadow-2xl overflow-hidden';
                 
                 const profileImg = document.createElement('img');
-                profileImg.src = 'meimages/Mehead.webp';
-                profileImg.alt = 'Clarence Keith';
-                profileImg.className = 'w-24 h-24 rounded-full object-cover';
+                profileImg.src = 'meimages/Mefullbody.webp';
+                profileImg.alt = 'Clarence Keith - Full Body';
+                profileImg.className = 'w-full h-auto object-cover';
                 
-                const profileName = document.createElement('h3');
-                profileName.className = 'text-2xl font-bold mb-2 text-[#A30000]';
-                profileName.textContent = 'Clarence Keith';
-                
-                const profileTitle = document.createElement('p');
-                profileTitle.className = 'text-lg opacity-90 text-black';
-                profileTitle.textContent = 'designer';
-                
-                profileIcon.appendChild(profileImg);
-                profileContent.appendChild(profileIcon);
-                profileContent.appendChild(profileName);
-                profileContent.appendChild(profileTitle);
-                profileImage.appendChild(profileContent);
+                profileImage.appendChild(profileImg);
                 profileContainer.appendChild(profileImage);
                 profileSection.appendChild(profileContainer);
                 
                 grid.appendChild(aboutContent);
                 grid.appendChild(profileSection);
                 container.appendChild(grid);
+                
+                // Add carousel section
+                const carouselSection = document.createElement('div');
+                carouselSection.className = 'mt-12';
+                
+                const carouselTitle = document.createElement('h2');
+                carouselTitle.className = 'text-3xl font-bold mb-6 text-[#A30000] text-center';
+                carouselTitle.textContent = 'Some of my favorite photos right now';
+                
+                const carouselContainer = document.createElement('div');
+                carouselContainer.className = 'relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#F2F0EF] to-[#E8E6E4] p-4';
+                
+                const carouselTrack = document.createElement('div');
+                carouselTrack.className = 'flex transition-transform duration-500 ease-in-out';
+                carouselTrack.id = 'carousel-track';
+                
+                // Carousel images array
+                const carouselImages = [
+                    'meimages/image000000.JPG',
+                    'meimages/IMG_0844.HEIC',
+                    'meimages/IMG_0947.HEIC',
+                    'meimages/IMG_2849.HEIC',
+                    'meimages/IMG_3029.jpg',
+                    'meimages/IMG_3850.JPG',
+                    'meimages/IMG_4151.JPG'
+                ];
+                
+                carouselImages.forEach((imageSrc, index) => {
+                    const carouselItem = document.createElement('div');
+                    carouselItem.className = 'carousel-item';
+                    
+                    const imageContainer = document.createElement('div');
+                    imageContainer.className = 'image-container relative';
+                    
+                    const img = document.createElement('img');
+                    img.src = imageSrc;
+                    img.alt = `Favorite photo ${index + 1}`;
+                    
+                    const zoomIcon = document.createElement('div');
+                    zoomIcon.className = 'zoom-icon';
+                    zoomIcon.innerHTML = `
+                        <svg viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                            <path d="M12 10h-2v3H9v-3H7V9h2V6h1v3h2v1z"/>
+                        </svg>
+                    `;
+                    
+                    imageContainer.appendChild(img);
+                    imageContainer.appendChild(zoomIcon);
+                    carouselItem.appendChild(imageContainer);
+                    carouselTrack.appendChild(carouselItem);
+                });
+                
+                carouselContainer.appendChild(carouselTrack);
+                carouselSection.appendChild(carouselTitle);
+                carouselSection.appendChild(carouselContainer);
+                container.appendChild(carouselSection);
+                
                 section.appendChild(container);
                 
                 return section;
