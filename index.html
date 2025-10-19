@@ -2218,6 +2218,9 @@
                 carouselSection.appendChild(carouselContainer);
                 container.appendChild(carouselSection);
                 
+                // Initialize carousel auto-spin
+                initializeCarousel();
+                
                 section.appendChild(container);
                 
                 return section;
@@ -2269,6 +2272,64 @@
                         clickedThumb.classList.add('active');
                     });
                 });
+            }
+            
+            function initializeCarousel() {
+                const carouselTrack = document.getElementById('carousel-track');
+                if (!carouselTrack) return;
+                
+                const items = carouselTrack.children;
+                if (items.length === 0) return;
+                
+                let currentIndex = 0;
+                const totalItems = items.length;
+                
+                // Get the width of one item (responsive)
+                function getItemWidth() {
+                    const containerWidth = carouselTrack.parentElement.offsetWidth;
+                    if (window.innerWidth <= 768) {
+                        return containerWidth; // 1 item on mobile
+                    } else if (window.innerWidth <= 1024) {
+                        return containerWidth / 2; // 2 items on tablet
+                    } else {
+                        return containerWidth / 3; // 3 items on desktop
+                    }
+                }
+                
+                function updateCarousel() {
+                    const itemWidth = getItemWidth();
+                    const translateX = -currentIndex * itemWidth;
+                    carouselTrack.style.transform = `translateX(${translateX}px)`;
+                }
+                
+                function nextSlide() {
+                    const itemWidth = getItemWidth();
+                    const maxIndex = Math.max(0, totalItems - Math.floor(carouselTrack.parentElement.offsetWidth / itemWidth));
+                    
+                    currentIndex = (currentIndex + 1) % (maxIndex + 1);
+                    updateCarousel();
+                }
+                
+                // Auto-spin every 3 seconds
+                const autoSpinInterval = setInterval(nextSlide, 3000);
+                
+                // Pause on hover
+                carouselTrack.parentElement.addEventListener('mouseenter', () => {
+                    clearInterval(autoSpinInterval);
+                });
+                
+                carouselTrack.parentElement.addEventListener('mouseleave', () => {
+                    // Restart auto-spin
+                    setInterval(nextSlide, 3000);
+                });
+                
+                // Handle window resize
+                window.addEventListener('resize', () => {
+                    updateCarousel();
+                });
+                
+                // Initial positioning
+                updateCarousel();
             }
 
             function returnToHomeLayout() {
