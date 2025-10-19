@@ -2218,8 +2218,10 @@
                 carouselSection.appendChild(carouselContainer);
                 container.appendChild(carouselSection);
                 
-                // Initialize carousel auto-spin
-                initializeCarousel();
+                // Initialize carousel auto-spin with a small delay
+                setTimeout(() => {
+                    initializeCarousel();
+                }, 100);
                 
                 section.appendChild(container);
                 
@@ -2276,10 +2278,18 @@
             
             function initializeCarousel() {
                 const carouselTrack = document.getElementById('carousel-track');
-                if (!carouselTrack) return;
+                if (!carouselTrack) {
+                    console.log('Carousel track not found');
+                    return;
+                }
                 
                 const items = carouselTrack.children;
-                if (items.length === 0) return;
+                if (items.length === 0) {
+                    console.log('No carousel items found');
+                    return;
+                }
+                
+                console.log('Initializing carousel with', items.length, 'items');
                 
                 let currentIndex = 0;
                 const totalItems = items.length;
@@ -2300,27 +2310,32 @@
                     const itemWidth = getItemWidth();
                     const translateX = -currentIndex * itemWidth;
                     carouselTrack.style.transform = `translateX(${translateX}px)`;
+                    console.log('Carousel updated - index:', currentIndex, 'translateX:', translateX);
                 }
                 
                 function nextSlide() {
                     const itemWidth = getItemWidth();
-                    const maxIndex = Math.max(0, totalItems - Math.floor(carouselTrack.parentElement.offsetWidth / itemWidth));
+                    const itemsPerView = Math.floor(carouselTrack.parentElement.offsetWidth / itemWidth);
+                    const maxIndex = Math.max(0, totalItems - itemsPerView);
                     
                     currentIndex = (currentIndex + 1) % (maxIndex + 1);
                     updateCarousel();
                 }
                 
                 // Auto-spin every 3 seconds
-                const autoSpinInterval = setInterval(nextSlide, 3000);
+                let autoSpinInterval = setInterval(nextSlide, 3000);
+                console.log('Carousel auto-spin started');
                 
                 // Pause on hover
                 carouselTrack.parentElement.addEventListener('mouseenter', () => {
                     clearInterval(autoSpinInterval);
+                    console.log('Carousel paused on hover');
                 });
                 
                 carouselTrack.parentElement.addEventListener('mouseleave', () => {
                     // Restart auto-spin
-                    setInterval(nextSlide, 3000);
+                    autoSpinInterval = setInterval(nextSlide, 3000);
+                    console.log('Carousel resumed');
                 });
                 
                 // Handle window resize
