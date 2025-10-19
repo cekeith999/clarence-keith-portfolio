@@ -2369,9 +2369,10 @@
                     line.style.top = `${projectCenterY}px`;
                     line.style.transform = `rotate(${angle}deg)`;
                     line.style.transformOrigin = '0 0';
-                    line.style.zIndex = '0';
+                    line.style.zIndex = '-1';
                     
-                    container.appendChild(line);
+                    // Insert line at the beginning of the container so it appears behind circles
+                    container.insertBefore(line, container.firstChild);
                 }
             }
             
