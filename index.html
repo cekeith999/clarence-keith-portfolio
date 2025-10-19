@@ -588,6 +588,15 @@
             max-height: 100%;
             object-fit: contain;
             border-radius: 8px;
+            transform: scale(1.5);
+            transform-origin: center;
+            transition: transform 0.3s ease;
+            cursor: grab;
+        }
+        
+        .zoom-modal img:active,
+        .zoom-modal video:active {
+            cursor: grabbing;
         }
         
         .zoom-close {
@@ -2961,17 +2970,126 @@
         const zoomModal = document.getElementById('zoom-modal');
         const zoomImage = document.getElementById('zoom-image');
         const zoomClose = document.getElementById('zoom-close');
+        
+        let currentZoom = 1.5; // Start at 150%
+        let isDragging = false;
+        let startX = 0;
+        let startY = 0;
+        let translateX = 0;
+        let translateY = 0;
 
         function openZoomModal(imageSrc) {
             zoomImage.src = imageSrc;
             zoomModal.classList.add('active');
             document.body.style.overflow = 'hidden';
+            
+            // Reset zoom and position
+            currentZoom = 1.5;
+            translateX = 0;
+            translateY = 0;
+            updateImageTransform();
         }
 
         function closeZoomModal() {
             zoomModal.classList.remove('active');
             document.body.style.overflow = 'auto';
         }
+        
+        function updateImageTransform() {
+            zoomImage.style.transform = `scale(${currentZoom}) translate(${translateX}px, ${translateY}px)`;
+        }
+        
+        function zoomIn() {
+            currentZoom = Math.min(currentZoom * 1.2, 5); // Max 500%
+            updateImageTransform();
+        }
+        
+        function zoomOut() {
+            currentZoom = Math.max(currentZoom / 1.2, 0.5); // Min 50%
+            updateImageTransform();
+        }
+
+        // Mouse wheel zoom
+        zoomModal.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            if (e.deltaY < 0) {
+                zoomIn();
+            } else {
+                zoomOut();
+            }
+        });
+        
+        // Touch events for pinch zoom
+        let initialDistance = 0;
+        let initialZoom = 1.5;
+        
+        zoomModal.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) {
+                e.preventDefault();
+                const touch1 = e.touches[0];
+                const touch2 = e.touches[1];
+                initialDistance = Math.sqrt(
+                    Math.pow(touch2.clientX - touch1.clientX, 2) + 
+                    Math.pow(touch2.clientY - touch1.clientY, 2)
+                );
+                initialZoom = currentZoom;
+            } else if (e.touches.length === 1) {
+                // Single touch for dragging
+                isDragging = true;
+                startX = e.touches[0].clientX - translateX;
+                startY = e.touches[0].clientY - translateY;
+            }
+        });
+        
+        zoomModal.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 2) {
+                e.preventDefault();
+                const touch1 = e.touches[0];
+                const touch2 = e.touches[1];
+                const currentDistance = Math.sqrt(
+                    Math.pow(touch2.clientX - touch1.clientX, 2) + 
+                    Math.pow(touch2.clientY - touch1.clientY, 2)
+                );
+                const scale = currentDistance / initialDistance;
+                currentZoom = Math.max(0.5, Math.min(5, initialZoom * scale));
+                updateImageTransform();
+            } else if (e.touches.length === 1 && isDragging) {
+                e.preventDefault();
+                translateX = e.touches[0].clientX - startX;
+                translateY = e.touches[0].clientY - startY;
+                updateImageTransform();
+            }
+        });
+        
+        zoomModal.addEventListener('touchend', (e) => {
+            isDragging = false;
+        });
+        
+        // Mouse drag for panning
+        zoomModal.addEventListener('mousedown', (e) => {
+            if (e.target === zoomImage) {
+                isDragging = true;
+                startX = e.clientX - translateX;
+                startY = e.clientY - translateY;
+                e.preventDefault();
+            }
+        });
+        
+        zoomModal.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                translateX = e.clientX - startX;
+                translateY = e.clientY - startY;
+                updateImageTransform();
+            }
+        });
+        
+        zoomModal.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+        
+        zoomModal.addEventListener('mouseleave', () => {
+            isDragging = false;
+        });
 
         // Close modal when clicking close button or outside the image
         zoomClose.addEventListener('click', closeZoomModal);
