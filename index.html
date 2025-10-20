@@ -147,7 +147,7 @@
         .circle-label {
             position: relative;
             z-index: 1;
-            margin-top: 8px;
+            margin-bottom: 8px;
             pointer-events: none;
             font-weight: bold;
         }
@@ -2429,8 +2429,8 @@
                         label.style.wordWrap = 'break-word';
                         
                         circleLink.appendChild(circleEl);
-                        circleWrapper.appendChild(circleLink);
                         circleWrapper.appendChild(label);
+                        circleWrapper.appendChild(circleLink);
                         container.appendChild(circleWrapper);
                         circles.push(circleEl);
                     });
@@ -2488,8 +2488,8 @@
                     label.style.whiteSpace = 'nowrap';
                     
                     circleLink.appendChild(circleEl);
-                    circleWrapper.appendChild(circleLink);
                     circleWrapper.appendChild(label);
+                    circleWrapper.appendChild(circleLink);
                     container.appendChild(circleWrapper);
                     circles.push(circleEl);
                 });
