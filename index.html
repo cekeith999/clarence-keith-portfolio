@@ -2423,6 +2423,9 @@
                         label.style.fontSize = '12px';
                         label.style.fontWeight = 'bold';
                         label.style.textAlign = 'center';
+                        if (project.id === 'about') {
+                            label.style.display = 'none';
+                        }
                         label.style.transition = 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)';
                         label.style.opacity = '0.8';
                         label.style.maxWidth = `${circleSize + 20}px`;
@@ -2481,6 +2484,9 @@
                     label.style.fontSize = '14px';
                                 label.style.fontWeight = 'bold';
                     label.style.textAlign = 'center';
+                    if (project.id === 'about') {
+                        label.style.display = 'none';
+                    }
                     label.style.transition = 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)';
                     label.style.opacity = '0.8';
                     label.style.maxWidth = `${circleSize + 30}px`;
