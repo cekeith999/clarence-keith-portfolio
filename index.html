@@ -2299,6 +2299,9 @@
                 
                 let currentPosition = 0;
                 let isPaused = false;
+                let isDragging = false;
+                let dragStartX = 0;
+                let dragStartPosition = 0;
                 const totalItems = items.length;
                 const speed = 0.5; // pixels per frame (adjust for speed)
                 
@@ -2334,14 +2337,80 @@
                 
                 // Pause on hover
                 carouselTrack.parentElement.addEventListener('mouseenter', () => {
-                    isPaused = true;
-                    console.log('Carousel paused on hover');
+                    if (!isDragging) {
+                        isPaused = true;
+                        console.log('Carousel paused on hover');
+                    }
                 });
                 
                 carouselTrack.parentElement.addEventListener('mouseleave', () => {
-                    isPaused = false;
-                    console.log('Carousel resumed');
+                    if (!isDragging) {
+                        isPaused = false;
+                        console.log('Carousel resumed');
+                    }
                 });
+                
+                // Drag functionality
+                carouselTrack.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    isPaused = true;
+                    dragStartX = e.clientX;
+                    dragStartPosition = currentPosition;
+                    carouselTrack.style.cursor = 'grabbing';
+                    e.preventDefault();
+                });
+                
+                carouselTrack.addEventListener('mousemove', (e) => {
+                    if (isDragging) {
+                        const deltaX = e.clientX - dragStartX;
+                        currentPosition = dragStartPosition + deltaX;
+                        carouselTrack.style.transform = `translateX(${currentPosition}px)`;
+                    }
+                });
+                
+                carouselTrack.addEventListener('mouseup', () => {
+                    if (isDragging) {
+                        isDragging = false;
+                        isPaused = false;
+                        carouselTrack.style.cursor = 'grab';
+                    }
+                });
+                
+                carouselTrack.addEventListener('mouseleave', () => {
+                    if (isDragging) {
+                        isDragging = false;
+                        isPaused = false;
+                        carouselTrack.style.cursor = 'grab';
+                    }
+                });
+                
+                // Touch support for mobile
+                carouselTrack.addEventListener('touchstart', (e) => {
+                    isDragging = true;
+                    isPaused = true;
+                    dragStartX = e.touches[0].clientX;
+                    dragStartPosition = currentPosition;
+                    e.preventDefault();
+                });
+                
+                carouselTrack.addEventListener('touchmove', (e) => {
+                    if (isDragging) {
+                        const deltaX = e.touches[0].clientX - dragStartX;
+                        currentPosition = dragStartPosition + deltaX;
+                        carouselTrack.style.transform = `translateX(${currentPosition}px)`;
+                        e.preventDefault();
+                    }
+                });
+                
+                carouselTrack.addEventListener('touchend', () => {
+                    if (isDragging) {
+                        isDragging = false;
+                        isPaused = false;
+                    }
+                });
+                
+                // Set initial cursor
+                carouselTrack.style.cursor = 'grab';
                 
                 // Handle window resize
                 window.addEventListener('resize', () => {
