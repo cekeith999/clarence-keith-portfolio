@@ -292,6 +292,7 @@
             height: 4px;
             background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.3), transparent);
             animation: lineFlow 3s ease-in-out infinite;
+            animation-delay: var(--animation-delay, 0s);
         }
         
         @keyframes lineFlow {
@@ -2620,6 +2621,10 @@
                     line.style.transform = `rotate(${angle}deg)`;
                     line.style.transformOrigin = '0 0';
                     line.style.zIndex = '-1';
+                    
+                    // Add staggered animation delay to create offset effect
+                    const delay = i * 0.8; // 0.8s delay between each line
+                    line.style.setProperty('--animation-delay', `${delay}s`);
                     
                     // Insert line at the beginning of the container so it appears behind circles
                     container.insertBefore(line, container.firstChild);
