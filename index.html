@@ -2622,8 +2622,9 @@
                     line.style.transformOrigin = '0 0';
                     line.style.zIndex = '-1';
                     
-                    // Add staggered animation delay to create offset effect
-                    const delay = i * 0.8; // 0.8s delay between each line
+                    // Add uneven staggered animation delay to create organic offset effect
+                    const delays = [0, 1.2, 2.1]; // Uneven delays for more natural flow
+                    const delay = delays[i] || 0;
                     line.style.setProperty('--animation-delay', `${delay}s`);
                     
                     // Insert line at the beginning of the container so it appears behind circles
