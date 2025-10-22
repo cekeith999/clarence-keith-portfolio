@@ -8,7 +8,44 @@
     <link rel="shortcut icon" type="image/png" href="meimages/mehead favicon.webp">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root { --marquee-h: 48px; }
+        :root { 
+            --marquee-h: 48px; 
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #000000;
+            --text-secondary: #333333;
+            --accent-color: #A30000;
+        }
+        
+        /* Red theme variables */
+        .red-theme {
+            --bg-primary: #8B0000;
+            --bg-secondary: #A52A2A;
+            --text-primary: #ffffff;
+            --text-secondary: #f0f0f0;
+            --accent-color: #ffffff;
+        }
+        
+        /* Theme-aware utility classes */
+        .theme-text-primary {
+            color: var(--text-primary) !important;
+        }
+        
+        .theme-text-secondary {
+            color: var(--text-secondary) !important;
+        }
+        
+        .theme-bg-primary {
+            background-color: var(--bg-primary) !important;
+        }
+        
+        .theme-bg-secondary {
+            background-color: var(--bg-secondary) !important;
+        }
+        
+        .theme-accent {
+            color: var(--accent-color) !important;
+        }
         
         /* Yeezy Tstar Font Faces */
         @font-face {
@@ -127,7 +164,7 @@
         .project-content {
             width: 90%;
             overflow-y: auto;
-            background-color: #F2F0EF;
+            background-color: var(--bg-secondary);
             padding: 0;
             height: 100%;
             max-height: calc(100vh - 80px);
@@ -755,7 +792,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen bg-[#F00000] text-black flex flex-col">
+<body class="min-h-screen flex flex-col" style="background-color: var(--bg-primary); color: var(--text-primary);">
 
     <!-- Contact Popup -->
     <div id="contact-popup" class="popup-overlay">
@@ -821,7 +858,7 @@
     </header>
 
     <!-- Page Container -->
-    <main class="flex-grow" id="main-container">
+    <main class="flex-grow" id="main-container" style="background-color: var(--bg-primary); color: var(--text-primary);">
         <!-- Home Page (Circles) -->
         <section id="home" class="page-content active h-full flex items-center justify-center relative">
             <div id="circle-container">
@@ -1036,6 +1073,11 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Check for red theme URL path
+            if (window.location.pathname.includes('/red')) {
+                document.body.classList.add('red-theme');
+            }
+            
             const container = document.getElementById('circle-container');
             const mainContainer = document.getElementById('main-container');
             
