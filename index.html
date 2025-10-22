@@ -399,13 +399,12 @@
         /* Mobile responsiveness for home page circles */
         @media (max-width: 768px) {
             #circle-container {
-                flex-direction: row;
+                flex-direction: column;
                 justify-content: center;
                 align-items: center;
-                gap: 0.5rem;
+                gap: 2rem;
                 padding: 1rem;
-                flex-wrap: nowrap;
-                overflow-x: auto;
+                height: 100vh;
             }
             .portfolio-circle {
                 position: relative !important;
@@ -2462,11 +2461,57 @@
                 const isMobile = window.innerWidth <= 768;
                 
                 if (isMobile) {
-                    // Mobile layout - horizontal arrangement
+                    // Mobile layout - pyramid arrangement
                     const circleSize = Math.min(containerSize * 0.3, 160);
                     
-                    projectsConfig.forEach((project, i) => {
-                        // Create wrapper for circle and label
+                    // First, add the About Me circle at the top
+                    const aboutProject = projectsConfig.find(p => p.id === 'about');
+                    if (aboutProject) {
+                        const circleWrapper = document.createElement('div');
+                        circleWrapper.style.display = 'flex';
+                        circleWrapper.style.flexDirection = 'column';
+                        circleWrapper.style.alignItems = 'center';
+                        circleWrapper.style.gap = '8px';
+                        
+                        const circleLink = document.createElement('a');
+                        circleLink.dataset.target = aboutProject.id;
+                        circleLink.classList.add('nav-link');
+                        
+                        const circleEl = document.createElement('div');
+                        circleEl.classList.add('portfolio-circle');
+                        circleEl.style.width = `${circleSize}px`;
+                        circleEl.style.height = `${circleSize}px`;
+                        circleEl.style.backgroundImage = `url('${aboutProject.circleImage}')`;
+                        circleEl.style.position = 'relative';
+                        circleEl.style.top = 'auto';
+                        circleEl.style.left = 'auto';
+                        circleEl.style.transform = 'none';
+                        circleEl.style.margin = '0';
+                        
+                        // Create label (hidden for about)
+                        const label = document.createElement('div');
+                        label.classList.add('circle-label');
+                        label.textContent = aboutProject.name;
+                        label.style.display = 'none';
+                        
+                        circleLink.appendChild(circleEl);
+                        circleWrapper.appendChild(label);
+                        circleWrapper.appendChild(circleLink);
+                        container.appendChild(circleWrapper);
+                        circles.push(circleEl);
+                    }
+                    
+                    // Then add the three project circles in a row at the bottom
+                    const projectWrapper = document.createElement('div');
+                    projectWrapper.style.display = 'flex';
+                    projectWrapper.style.flexDirection = 'row';
+                    projectWrapper.style.justifyContent = 'center';
+                    projectWrapper.style.alignItems = 'center';
+                    projectWrapper.style.gap = '1rem';
+                    projectWrapper.style.flexWrap = 'wrap';
+                    
+                    const projectCircles = projectsConfig.filter(p => p.id !== 'about');
+                    projectCircles.forEach((project, i) => {
                         const circleWrapper = document.createElement('div');
                         circleWrapper.style.display = 'flex';
                         circleWrapper.style.flexDirection = 'column';
@@ -2496,9 +2541,6 @@
                         label.style.fontSize = '14px';
                         label.style.fontWeight = 'bold';
                         label.style.textAlign = 'center';
-                        if (project.id === 'about') {
-                            label.style.display = 'none';
-                        }
                         label.style.transition = 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)';
                         label.style.opacity = '0.8';
                         label.style.maxWidth = `${circleSize + 20}px`;
@@ -2507,9 +2549,11 @@
                         circleLink.appendChild(circleEl);
                         circleWrapper.appendChild(label);
                         circleWrapper.appendChild(circleLink);
-                        container.appendChild(circleWrapper);
+                        projectWrapper.appendChild(circleWrapper);
                         circles.push(circleEl);
                     });
+                    
+                    container.appendChild(projectWrapper);
                 } else {
                     // Desktop layout - triangular arrangement
                 radius = containerSize * 0.25;
