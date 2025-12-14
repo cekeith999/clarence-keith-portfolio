@@ -353,26 +353,21 @@
                     if (!config) continue;
                     
                     // Calculate raw Z position
-                    // Use modulo to keep values manageable and prevent precision loss
-                    const baseZ = config.originalZ % totalZRange;
-                    let newZ = baseZ - (zOffset % totalZRange);
+                    // Keep continuous scroll but use efficient wrapping
+                    let newZ = config.originalZ - zOffset;
                     
-                    // Normalize newZ to be within the expected range
-                    if (newZ < 0) {
-                        newZ += totalZRange;
-                    }
-                    if (newZ >= totalZRange) {
-                        newZ -= totalZRange;
+                    // Efficient wrapping: calculate how many cycles behind we are
+                    // This prevents multiple iterations and handles large scroll values
+                    if (newZ < wrapBehind) {
+                        // Calculate cycles behind in one step
+                        const cyclesBehind = Math.floor((wrapBehind - newZ) / totalZRange) + 1;
+                        newZ += cyclesBehind * totalZRange;
                     }
                     
-                    // Adjust for wrapping: if layer goes behind camera, wrap forward
-                    if (newZ < wrapBehind || newZ < minVisibleZ) {
-                        // Wrap forward by one cycle
-                        newZ += totalZRange;
-                        // Keep wrapping if still behind
-                        while (newZ < minVisibleZ) {
-                            newZ += totalZRange;
-                        }
+                    // Also handle wrapping if too far ahead (shouldn't happen but safety check)
+                    if (newZ > maxVisibleZ + totalZRange) {
+                        const cyclesAhead = Math.floor((newZ - maxVisibleZ) / totalZRange);
+                        newZ -= cyclesAhead * totalZRange;
                     }
                     
                     // Visibility culling: skip layers outside visible range
