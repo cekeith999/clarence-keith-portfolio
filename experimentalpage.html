@@ -100,11 +100,12 @@
         .motion-layer-container {
             position: relative;
             width: 100%;
-            min-height: 200vh; /* Extra height for scroll effect */
+            min-height: 300vh; /* Extra height for scroll effect - make it taller */
             perspective: 1000px;
             perspective-origin: center center;
             padding: 4rem 2rem;
-            overflow: hidden;
+            overflow: visible; /* Allow layers to move outside */
+            margin-bottom: 4rem;
         }
         
         .motion-layer-item {
@@ -114,8 +115,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            will-change: transform;
-            transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform, opacity, filter;
+            transition: transform 0.05s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        opacity 0.1s ease,
+                        filter 0.1s ease;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
         }
         
         .layer-content {
@@ -464,12 +469,20 @@
             window.addEventListener('scroll', () => {
                 scrollY = window.scrollY;
                 if (!ticking) {
-                    requestAnimationFrame(updateMotionLayers);
+                    requestAnimationFrame(() => {
+                        updateMotionLayers();
+                        ticking = false;
+                    });
                     ticking = true;
                 }
-            });
+            }, { passive: true });
             
             function updateMotionLayers() {
+                if (!motionLayerContainer || layers.length === 0) {
+                    console.error('Motion layer elements not found');
+                    return;
+                }
+                
                 // Update background blobs
                 if (blob1 && blob2 && blob3) {
                     const moveX1 = mouseX * 50;
@@ -488,50 +501,58 @@
                 const containerRect = motionLayerContainer.getBoundingClientRect();
                 const containerTop = containerRect.top;
                 const containerHeight = containerRect.height;
-                const scrollProgress = Math.max(0, Math.min(1, -containerTop / containerHeight));
+                const windowHeight = window.innerHeight;
+                
+                // Calculate scroll progress (0 when container is at top, 1 when scrolled past)
+                const scrollProgress = Math.max(0, Math.min(1, (windowHeight - containerTop) / (containerHeight + windowHeight)));
                 
                 // Different depth multipliers for each layer (creating 3D effect)
                 const depthMultipliers = {
-                    1: 0.2,  // Furthest back
-                    2: 0.4,
-                    3: 0.6,
-                    4: 0.8,
-                    5: 1.0   // Closest
+                    1: 0.3,  // Furthest back
+                    2: 0.5,
+                    3: 0.7,
+                    4: 0.9,
+                    5: 1.2   // Closest - moves more
                 };
                 
-                layers.forEach((layer, index) => {
+                layers.forEach((layer) => {
                     const layerNum = parseInt(layer.dataset.layer);
                     const depth = depthMultipliers[layerNum] || 1;
                     
                     // Calculate 3D transform based on scroll
-                    const translateZ = scrollProgress * depth * 200 - 100; // Move layers in Z space
-                    const translateY = scrollProgress * depth * 100; // Parallax Y movement
-                    const rotateX = scrollProgress * depth * 5; // Slight rotation for depth
+                    // Layers move forward in Z-space as you scroll
+                    const translateZ = (scrollProgress - 0.5) * depth * 300; // Move layers in Z space
+                    const translateY = scrollProgress * depth * 150; // Parallax Y movement
+                    const rotateX = (scrollProgress - 0.5) * depth * 8; // Rotation for depth
                     
                     // Mouse parallax effect (subtle)
-                    const mouseParallaxX = mouseX * depth * 20;
-                    const mouseParallaxY = mouseY * depth * 20;
+                    const mouseParallaxX = mouseX * depth * 30;
+                    const mouseParallaxY = mouseY * depth * 30;
                     
                     // Apply 3D transform
                     layer.style.transform = `
                         translate3d(${mouseParallaxX}px, ${translateY + mouseParallaxY}px, ${translateZ}px)
                         rotateX(${rotateX}deg)
-                        scale(${1 + scrollProgress * depth * 0.1})
+                        scale(${1 + (scrollProgress - 0.5) * depth * 0.2})
                     `;
                     
-                    // Adjust opacity based on depth
-                    layer.style.opacity = 0.7 + (depth * 0.3);
+                    // Adjust opacity and blur based on depth for more dramatic effect
+                    const opacity = 0.6 + (depth * 0.4);
+                    layer.style.opacity = opacity;
+                    layer.style.filter = `blur(${(1 - depth) * 2}px)`;
                 });
                 
-                // Update container perspective
-                const perspectiveValue = 1000 + scrollProgress * 500;
+                // Update container perspective dynamically
+                const perspectiveValue = 800 + scrollProgress * 700;
                 motionLayerContainer.style.perspective = `${perspectiveValue}px`;
                 
                 ticking = false;
             }
             
             // Initial update
-            updateMotionLayers();
+            if (motionLayerContainer) {
+                updateMotionLayers();
+            }
         });
     </script>
 </body>
