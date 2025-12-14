@@ -16,8 +16,8 @@
         
         .motion-layer {
             position: absolute;
-            width: 400px;
-            height: 400px;
+            width: 200px;
+            height: 200px;
             left: 50%;
             top: 50%;
             transform-origin: center center;
@@ -242,14 +242,15 @@
                 imageWrapper.style.inset = '0px';
                 
                 // Placeholder image - you can replace these with your own images
+                // Updated to match new layer size (200px)
                 const img = document.createElement('img');
                 img.decoding = 'async';
                 img.loading = 'lazy';
-                img.width = 400;
-                img.height = 400;
+                img.width = 200;
+                img.height = 200;
                 // Use the assigned color for this layer
                 const color = config.color || '#000000';
-                img.src = `data:image/svg+xml,${encodeURIComponent(`<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="400" fill="${color}" /></svg>`)}`;
+                img.src = `data:image/svg+xml,${encodeURIComponent(`<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="${color}" /></svg>`)}`;
                 img.alt = `Motion Layer ${index + 1}`;
                 img.style.display = 'block';
                 img.style.width = '100%';
@@ -347,9 +348,9 @@
                     
                     // Match Framer's exact transform format: translateX(-50%) translateY(-50%) translateZ(...) scale(...)
                     // For hover, calculate Y as percentage to avoid calc() which can cause issues
-                    // Layer is 400px tall, so -50% = -200px. Add hover offset and convert back to percentage
-                    const yTranslatePx = -200 + hoverOffset;
-                    const yTranslatePercent = (yTranslatePx / 400) * 100;
+                    // Layer is 200px tall, so -50% = -100px. Add hover offset and convert back to percentage
+                    const yTranslatePx = -100 + hoverOffset;
+                    const yTranslatePercent = (yTranslatePx / 200) * 100;
                     const scale = 1.0; // Fixed scale, no zoom
                     
                     // Build transform string matching Framer's format exactly
