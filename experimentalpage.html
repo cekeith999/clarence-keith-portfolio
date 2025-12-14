@@ -230,8 +230,8 @@
     </header>
 
     <main class="flex-grow" id="main-container" style="background-color: rgb(237, 243, 237); color: var(--text-primary); position: relative;">
-        <!-- Scrollable content area for scroll-based animation -->
-        <div class="scroll-content" style="height: 300vh; position: relative;">
+        <!-- Scrollable content area for infinite scroll animation -->
+        <div class="scroll-content" style="height: 500vh; position: relative;">
             <!-- Framer Motion Layer Structure - Fixed in viewport -->
             <div class="framer-motion-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; pointer-events: none; background: rgb(237, 243, 237); overflow: hidden;">
                 <div style="width: 100%; height: 100%; position: relative; overflow: hidden; perspective: 1900px; perspective-origin: center center; transform-style: preserve-3d; pointer-events: auto;">
@@ -277,41 +277,39 @@
             // Framer Motion Layer Implementation
             const sceneContainer = document.getElementById('scene-container');
             
-            // Layer configurations with translateZ values (from Framer code)
-            const layerConfigs = [
-                { z: 778, scale: 1.15195, zIndex: 12780 },
-                { z: 650, scale: 1.12695, zIndex: 11500 },
-                { z: 522, scale: 1.10195, zIndex: 10220 },
-                { z: 394, scale: 1.07695, zIndex: 8940 },
-                { z: 266, scale: 1.05195, zIndex: 7660 },
-                { z: 138, scale: 1.02695, zIndex: 6380 },
-                { z: 10, scale: 1.00195, zIndex: 5100 },
-                { z: -118, scale: 0.976953, zIndex: 3820 },
-                { z: -246, scale: 0.951953, zIndex: 2540 },
-                { z: -374, scale: 0.926953, zIndex: 1260 },
-                { z: -502, scale: 0.901953, zIndex: -20 },
-                { z: -630, scale: 0.876953, zIndex: -1300 },
-                { z: -758, scale: 0.851953, zIndex: -2580 },
-                { z: -886, scale: 0.826953, zIndex: -3860 },
-                { z: -1014, scale: 0.801953, zIndex: -5140 },
-                { z: -1142, scale: 0.776953, zIndex: -6420 },
-                { z: -1270, scale: 0.751953, zIndex: -7700 },
-                { z: -1398, scale: 0.726953, zIndex: -8980 },
-                { z: -1526, scale: 0.701953, zIndex: -10260 },
-                { z: -1654, scale: 0.676953, zIndex: -11540 },
-                { z: -1782, scale: 0.651953, zIndex: -12820 },
-                { z: -1910, scale: 0.626953, zIndex: -14100 },
-                { z: -2038, scale: 0.601953, zIndex: -15380 },
-                { z: 1930, scale: 1.37695, zIndex: 24300 },
-                { z: 1802, scale: 1.35195, zIndex: 23020 },
-                { z: 1674, scale: 1.32695, zIndex: 21740 },
-                { z: 1546, scale: 1.30195, zIndex: 20460 },
-                { z: 1418, scale: 1.27695, zIndex: 19180 },
-                { z: 1290, scale: 1.25195, zIndex: 17900 },
-                { z: 1162, scale: 1.22695, zIndex: 16620 },
-                { z: 1034, scale: 1.20195, zIndex: 15340 },
-                { z: 906, scale: 1.17695, zIndex: 14060 }
+            // 10 distinct colors for the layers
+            const layerColors = [
+                '#FF0000', // Red
+                '#00FF00', // Green
+                '#0000FF', // Blue
+                '#FFFF00', // Yellow
+                '#FF00FF', // Magenta
+                '#00FFFF', // Cyan
+                '#FFA500', // Orange
+                '#800080', // Purple
+                '#FFC0CB', // Pink
+                '#A52A2A'  // Brown
             ];
+            
+            // Create infinite scroll layers - 10 layers that repeat
+            // Each layer has a fixed Z position, no scaling
+            const layerConfigs = [];
+            const layersPerSet = 10;
+            const zSpacing = 128; // Space between layers in Z-axis
+            
+            // Create multiple sets for infinite scroll (3 sets = 30 layers total)
+            for (let set = 0; set < 3; set++) {
+                for (let i = 0; i < layersPerSet; i++) {
+                    const z = (set * layersPerSet + i) * zSpacing;
+                    const colorIndex = i % layerColors.length;
+                    layerConfigs.push({
+                        z: z,
+                        scale: 1.0, // Fixed scale, no zoom
+                        zIndex: 1000 + z,
+                        color: layerColors[colorIndex]
+                    });
+                }
+            }
             
             // Create motion layers
             layerConfigs.forEach((config, index) => {
@@ -333,8 +331,9 @@
                 img.loading = 'lazy';
                 img.width = 400;
                 img.height = 400;
-                // Use a gradient placeholder that matches the design
-                img.src = `data:image/svg+xml,${encodeURIComponent(`<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="grad${index}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:rgb(163,0,0);stop-opacity:0.${Math.floor(Math.random() * 5 + 5)}" /><stop offset="100%" style="stop-color:rgb(237,243,237);stop-opacity:0.${Math.floor(Math.random() * 5 + 5)}" /></linearGradient></defs><rect width="400" height="400" fill="url(#grad${index})" /></svg>`)}`;
+                // Use the assigned color for this layer
+                const color = config.color || '#000000';
+                img.src = `data:image/svg+xml,${encodeURIComponent(`<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="400" fill="${color}" /></svg>`)}`;
                 img.alt = `Motion Layer ${index + 1}`;
                 img.style.display = 'block';
                 img.style.width = '100%';
@@ -400,15 +399,23 @@
                 // Use transform3d for hardware acceleration
                 sceneContainer.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
                 
+                // Infinite scroll: layers move continuously in Z-space
+                // Calculate continuous Z offset based on scroll
+                const totalZRange = layersPerSet * zSpacing; // Distance for one full cycle
+                const zOffset = (scrollY % totalZRange); // Modulo for infinite loop
+                
                 // Update each layer's position based on scroll
                 layers.forEach((layer, index) => {
                     const config = layerConfigs[index];
                     if (config) {
-                        // Layers move forward in Z-space as you scroll (no scaling)
-                        const zOffset = scrollProgress * 600; // Total Z movement range
-                        const newZ = config.z + zOffset;
+                        // Continuous Z movement - layers cycle infinitely
+                        // Subtract offset so layers appear to move forward continuously
+                        const newZ = config.z - zOffset;
                         
-                        // Keep original scale - no zoom effect
+                        // If layer goes behind camera, move it forward (infinite loop)
+                        const adjustedZ = newZ < -1000 ? newZ + (layersPerSet * zSpacing * 3) : newZ;
+                        
+                        // Fixed scale - no zoom
                         const baseScale = config.scale;
                         
                         // Get hover offset from data attribute (set by mouse hover)
@@ -416,7 +423,7 @@
                         
                         // Use transform3d for better performance
                         // Add hover offset to Y position (moves up on hover)
-                        layer.style.transform = `translate3d(-50%, calc(-50% + ${hoverOffset}px), ${newZ}px) scale(${baseScale})`;
+                        layer.style.transform = `translate3d(-50%, calc(-50% + ${hoverOffset}px), ${adjustedZ}px) scale(${baseScale})`;
                     }
                 });
                 
