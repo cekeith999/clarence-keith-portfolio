@@ -58,6 +58,15 @@
             transform-style: preserve-3d;
             -webkit-perspective: 1900px;
             perspective: 1900px;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+        
+        .motion-layer {
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
         }
     </style>
 </head>
@@ -285,20 +294,23 @@
                 layers = Array.from(document.querySelectorAll('.motion-layer'));
             }
             
-            // Optimized scroll handler - match Framer's approach
-            // Use a more efficient throttling mechanism
+            // Optimized scroll handler - prevent frame buildup
             let rafId = null;
+            let isUpdating = false;
             function handleScroll() {
                 scrollY = window.pageYOffset || document.documentElement.scrollTop;
-                // Cancel any pending frame
-                if (rafId !== null) {
-                    cancelAnimationFrame(rafId);
+                // Only schedule if not already updating
+                if (!isUpdating) {
+                    if (rafId !== null) {
+                        cancelAnimationFrame(rafId);
+                    }
+                    rafId = requestAnimationFrame(() => {
+                        isUpdating = true;
+                        updateScene();
+                        isUpdating = false;
+                        rafId = null;
+                    });
                 }
-                // Schedule update for next frame
-                rafId = requestAnimationFrame(() => {
-                    updateScene();
-                    rafId = null;
-                });
             }
             
             window.addEventListener('scroll', handleScroll, { passive: true });
@@ -318,61 +330,68 @@
                 }
                 
                 // Fixed perspective angle - front-facing view
-                // Keep the initial rotation constant
-                const rotateX = 0; // No tilt - straight on view
-                const rotateY = 0; // No side rotation - front facing
-                
-                // Match Framer's transform format exactly
+                const rotateX = 0;
+                const rotateY = 0;
                 sceneContainer.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
                 
                 // Infinite scroll: layers move continuously in Z-space
-                const totalZRange = layersPerSet * zSpacing; // Distance for one full cycle (15 layers = 1500px)
-                const scrollSpeed = 1.5; // How fast layers move
-                const zOffset = scrollY * scrollSpeed; // Continuous offset
-                const wrapBehind = -zSpacing * 3; // Wrap when 3 layers behind camera (completely invisible)
-                const perspectiveDistance = 1900; // Match perspective value
+                const totalZRange = layersPerSet * zSpacing; // Distance for one full cycle
+                const scrollSpeed = 1.5;
+                const zOffset = scrollY * scrollSpeed;
+                const wrapBehind = -zSpacing * 3;
+                const perspectiveDistance = 1900;
                 
-                // Optimize: Use for loop instead of forEach for better performance
-                // Pre-calculate constants outside loop
+                // Performance: Pre-calculate constants and use efficient wrapping
                 const layerCount = layers.length;
+                const maxVisibleZ = 2000; // Only update layers within visible range
+                const minVisibleZ = -500; // Cull layers too far back
                 
-                // Batch DOM reads/writes for better performance
+                // Use transform3d for hardware acceleration
                 for (let i = 0; i < layerCount; i++) {
                     const layer = layers[i];
                     const config = layerConfigs[i];
                     if (!config) continue;
                     
-                    // Calculate raw Z position
+                    // Calculate raw Z position with proper wrapping to prevent overflow
                     let newZ = config.originalZ - zOffset;
                     
-                    // Instant offscreen wrapping: when layer goes behind camera, wrap forward
+                    // Optimized wrapping: use modulo for cleaner wrapping
+                    // Normalize to prevent extreme values that break calculations
                     if (newZ < wrapBehind) {
-                        // Calculate how many full cycles the layer has passed behind the camera
-                        const cyclesBehind = Math.ceil((wrapBehind - newZ) / totalZRange);
+                        // Calculate wrap offset more efficiently
+                        const offsetFromWrap = newZ - wrapBehind;
+                        const cyclesBehind = Math.floor(Math.abs(offsetFromWrap) / totalZRange) + 1;
                         newZ += cyclesBehind * totalZRange;
                     }
                     
-                    // Calculate scale based on Z position for perspective effect
-                    // As layers move closer (positive Z), they get bigger
-                    // As layers move further (negative Z), they get smaller
-                    // Formula: scale = perspectiveDistance / (perspectiveDistance - z)
-                    const scale = perspectiveDistance / (perspectiveDistance - newZ);
+                    // Visibility culling: skip layers outside visible range
+                    if (newZ > maxVisibleZ || newZ < minVisibleZ) {
+                        // Hide offscreen layers
+                        layer.style.opacity = '0';
+                        layer.style.pointerEvents = 'none';
+                        continue;
+                    }
+                    
+                    // Show visible layers
+                    layer.style.opacity = '0.9';
+                    layer.style.pointerEvents = 'auto';
+                    
+                    // Calculate scale with bounds checking to prevent division issues
+                    const denominator = perspectiveDistance - newZ;
+                    const scale = denominator > 0 ? perspectiveDistance / denominator : 0.1;
+                    
+                    // Clamp scale to reasonable bounds
+                    const clampedScale = Math.max(0.1, Math.min(scale, 5));
                     
                     // Calculate Y position for line arrangement
-                    // Each layer is positioned in a line going down
-                    const yOffset = i * 3; // Vertical spacing between squares (in percentage)
-                    const baseY = -50; // Start at center
-                    
-                    // Get hover offset from cache (set by mouse hover)
+                    const yOffset = i * 3;
+                    const baseY = -50;
                     const hoverOffset = layer._cachedHoverY || 0;
-                    
-                    // Calculate Y translation with hover offset
-                    // Layer is 50px tall, so -50% = -25px. Add hover offset and convert back to percentage
                     const yTranslatePx = -25 + hoverOffset;
                     const yTranslatePercent = (yTranslatePx / 50) * 100;
                     
-                    // Build transform string - position on left, with Y offset for line, scale for perspective
-                    layer.style.transform = `translateX(-50%) translateY(${baseY + yOffset + yTranslatePercent}%) translateZ(${newZ}px) scale(${scale})`;
+                    // Use transform3d for hardware acceleration
+                    layer.style.transform = `translate3d(-50%, ${baseY + yOffset + yTranslatePercent}%, ${newZ}px) scale(${clampedScale})`;
                 }
                 
                 lastScrollY = scrollY;
