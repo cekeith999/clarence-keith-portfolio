@@ -96,175 +96,51 @@
             left: 50%;
         }
         
-        /* Framer-style 3D Motion Layer Container */
-        .motion-layer-container {
-            position: relative;
-            width: 100%;
-            min-height: 300vh; /* Extra height for scroll effect - make it taller */
-            perspective: 1000px;
-            perspective-origin: center center;
-            padding: 4rem 2rem;
-            overflow: visible; /* Allow layers to move outside */
-            margin-bottom: 4rem;
+        /* Framer Motion Layer Styles */
+        .framer-motion-container {
+            min-height: 100vh;
         }
         
-        .motion-layer-item {
+        .motion-layer {
             position: absolute;
-            width: 100%;
-            height: 100vh;
+            width: 400px;
+            height: 400px;
+            left: 50%;
+            top: 50%;
+            transform-origin: center center;
+            background-color: rgb(0, 0, 0);
+            box-shadow: none;
+            border-radius: 12px;
+            border: none;
+            pointer-events: auto;
+            will-change: transform, opacity;
+            overflow: hidden;
             display: flex;
-            align-items: center;
             justify-content: center;
-            will-change: transform, opacity, filter;
-            transition: transform 0.05s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                        opacity 0.1s ease,
-                        filter 0.1s ease;
-            backface-visibility: hidden;
-            transform-style: preserve-3d;
-        }
-        
-        .layer-content {
-            max-width: 1200px;
-            width: 100%;
-            padding: 2rem;
-            text-align: center;
-        }
-        
-        /* Different depths for each layer */
-        .motion-layer-item[data-layer="1"] {
-            transform-style: preserve-3d;
-        }
-        
-        .motion-layer-item[data-layer="2"] {
-            transform-style: preserve-3d;
-        }
-        
-        .motion-layer-item[data-layer="3"] {
-            transform-style: preserve-3d;
-        }
-        
-        .motion-layer-item[data-layer="4"] {
-            transform-style: preserve-3d;
-        }
-        
-        .motion-layer-item[data-layer="5"] {
-            transform-style: preserve-3d;
-        }
-        
-        /* Content layer - above motion layer */
-        .experimental-container {
-            min-height: calc(100vh - 80px - var(--marquee-h));
-            padding: 2rem;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .glitch-text {
-            position: relative;
-            font-size: 4rem;
-            font-weight: bold;
-            color: #A30000;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            animation: glitch 2s infinite;
-            text-shadow: 0 0 20px rgba(163, 0, 0, 0.3);
-        }
-        
-        @keyframes glitch {
-            0%, 100% {
-                text-shadow: 
-                    2px 2px 0 #ff0000,
-                    -2px -2px 0 #00ffff;
-            }
-            20% {
-                text-shadow: 
-                    -2px 2px 0 #ff0000,
-                    2px -2px 0 #00ffff;
-            }
-            40% {
-                text-shadow: 
-                    2px -2px 0 #ff0000,
-                    -2px 2px 0 #00ffff;
-            }
-            60% {
-                text-shadow: 
-                    -2px -2px 0 #ff0000,
-                    2px 2px 0 #00ffff;
-            }
-            80% {
-                text-shadow: 
-                    2px 2px 0 #ff0000,
-                    -2px -2px 0 #00ffff;
-            }
-        }
-        
-        .morphing-shape {
-            width: 200px;
-            height: 200px;
-            background: linear-gradient(45deg, #A30000, #ff0000);
-            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-            animation: morph 8s ease-in-out infinite;
-            margin: 2rem auto;
-        }
-        
-        @keyframes morph {
-            0%, 100% {
-                border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-            }
-            25% {
-                border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%;
-            }
-            50% {
-                border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%;
-            }
-            75% {
-                border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%;
-            }
-        }
-        
-        .interactive-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-        
-        .grid-item {
-            aspect-ratio: 1;
-            background: var(--bg-secondary);
-            border: 2px solid #A30000;
+            align-items: center;
             cursor: pointer;
-            transition: all 0.3s ease;
+        }
+        
+        .motion-layer > div {
+            box-sizing: border-box;
+            padding: 0px;
+            border-radius: 8px;
+            pointer-events: auto;
+            width: 100%;
+            height: 100%;
             display: flex;
-            align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            align-items: center;
         }
         
-        .grid-item:hover {
-            transform: scale(1.1) rotate(5deg);
-            background: #A30000;
-            color: white;
-            box-shadow: 0 10px 30px rgba(163, 0, 0, 0.5);
+        .motion-layer img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: inherit;
+            object-position: center center;
+            object-fit: cover;
         }
-        
-        .text-reveal {
-            opacity: 0;
-            transform: translateY(20px);
-            animation: reveal 1s ease-out forwards;
-        }
-        
-        @keyframes reveal {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .text-reveal:nth-child(1) { animation-delay: 0.1s; }
-        .text-reveal:nth-child(2) { animation-delay: 0.3s; }
-        .text-reveal:nth-child(3) { animation-delay: 0.5s; }
-        .text-reveal:nth-child(4) { animation-delay: 0.7s; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col" style="background-color: var(--bg-primary); color: var(--text-primary);">
@@ -336,66 +212,18 @@
     </header>
 
     <main class="flex-grow" id="main-container" style="background-color: var(--bg-primary); color: var(--text-primary);">
-        <!-- Framer-style 3D Motion Layer Container -->
-        <div class="motion-layer-container" id="motion-layer-container">
-            <!-- Layer 1 - Background (furthest) -->
-            <div class="motion-layer-item" data-layer="1" style="z-index: 1;">
-                <div class="layer-content">
-                    <h1 class="glitch-text mb-4">EXPERIMENTAL</h1>
-                </div>
-            </div>
-            
-            <!-- Layer 2 - Middle -->
-            <div class="motion-layer-item" data-layer="2" style="z-index: 2;">
-                <div class="layer-content">
-                    <p class="text-xl text-black text-reveal">A space for digital exploration</p>
-                    <p class="text-lg text-black text-reveal">Testing boundaries between form and function</p>
-                </div>
-            </div>
-            
-            <!-- Layer 3 - Foreground (closest) -->
-            <div class="motion-layer-item" data-layer="3" style="z-index: 3;">
-                <div class="layer-content">
-                    <div class="morphing-shape"></div>
-                </div>
-            </div>
-            
-            <!-- Layer 4 - Content -->
-            <div class="motion-layer-item" data-layer="4" style="z-index: 4;">
-                <div class="layer-content">
-                    <div class="mt-12 space-y-6">
-                        <p class="text-black text-lg text-reveal">
-                            This is an experimental space where ideas take shape through code, design, and interaction.
-                        </p>
-                        <p class="text-black text-lg text-reveal">
-                            Every element here is a test—a question about how we experience digital spaces.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Layer 5 - Interactive Grid -->
-            <div class="motion-layer-item" data-layer="5" style="z-index: 5;">
-                <div class="layer-content">
-                    <div class="interactive-grid mt-12">
-                        <div class="grid-item">01</div>
-                        <div class="grid-item">02</div>
-                        <div class="grid-item">03</div>
-                        <div class="grid-item">04</div>
-                        <div class="grid-item">05</div>
-                        <div class="grid-item">06</div>
-                        <div class="grid-item">07</div>
-                        <div class="grid-item">08</div>
-                    </div>
+        <!-- Framer Motion Layer Structure -->
+        <div class="framer-motion-container" style="display:block;flex:0 0 auto;pointer-events:none;width:100%;height:100vh;background:rgb(237, 243, 237);overflow-x:hidden;overflow-y:hidden;transform:none">
+            <div style="width:100%;height:100%;position:relative;overflow:hidden;perspective:1900px;perspective-origin:center center;-webkit-transform-style:preserve-3d;transform-style:preserve-3d;pointer-events:auto">
+                <div class="scene-container" id="scene-container" style="position: absolute; width: 100%; height: 100%; transform-origin: center center; will-change: transform; transform-style: preserve-3d; pointer-events: none; transform: rotateX(-26.27deg) rotateY(-45deg);">
+                    <!-- Motion layers will be generated here -->
                 </div>
             </div>
         </div>
         
-        <!-- Regular content container for non-layered content -->
-        <div class="experimental-container w-full max-w-6xl mx-auto" style="position: relative; z-index: 10;">
-            <div class="mt-12 text-center">
-                <a href="index.html" class="text-[#A30000] hover:underline text-lg">← Back to Home</a>
-            </div>
+        <!-- Back link -->
+        <div style="position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 10000; background: rgba(255,255,255,0.9); padding: 1rem 2rem; border-radius: 8px;">
+            <a href="index.html" class="text-[#A30000] hover:underline text-lg">← Back to Home</a>
         </div>
     </main>
 
@@ -425,134 +253,120 @@
             // Get current file path for live editing
             window.currentPagePath = 'experimentalpage.html';
             
-            // Add interactive behavior to grid items
-            const gridItems = document.querySelectorAll('.grid-item');
-            gridItems.forEach((item, index) => {
-                item.addEventListener('click', () => {
-                    // Random rotation on click
-                    const randomRotate = Math.random() * 360;
-                    item.style.transform = `scale(1.2) rotate(${randomRotate}deg)`;
-                    
-                    // Reset after animation
-                    setTimeout(() => {
-                        item.style.transform = '';
-                    }, 500);
-                });
+            // Framer Motion Layer Implementation
+            const sceneContainer = document.getElementById('scene-container');
+            
+            // Layer configurations with translateZ values (from Framer code)
+            const layerConfigs = [
+                { z: 778, scale: 1.15195, zIndex: 12780 },
+                { z: 650, scale: 1.12695, zIndex: 11500 },
+                { z: 522, scale: 1.10195, zIndex: 10220 },
+                { z: 394, scale: 1.07695, zIndex: 8940 },
+                { z: 266, scale: 1.05195, zIndex: 7660 },
+                { z: 138, scale: 1.02695, zIndex: 6380 },
+                { z: 10, scale: 1.00195, zIndex: 5100 },
+                { z: -118, scale: 0.976953, zIndex: 3820 },
+                { z: -246, scale: 0.951953, zIndex: 2540 },
+                { z: -374, scale: 0.926953, zIndex: 1260 },
+                { z: -502, scale: 0.901953, zIndex: -20 },
+                { z: -630, scale: 0.876953, zIndex: -1300 },
+                { z: -758, scale: 0.851953, zIndex: -2580 },
+                { z: -886, scale: 0.826953, zIndex: -3860 },
+                { z: -1014, scale: 0.801953, zIndex: -5140 },
+                { z: -1142, scale: 0.776953, zIndex: -6420 },
+                { z: -1270, scale: 0.751953, zIndex: -7700 },
+                { z: -1398, scale: 0.726953, zIndex: -8980 },
+                { z: -1526, scale: 0.701953, zIndex: -10260 },
+                { z: -1654, scale: 0.676953, zIndex: -11540 },
+                { z: -1782, scale: 0.651953, zIndex: -12820 },
+                { z: -1910, scale: 0.626953, zIndex: -14100 },
+                { z: -2038, scale: 0.601953, zIndex: -15380 },
+                { z: 1930, scale: 1.37695, zIndex: 24300 },
+                { z: 1802, scale: 1.35195, zIndex: 23020 },
+                { z: 1674, scale: 1.32695, zIndex: 21740 },
+                { z: 1546, scale: 1.30195, zIndex: 20460 },
+                { z: 1418, scale: 1.27695, zIndex: 19180 },
+                { z: 1290, scale: 1.25195, zIndex: 17900 },
+                { z: 1162, scale: 1.22695, zIndex: 16620 },
+                { z: 1034, scale: 1.20195, zIndex: 15340 },
+                { z: 906, scale: 1.17695, zIndex: 14060 }
+            ];
+            
+            // Create motion layers
+            layerConfigs.forEach((config, index) => {
+                const layer = document.createElement('div');
+                layer.className = 'motion-layer';
+                layer.setAttribute('tabindex', '0');
+                layer.style.zIndex = config.zIndex;
+                layer.style.transform = `translateX(-50%) translateY(-50%) translateZ(${config.z}px) scale(${config.scale})`;
+                
+                const innerDiv = document.createElement('div');
+                const imageWrapper = document.createElement('div');
+                imageWrapper.style.position = 'absolute';
+                imageWrapper.style.borderRadius = 'inherit';
+                imageWrapper.style.inset = '0px';
+                
+                // Placeholder image - you can replace these with your own images
+                const img = document.createElement('img');
+                img.decoding = 'auto';
+                img.width = 400;
+                img.height = 400;
+                img.src = `https://via.placeholder.com/400x400/EDF3ED/000000?text=Layer+${index + 1}`;
+                img.alt = '';
+                img.style.display = 'block';
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.borderRadius = 'inherit';
+                img.style.objectPosition = 'center center';
+                img.style.objectFit = 'cover';
+                
+                imageWrapper.appendChild(img);
+                innerDiv.appendChild(imageWrapper);
+                layer.appendChild(innerDiv);
+                sceneContainer.appendChild(layer);
             });
             
-            // Framer-style 3D Motion Layer effect
-            const motionLayerContainer = document.getElementById('motion-layer-container');
-            const layers = document.querySelectorAll('.motion-layer-item');
-            
-            // Background motion layer (blobs)
-            const motionLayer = document.getElementById('motion-layer');
-            const blob1 = document.getElementById('motion-blob-1');
-            const blob2 = document.getElementById('motion-blob-2');
-            const blob3 = document.getElementById('motion-blob-3');
-            
-            let mouseX = 0;
-            let mouseY = 0;
+            // Scroll-based rotation (Framer-style)
             let scrollY = 0;
             let ticking = false;
             
-            // Track mouse movement for subtle parallax
-            document.addEventListener('mousemove', (e) => {
-                mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-                mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-                if (!ticking) {
-                    requestAnimationFrame(updateMotionLayers);
-                    ticking = true;
-                }
-            });
-            
-            // Track scroll for 3D perspective effect
             window.addEventListener('scroll', () => {
                 scrollY = window.scrollY;
                 if (!ticking) {
-                    requestAnimationFrame(() => {
-                        updateMotionLayers();
-                        ticking = false;
-                    });
+                    requestAnimationFrame(updateScene);
                     ticking = true;
                 }
             }, { passive: true });
             
-            function updateMotionLayers() {
-                if (!motionLayerContainer || layers.length === 0) {
-                    console.error('Motion layer elements not found');
-                    return;
-                }
+            function updateScene() {
+                // Calculate scroll progress (normalized 0-1)
+                const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+                const scrollProgress = Math.max(0, Math.min(1, scrollY / maxScroll));
                 
-                // Update background blobs
-                if (blob1 && blob2 && blob3) {
-                    const moveX1 = mouseX * 50;
-                    const moveY1 = mouseY * 50 + scrollY * 0.3;
-                    const moveX2 = -mouseX * 40;
-                    const moveY2 = -mouseY * 40 + scrollY * 0.2;
-                    const moveX3 = mouseX * 30;
-                    const moveY3 = mouseY * 30 + scrollY * 0.4;
-                    
-                    blob1.style.transform = `translate(${moveX1}px, ${moveY1}px) scale(${1 + mouseX * 0.1})`;
-                    blob2.style.transform = `translate(${moveX2}px, ${moveY2}px) scale(${1 - mouseY * 0.1})`;
-                    blob3.style.transform = `translate(${moveX3}px, ${moveY3}px) scale(${1 + (mouseX + mouseY) * 0.05})`;
-                }
+                // Rotate scene based on scroll (similar to Framer's behavior)
+                const rotateX = -26.27 + (scrollProgress * 20); // Start at -26.27deg, rotate up to ~-6deg
+                const rotateY = -45 + (scrollProgress * 30); // Start at -45deg, rotate up to ~-15deg
                 
-                // Update 3D layers with perspective transforms
-                const containerRect = motionLayerContainer.getBoundingClientRect();
-                const containerTop = containerRect.top;
-                const containerHeight = containerRect.height;
-                const windowHeight = window.innerHeight;
+                sceneContainer.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
                 
-                // Calculate scroll progress (0 when container is at top, 1 when scrolled past)
-                const scrollProgress = Math.max(0, Math.min(1, (windowHeight - containerTop) / (containerHeight + windowHeight)));
-                
-                // Different depth multipliers for each layer (creating 3D effect)
-                const depthMultipliers = {
-                    1: 0.3,  // Furthest back
-                    2: 0.5,
-                    3: 0.7,
-                    4: 0.9,
-                    5: 1.2   // Closest - moves more
-                };
-                
-                layers.forEach((layer) => {
-                    const layerNum = parseInt(layer.dataset.layer);
-                    const depth = depthMultipliers[layerNum] || 1;
-                    
-                    // Calculate 3D transform based on scroll
-                    // Layers move forward in Z-space as you scroll
-                    const translateZ = (scrollProgress - 0.5) * depth * 300; // Move layers in Z space
-                    const translateY = scrollProgress * depth * 150; // Parallax Y movement
-                    const rotateX = (scrollProgress - 0.5) * depth * 8; // Rotation for depth
-                    
-                    // Mouse parallax effect (subtle)
-                    const mouseParallaxX = mouseX * depth * 30;
-                    const mouseParallaxY = mouseY * depth * 30;
-                    
-                    // Apply 3D transform
-                    layer.style.transform = `
-                        translate3d(${mouseParallaxX}px, ${translateY + mouseParallaxY}px, ${translateZ}px)
-                        rotateX(${rotateX}deg)
-                        scale(${1 + (scrollProgress - 0.5) * depth * 0.2})
-                    `;
-                    
-                    // Adjust opacity and blur based on depth for more dramatic effect
-                    const opacity = 0.6 + (depth * 0.4);
-                    layer.style.opacity = opacity;
-                    layer.style.filter = `blur(${(1 - depth) * 2}px)`;
+                // Update layer positions based on scroll
+                const layers = document.querySelectorAll('.motion-layer');
+                layers.forEach((layer, index) => {
+                    const config = layerConfigs[index];
+                    if (config) {
+                        // Adjust Z position based on scroll
+                        const newZ = config.z + (scrollProgress * 500); // Layers move forward as you scroll
+                        const newScale = config.scale + (scrollProgress * 0.2); // Scale increases
+                        
+                        layer.style.transform = `translateX(-50%) translateY(-50%) translateZ(${newZ}px) scale(${newScale})`;
+                    }
                 });
-                
-                // Update container perspective dynamically
-                const perspectiveValue = 800 + scrollProgress * 700;
-                motionLayerContainer.style.perspective = `${perspectiveValue}px`;
                 
                 ticking = false;
             }
             
             // Initial update
-            if (motionLayerContainer) {
-                updateMotionLayers();
-            }
+            updateScene();
         });
     </script>
 </body>
