@@ -358,6 +358,7 @@
             let scrollY = 0;
             let ticking = false;
             let layers = [];
+            let continuousZOffset = 0; // Track continuous offset without modulo reset
             
             // Store layer references for performance
             function initializeLayers() {
@@ -390,12 +391,6 @@
                     return;
                 }
                 
-                // Calculate scroll progress (normalized 0-1)
-                // Use the scroll-content height for calculation
-                const scrollContent = document.querySelector('.scroll-content');
-                const maxScroll = scrollContent ? scrollContent.offsetHeight - window.innerHeight : document.documentElement.scrollHeight - window.innerHeight;
-                const scrollProgress = Math.max(0, Math.min(1, scrollY / Math.max(maxScroll, 1)));
-                
                 // Fixed perspective angle - no rotation changes on scroll
                 // Keep the initial rotation constant
                 const rotateX = -26.27; // Fixed angle
@@ -405,24 +400,30 @@
                 sceneContainer.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
                 
                 // Infinite scroll: layers move continuously in Z-space
-                // Calculate continuous Z offset based on scroll (smooth infinite loop)
+                // Use continuous offset that never resets - this prevents snapping
                 const totalZRange = layersPerSet * zSpacing; // Distance for one full cycle (15 layers = 1500px)
                 const scrollSpeed = 1.5; // How fast layers move
-                const zOffset = (scrollY * scrollSpeed) % totalZRange; // Smooth modulo for infinite loop
+                continuousZOffset = scrollY * scrollSpeed; // Continuous, never resets
                 
                 // Update each layer's position based on scroll
                 layers.forEach((layer, index) => {
                     const config = layerConfigs[index];
                     if (config) {
                         // Continuous Z movement - layers cycle infinitely
-                        // Subtract offset so layers appear to move forward continuously
-                        let newZ = config.originalZ - zOffset;
+                        // Subtract continuous offset so layers appear to move forward continuously
+                        let newZ = config.originalZ - continuousZOffset;
                         
                         // Infinite loop: seamlessly wrap layers that go behind camera
-                        // When a layer goes too far back, move it forward by one full cycle
-                        // This creates seamless infinite scroll without snapping
-                        while (newZ < -totalZRange) {
+                        // Wrap at a point far enough behind to be invisible, then move forward seamlessly
+                        // This creates true infinite scroll without any visible snapping
+                        const wrapThreshold = -totalZRange * 0.5; // Wrap when layer is halfway through the cycle behind camera
+                        if (newZ < wrapThreshold) {
+                            // Wrap forward by exactly one full cycle to maintain visual continuity
                             newZ = newZ + totalZRange;
+                        }
+                        // Also handle layers that go too far forward (shouldn't happen, but safety check)
+                        if (newZ > totalZRange * 2.5) {
+                            newZ = newZ - totalZRange;
                         }
                         
                         // Fixed scale - no zoom
