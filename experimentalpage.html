@@ -395,7 +395,9 @@
                     const clampedScale = Math.max(0.1, Math.min(scale, 3));
                     
                     // Calculate Y position for line arrangement
-                    const yOffset = i * 3;
+                    // Use the layer's position within the cycle, not just index, to prevent stacking
+                    const layerIndexInCycle = i % layersPerSet;
+                    const yOffset = layerIndexInCycle * 3;
                     const baseY = -50;
                     const hoverOffset = layer._cachedHoverY || 0;
                     const yTranslatePx = -25 + hoverOffset;
