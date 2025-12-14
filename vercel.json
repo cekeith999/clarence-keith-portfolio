@@ -1,0 +1,28 @@
+{
+  "rewrites": [
+    {
+      "source": "/footwear/:project",
+      "destination": "/footwear/:project.html"
+    },
+    {
+      "source": "/accessories/:project",
+      "destination": "/accessories/:project.html"
+    },
+    {
+      "source": "/masks/:project",
+      "destination": "/masks/:project.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    }
+  ]
+}
+

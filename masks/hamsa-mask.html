@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamsa Mask Collection - Clarence Keith</title>
+    <link rel="icon" type="image/png" href="../meimages/mehead favicon.webp">
+    <link rel="shortcut icon" type="image/png" href="../meimages/mehead favicon.webp">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="min-h-screen flex flex-col" style="background-color: var(--bg-primary); color: var(--text-primary);">
+
+<!-- Contact Popup -->
+    <div id="contact-popup" class="popup-overlay">
+        <div class="popup-content">
+            <button class="popup-close" id="popup-close">&times;</button>
+            <h2 class="text-3xl font-bold text-[#A30000] mb-6">Get In Touch</h2>
+            <form id="popup-contact-form" class="space-y-4" action="https://formspree.io/f/mkgqyjaa" method="POST">
+                <div>
+                    <label for="popup-name" class="block text-sm font-medium text-black mb-2">Name</label>
+                    <input type="text" id="popup-name" name="name" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-colors bg-white text-[#A30000]">
+                </div>
+                <div>
+                    <label for="popup-email" class="block text-sm font-medium text-black mb-2">Email/Phone Number</label>
+                    <input type="text" id="popup-email" name="contact" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-colors bg-white text-[#A30000]">
+                </div>
+                <div>
+                    <label for="popup-message" class="block text-sm font-medium text-black mb-2">Message</label>
+                    <textarea id="popup-message" name="message" rows="4" required 
+                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-colors resize-none bg-white text-[#A30000]"></textarea>
+                </div>
+                <!-- Hidden field to send to both emails -->
+                <input type="hidden" name="_cc" value="jordankeith999@gmail.com">
+                <input type="hidden" name="_replyto" value="cekeith@usc.edu">
+                <button type="submit" 
+                        class="w-full bg-black text-white py-3 rounded-lg font-bold text-lg hover:bg-gray-800 transition-colors duration-300">
+                    Send Message
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="custom-cursor" id="custom-cursor"></div>
+
+    <div class="zoom-modal" id="zoom-modal">
+        <div class="zoom-modal-content">
+            <button class="zoom-close" id="zoom-close">&times;</button>
+            <img id="zoom-image" src="" alt="">
+        </div>
+    </div>
+
+<!-- Header Navigation -->
+    <header class="w-full p-6 sm:p-8 sticky top-0 z-50 bg-[#A30000] shadow-sm">
+        <nav class="flex justify-between items-center max-w-7xl mx-auto">
+            <div class="flex-1">
+                <a class="text-lg font-bold nav-link text-white hover:text-black transition-colors duration-300" id="contact-popup-trigger">Reach out!</a>
+            </div>
+            <div class="flex-1 text-center">
+                <a class="text-3xl font-bold tracking-wider nav-link text-white hover:text-black transition-colors duration-300" href="../index.html">Clarence Keith</a>
+                <div class="text-sm font-medium tracking-widest text-white/80 mt-1">ARTIST/DESIGNER</div>
+            </div>
+            <div class="flex-1 flex justify-end space-x-6">
+                <a href="https://www.instagram.com/ck.mdvs/" target="_blank" rel="noopener noreferrer" class="instagram-link">
+                    <img src="../white instagram icon.webp" alt="Instagram" class="w-6 h-6 instagram-icon">
+                 </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="flex-grow" id="main-container" style="background-color: var(--bg-primary); color: var(--text-primary);">
+        <div class="w-full max-w-6xl mx-auto p-6 sm:p-8">
+            <div class="mb-6">
+                <a href="index.html" class="text-[#A30000] hover:underline">← Back to Masks</a>
+            </div>
+            
+            <h1 class="text-5xl font-bold mb-6 text-[#A30000]">Hamsa Mask Collection</h1>
+            
+            <div class="prose max-w-none mb-8">
+                <p class="text-lg text-black leading-relaxed">A collection merging cultural symbolism with contemporary sculptural design. The Hamsa motif is integrated into a modern face form, representing protection and balance through the dialogue between spiritual symbolism and industrial technique.</p>
+            </div>
+            
+            <div class="mt-8">
+                <div id="main-image-container" class="mb-6">
+                    <img src="../maskimages/hamsa (1).webp" alt="Hamsa Mask 1" class="w-full h-auto rounded-lg shadow-lg mb-6" id="main-project-image" data-main-image>
+                </div>
+                <div class="flex flex-wrap gap-4">
+                    
+                    <div class="image-container">
+                        <img src="../maskimages/hamsa (1).webp" alt="Hamsa Mask 1" class="thumbnail w-24 h-24 object-cover rounded cursor-pointer" onclick="changeMainImage('../maskimages/hamsa (1).webp', false)">
+                        <div class="zoom-icon" onclick="openZoomModal('../maskimages/hamsa (1).webp')">
+                            <svg viewBox="0 0 24 24" fill="white">
+                                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                                <path d="M12 10h-2v2H9v-2H7V9h2V7h1v2h2v1z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="image-container">
+                        <img src="../maskimages/hamsa (2).webp" alt="Hamsa Mask 2" class="thumbnail w-24 h-24 object-cover rounded cursor-pointer" onclick="changeMainImage('../maskimages/hamsa (2).webp', false)">
+                        <div class="zoom-icon" onclick="openZoomModal('../maskimages/hamsa (2).webp')">
+                            <svg viewBox="0 0 24 24" fill="white">
+                                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                                <path d="M12 10h-2v2H9v-2H7V9h2V7h1v2h2v1z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="image-container">
+                        <img src="../maskimages/hamsa (3).webp" alt="Hamsa Mask 3" class="thumbnail w-24 h-24 object-cover rounded cursor-pointer" onclick="changeMainImage('../maskimages/hamsa (3).webp', false)">
+                        <div class="zoom-icon" onclick="openZoomModal('../maskimages/hamsa (3).webp')">
+                            <svg viewBox="0 0 24 24" fill="white">
+                                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                                <path d="M12 10h-2v2H9v-2H7V9h2V7h1v2h2v1z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="image-container">
+                        <img src="../maskimages/hamsa (4).webp" alt="Hamsa Mask 4" class="thumbnail w-24 h-24 object-cover rounded cursor-pointer" onclick="changeMainImage('../maskimages/hamsa (4).webp', false)">
+                        <div class="zoom-icon" onclick="openZoomModal('../maskimages/hamsa (4).webp')">
+                            <svg viewBox="0 0 24 24" fill="white">
+                                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                                <path d="M12 10h-2v2H9v-2H7V9h2V7h1v2h2v1z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="image-container">
+                        <img src="../maskimages/hamsa (5).webp" alt="Hamsa Mask 5" class="thumbnail w-24 h-24 object-cover rounded cursor-pointer" onclick="changeMainImage('../maskimages/hamsa (5).webp', false)">
+                        <div class="zoom-icon" onclick="openZoomModal('../maskimages/hamsa (5).webp')">
+                            <svg viewBox="0 0 24 24" fill="white">
+                                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                                <path d="M12 10h-2v2H9v-2H7V9h2V7h1v2h2v1z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="image-container">
+                        <img src="../maskimages/hamsa (6).webp" alt="Hamsa Mask 6" class="thumbnail w-24 h-24 object-cover rounded cursor-pointer" onclick="changeMainImage('../maskimages/hamsa (6).webp', false)">
+                        <div class="zoom-icon" onclick="openZoomModal('../maskimages/hamsa (6).webp')">
+                            <svg viewBox="0 0 24 24" fill="white">
+                                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                                <path d="M12 10h-2v2H9v-2H7V9h2V7h1v2h2v1z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+<!-- Fixed bottom marquee -->
+    <div class="marquee" aria-hidden="true">
+        <div class="marquee__track">
+            <div class="marquee__item">Some of my thoughts recently: People wear clothes like armor, not because they're cold but because they're scared of being seen for what they are, unfinished. Every thread says something about how far we've drifted from our own expression. Fashion started as protection, then communication, now it's performance. We forgot what we were trying to say. People talk about wanting authenticity, but no one really wants to be seen mid-process. We like the illusion of rawness, not the mess it takes to get there.</div>
+            <div class="marquee__item">Everything about life contradicts itself. We chase freedom through structure. We find identity in repetition. We call our screens a window to the world while the world keeps shrinking behind them. People want to escape systems but still need something to belong to. That's the joke, everything that frees us also traps us. We hate the artificial but live through it anyway. It's not fake, it's just another layer of survival. Pretending might be the only thing that keeps us human.</div>
+            <div class="marquee__item">Every invention feels like an echo. We build machines to talk for us, then forget what silence sounds like. We automate feeling, and it leaves us starving for the real thing. We keep trying to design empathy into the system, but maybe the system was never supposed to care. It's all theater, but that doesn't make it meaningless. It's still a stage where we can rehearse being alive, over and over, until it feels right again.</div>
+            <div class="marquee__item">I work inside that space, between art and survival, between code and soul. I'm not trying to fix the contradiction. I'm trying to live in it. The goal isn't harmony, it's awareness. To notice the glitch and still make something from it. To build a world that doesn't exist yet and remind myself that creation is the only honest way to lie. Every mask, every prototype, every render is proof that I'm still learning how to translate being into form.</div>
+            <!-- duplicate for seamless loop -->
+            <div class="marquee__item">Some of my thoughts recently: People wear clothes like armor, not because they're cold but because they're scared of being seen for what they are, unfinished. Every thread says something about how far we've drifted from our own expression. Fashion started as protection, then communication, now it's performance. We forgot what we were trying to say. People talk about wanting authenticity, but no one really wants to be seen mid-process. We like the illusion of rawness, not the mess it takes to get there.</div>
+            <div class="marquee__item">Everything about life contradicts itself. We chase freedom through structure. We find identity in repetition. We call our screens a window to the world while the world keeps shrinking behind them. People want to escape systems but still need something to belong to. That's the joke, everything that frees us also traps us. We hate the artificial but live through it anyway. It's not fake, it's just another layer of survival. Pretending might be the only thing that keeps us human.</div>
+            <div class="marquee__item">Every invention feels like an echo. We build machines to talk for us, then forget what silence sounds like. We automate feeling, and it leaves us starving for the real thing. We keep trying to design empathy into the system, but maybe the system was never supposed to care. It's all theater, but that doesn't make it meaningless. It's still a stage where we can rehearse being alive, over and over, until it feels right again.</div>
+            <div class="marquee__item">I work inside that space, between art and survival, between code and soul. I'm not trying to fix the contradiction. I'm trying to live in it. The goal isn't harmony, it's awareness. To notice the glitch and still make something from it. To build a world that doesn't exist yet and remind myself that creation is the only honest way to lie. Every mask, every prototype, every render is proof that I'm still learning how to translate being into form.</div>
+        </div>
+
+    <script src="../scripts.js"></script>
+    <script src="../projects-config.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check for red theme URL path
+            if (window.location.pathname.includes('/red')) {
+                document.body.classList.add('red-theme');
+            }
+            
+            // Get current file path for live editing
+            window.currentPagePath = 'masks/';
+        });
+    </script>
+
+    <script>
+        function changeMainImage(src, isVideo) {
+            const container = document.getElementById('main-image-container');
+            if (isVideo) {
+                container.innerHTML = `<video src="${src}" class="w-full h-auto rounded-lg shadow-lg" controls autoplay></video>`;
+            } else {
+                container.innerHTML = `<img src="${src}" alt="" class="w-full h-auto rounded-lg shadow-lg" data-main-image>`;
+            }
+        }
+    </script>
+</body>
+</html>

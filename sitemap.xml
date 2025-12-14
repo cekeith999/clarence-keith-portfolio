@@ -2,37 +2,115 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
         <loc>https://www.clarencekeith.com/</loc>
-        <lastmod>2024-12-20</lastmod>
+        <lastmod>2025-12-13</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://www.clarencekeith.com/#home</loc>
-        <lastmod>2024-12-20</lastmod>
-        <changefreq>weekly</changefreq>
+        <loc>https://www.clarencekeith.com/about.html</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://www.clarencekeith.com/#footwear</loc>
-        <lastmod>2024-12-20</lastmod>
+        <loc>https://www.clarencekeith.com/footwear/</loc>
+        <lastmod>2025-12-13</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://www.clarencekeith.com/#accessories</loc>
-        <lastmod>2024-12-20</lastmod>
+        <loc>https://www.clarencekeith.com/footwear/ok-shoes.html</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.clarencekeith.com/footwear/heel-boot-collection.html</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.clarencekeith.com/footwear/myshoeboot-series.html</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.clarencekeith.com/footwear/tunsshoe-collection.html</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.clarencekeith.com/accessories/</loc>
+        <lastmod>2025-12-13</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://www.clarencekeith.com/#masks</loc>
-        <lastmod>2024-12-20</lastmod>
+        <loc>https://www.clarencekeith.com/accessories/buldge-glasses.html</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.clarencekeith.com/accessories/golden-eye.html</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.clarencekeith.com/accessories/hands-glasses.html</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.clarencekeith.com/accessories/id-chain.html</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.clarencekeith.com/accessories/liquidy-glasses.html</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.clarencekeith.com/accessories/silver-necklace.html</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.clarencekeith.com/masks/</loc>
+        <lastmod>2025-12-13</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://www.clarencekeith.com/#about</loc>
-        <lastmod>2024-12-20</lastmod>
+        <loc>https://www.clarencekeith.com/masks/red-mask.html</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.clarencekeith.com/masks/chrome-mask.html</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.clarencekeith.com/masks/hamsa-mask.html</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.clarencekeith.com/masks/blackeye-mask.html</loc>
+        <lastmod>2025-12-13</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>

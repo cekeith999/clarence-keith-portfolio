@@ -15,12 +15,15 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { elementInfo, newText, originalText } = req.body;
+        const { elementInfo, newText, originalText, filePath } = req.body;
 
-        console.log('Saving edit from live site:', { elementInfo, newText, originalText });
+        console.log('Saving edit from live site:', { elementInfo, newText, originalText, filePath });
+
+        // Determine which file to update
+        const targetFile = filePath || detectFilePath(elementInfo) || 'index.html';
 
         // Use GitHub API to update the file
-        const result = await updateFileViaGitHub(elementInfo, newText, originalText);
+        const result = await updateFileViaGitHub(elementInfo, newText, originalText, targetFile);
 
         res.status(200).json({
             success: true,
@@ -44,11 +47,21 @@ export default async function handler(req, res) {
     }
 }
 
-async function updateFileViaGitHub(elementInfo, newText, originalText) {
+function detectFilePath(elementInfo) {
+    // Try to determine file path from element info
+    if (elementInfo.filePath) {
+        return elementInfo.filePath;
+    }
+    
+    // Default to index.html for home page
+    return 'index.html';
+}
+
+async function updateFileViaGitHub(elementInfo, newText, originalText, filePath = 'index.html') {
     const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
     const REPO_OWNER = 'cekeith999';
     const REPO_NAME = 'clarence-keith-portfolio';
-    const FILE_PATH = 'index.html';
+    const FILE_PATH = filePath;
 
     if (!GITHUB_TOKEN) {
         throw new Error('GitHub token not configured');
