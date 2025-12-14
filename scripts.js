@@ -1702,16 +1702,39 @@ function addCircleEventListeners() {
         // Get the parent link element
         const circleLink = hoveredCircle.closest('a.nav-link');
         if (circleLink) {
-            // Make sure the link is clickable
+            // Make sure the link is clickable and properly set up
             circleLink.style.display = 'block';
             circleLink.style.cursor = 'pointer';
             
-            // If this is a real URL link (not a data-target), ensure clicks navigate
-            if (circleLink.href && circleLink.href !== '#' && !circleLink.dataset.target) {
-                // Add click handler to the circle to ensure navigation works
-                hoveredCircle.addEventListener('click', (e) => {
-                    // Navigate to the link's href
-                    window.location.href = circleLink.href;
+            // Remove any data-target attribute if it exists (legacy SPA behavior)
+            if (circleLink.dataset.target) {
+                delete circleLink.dataset.target;
+            }
+            
+            // Ensure the circle itself doesn't block clicks - let them bubble to the link
+            hoveredCircle.style.pointerEvents = 'auto';
+            
+            // For real URL links, ensure clicks work properly
+            if (circleLink.href && circleLink.href !== '#' && !circleLink.hasAttribute('data-target')) {
+                // Add click handler to ensure navigation works even if something tries to prevent it
+                const handleClick = (e) => {
+                    // Only handle if this is a real URL (not a hash)
+                    if (circleLink.href && !circleLink.href.endsWith('#') && !circleLink.href.includes('#')) {
+                        // If something prevented default, force navigation
+                        if (e.defaultPrevented) {
+                            e.stopPropagation();
+                            window.location.href = circleLink.href;
+                        }
+                    }
+                };
+                
+                // Add to both circle and link to catch all clicks
+                hoveredCircle.addEventListener('click', handleClick, true); // Use capture phase
+                circleLink.addEventListener('click', (e) => {
+                    // Don't prevent default for real URLs
+                    if (!circleLink.hasAttribute('data-target') && circleLink.href && !circleLink.href.endsWith('#')) {
+                        // Let the link work normally
+                    }
                 });
             }
         }
