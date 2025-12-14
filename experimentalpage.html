@@ -371,7 +371,7 @@
                 layers = Array.from(document.querySelectorAll('.motion-layer'));
             }
             
-            // Optimized scroll handler with smooth updates
+            // Optimized scroll handler - requestAnimationFrame already handles frame rate
             function handleScroll() {
                 scrollY = window.pageYOffset || document.documentElement.scrollTop;
                 if (!ticking) {
@@ -409,37 +409,43 @@
                 const totalZRange = layersPerSet * zSpacing; // Distance for one full cycle (15 layers = 1500px)
                 const scrollSpeed = 1.5; // How fast layers move
                 const zOffset = scrollY * scrollSpeed; // Continuous offset
+                const wrapBehind = -zSpacing * 3; // Wrap when 3 layers behind camera (completely invisible)
                 
-                // Update each layer's position based on scroll
-                layers.forEach((layer, index) => {
-                    const config = layerConfigs[index];
-                    if (config) {
-                        // Calculate raw Z position
-                        let newZ = config.originalZ - zOffset;
-                        
-                        // Instant offscreen wrapping: when layer goes behind camera, wrap forward
-                        // Wrap threshold: when layer is completely behind (negative enough to be invisible)
-                        const wrapBehind = -zSpacing * 3; // Wrap when 3 layers behind camera (completely invisible)
-                        
-                        // Use modulo arithmetic for seamless infinite loop
-                        // This ensures layers wrap instantly when offscreen
-                        if (newZ < wrapBehind) {
-                            // Calculate how many full cycles the layer has passed behind the camera
-                            const cyclesBehind = Math.ceil((wrapBehind - newZ) / totalZRange);
-                            newZ += cyclesBehind * totalZRange;
-                        }
-                        
-                        // Fixed scale - no zoom
-                        const baseScale = config.scale;
-                        
-                        // Get hover offset from data attribute (set by mouse hover)
-                        const hoverOffset = parseFloat(layer.dataset.hoverY || '0');
-                        
-                        // Use transform3d for better performance - instant updates, no transitions
-                        // Add hover offset to Y position (moves up on hover)
-                        layer.style.transform = `translate3d(-50%, calc(-50% + ${hoverOffset}px), ${newZ}px) scale(${baseScale})`;
+                // Optimize: Use for loop instead of forEach for better performance
+                // Pre-calculate constants outside loop
+                const layerCount = layers.length;
+                
+                for (let i = 0; i < layerCount; i++) {
+                    const layer = layers[i];
+                    const config = layerConfigs[i];
+                    if (!config) continue;
+                    
+                    // Calculate raw Z position
+                    let newZ = config.originalZ - zOffset;
+                    
+                    // Instant offscreen wrapping: when layer goes behind camera, wrap forward
+                    if (newZ < wrapBehind) {
+                        // Calculate how many full cycles the layer has passed behind the camera
+                        const cyclesBehind = Math.ceil((wrapBehind - newZ) / totalZRange);
+                        newZ += cyclesBehind * totalZRange;
                     }
-                });
+                    
+                    // Get hover offset from data attribute (set by mouse hover)
+                    // Cache the hover offset to avoid repeated parsing
+                    let hoverOffset = layer._cachedHoverY;
+                    if (hoverOffset === undefined) {
+                        hoverOffset = parseFloat(layer.dataset.hoverY || '0');
+                        layer._cachedHoverY = hoverOffset;
+                    }
+                    
+                    // Use transform3d for better performance - instant updates, no transitions
+                    // Use pixels for Y translation (more performant than calc())
+                    // Layer is 400px, so center is at -200px, then add hover offset
+                    const yTranslate = -200 + hoverOffset;
+                    
+                    // Build transform string efficiently
+                    layer.style.transform = `translate3d(-200px, ${yTranslate}px, ${newZ}px) scale(1)`;
+                }
                 
                 lastScrollY = scrollY;
                 ticking = false;
@@ -453,17 +459,20 @@
                 layers.forEach((layer) => {
                     // Store original transform
                     layer.dataset.hoverY = '0';
+                    layer._cachedHoverY = 0; // Initialize cache
                     
                     // Mouse enter - move up slightly
                     layer.addEventListener('mouseenter', (e) => {
                         layer.classList.add('hovering');
                         layer.dataset.hoverY = '-20'; // Move up 20px
+                        layer._cachedHoverY = -20; // Update cache
                         updateScene(); // Update immediately for smooth transition
                     });
                     
                     // Mouse leave - return to original position
                     layer.addEventListener('mouseleave', (e) => {
                         layer.dataset.hoverY = '0';
+                        layer._cachedHoverY = 0; // Update cache
                         updateScene(); // Update immediately for smooth transition
                         // Remove hover class after transition completes
                         setTimeout(() => {
