@@ -231,7 +231,7 @@
 
     <main class="flex-grow" id="main-container" style="background-color: rgb(237, 243, 237); color: var(--text-primary); position: relative;">
         <!-- Scrollable content area for infinite scroll animation -->
-        <div class="scroll-content" style="height: 500vh; position: relative;">
+        <div class="scroll-content" style="height: 1000vh; position: relative;">
             <!-- Framer Motion Layer Structure - Fixed in viewport -->
             <div class="framer-motion-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; pointer-events: none; background: rgb(237, 243, 237); overflow: hidden;">
                 <div style="width: 100%; height: 100%; position: relative; overflow: hidden; perspective: 1900px; perspective-origin: center center; transform-style: preserve-3d; pointer-events: auto;">
@@ -277,7 +277,7 @@
             // Framer Motion Layer Implementation
             const sceneContainer = document.getElementById('scene-container');
             
-            // 10 distinct colors for the layers
+            // 15 distinct colors for smoother continuous scroll
             const layerColors = [
                 '#FF0000', // Red
                 '#00FF00', // Green
@@ -288,27 +288,32 @@
                 '#FFA500', // Orange
                 '#800080', // Purple
                 '#FFC0CB', // Pink
-                '#A52A2A'  // Brown
+                '#A52A2A', // Brown
+                '#00FF7F', // Spring Green
+                '#FF1493', // Deep Pink
+                '#1E90FF', // Dodger Blue
+                '#FFD700', // Gold
+                '#32CD32'  // Lime Green
             ];
             
-            // Create infinite scroll layers - 10 layers that repeat
+            // Create infinite scroll layers - 15 layers per set
             // Each layer has a fixed Z position, no scaling
             const layerConfigs = [];
-            const layersPerSet = 10;
-            const zSpacing = 128; // Space between layers in Z-axis
+            const layersPerSet = 15;
+            const zSpacing = 100; // Space between layers in Z-axis (smaller for smoother scroll)
+            const totalLayers = 60; // More layers for smoother infinite effect
             
-            // Create multiple sets for infinite scroll (3 sets = 30 layers total)
-            for (let set = 0; set < 3; set++) {
-                for (let i = 0; i < layersPerSet; i++) {
-                    const z = (set * layersPerSet + i) * zSpacing;
-                    const colorIndex = i % layerColors.length;
-                    layerConfigs.push({
-                        z: z,
-                        scale: 1.0, // Fixed scale, no zoom
-                        zIndex: 1000 + z,
-                        color: layerColors[colorIndex]
-                    });
-                }
+            // Create layers for infinite scroll
+            for (let i = 0; i < totalLayers; i++) {
+                const z = i * zSpacing;
+                const colorIndex = i % layerColors.length;
+                layerConfigs.push({
+                    z: z,
+                    scale: 1.0, // Fixed scale, no zoom
+                    zIndex: 1000 + z,
+                    color: layerColors[colorIndex],
+                    originalZ: z // Store original for infinite loop
+                });
             }
             
             // Create motion layers
@@ -400,9 +405,10 @@
                 sceneContainer.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
                 
                 // Infinite scroll: layers move continuously in Z-space
-                // Calculate continuous Z offset based on scroll
-                const totalZRange = layersPerSet * zSpacing; // Distance for one full cycle
-                const zOffset = (scrollY % totalZRange); // Modulo for infinite loop
+                // Calculate continuous Z offset based on scroll (smooth infinite loop)
+                const totalZRange = layersPerSet * zSpacing; // Distance for one full cycle (15 layers)
+                const scrollSpeed = 2; // How fast layers move (adjust for speed)
+                const zOffset = (scrollY * scrollSpeed) % totalZRange; // Smooth modulo for infinite loop
                 
                 // Update each layer's position based on scroll
                 layers.forEach((layer, index) => {
@@ -410,10 +416,13 @@
                     if (config) {
                         // Continuous Z movement - layers cycle infinitely
                         // Subtract offset so layers appear to move forward continuously
-                        const newZ = config.z - zOffset;
+                        let newZ = config.originalZ - zOffset;
                         
-                        // If layer goes behind camera, move it forward (infinite loop)
-                        const adjustedZ = newZ < -1000 ? newZ + (layersPerSet * zSpacing * 3) : newZ;
+                        // Infinite loop: if layer goes behind camera, wrap it forward
+                        // This creates seamless infinite scroll
+                        if (newZ < -500) {
+                            newZ = newZ + (totalZRange * Math.ceil(totalLayers / layersPerSet));
+                        }
                         
                         // Fixed scale - no zoom
                         const baseScale = config.scale;
@@ -423,7 +432,7 @@
                         
                         // Use transform3d for better performance
                         // Add hover offset to Y position (moves up on hover)
-                        layer.style.transform = `translate3d(-50%, calc(-50% + ${hoverOffset}px), ${adjustedZ}px) scale(${baseScale})`;
+                        layer.style.transform = `translate3d(-50%, calc(-50% + ${hoverOffset}px), ${newZ}px) scale(${baseScale})`;
                     }
                 });
                 
