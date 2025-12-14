@@ -11,6 +11,10 @@
     {
       "source": "/masks/:project",
       "destination": "/masks/:project.html"
+    },
+    {
+      "source": "/experimentalpage",
+      "destination": "/experimentalpage.html"
     }
   ],
   "headers": [
