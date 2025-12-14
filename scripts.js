@@ -1699,6 +1699,23 @@ function generateCirclePositions(count) {
 
 function addCircleEventListeners() {
      circles.forEach(hoveredCircle => {
+        // Get the parent link element
+        const circleLink = hoveredCircle.closest('a.nav-link');
+        if (circleLink) {
+            // Make sure the link is clickable
+            circleLink.style.display = 'block';
+            circleLink.style.cursor = 'pointer';
+            
+            // If this is a real URL link (not a data-target), ensure clicks navigate
+            if (circleLink.href && circleLink.href !== '#' && !circleLink.dataset.target) {
+                // Add click handler to the circle to ensure navigation works
+                hoveredCircle.addEventListener('click', (e) => {
+                    // Navigate to the link's href
+                    window.location.href = circleLink.href;
+                });
+            }
+        }
+        
         hoveredCircle.addEventListener('mouseenter', () => {
             if (isSplitLayout) return; // Don't animate in split layout
             
