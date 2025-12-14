@@ -352,16 +352,27 @@
                     const config = layerConfigs[i];
                     if (!config) continue;
                     
-                    // Calculate raw Z position with proper wrapping to prevent overflow
-                    let newZ = config.originalZ - zOffset;
+                    // Calculate raw Z position
+                    // Use modulo to keep values manageable and prevent precision loss
+                    const baseZ = config.originalZ % totalZRange;
+                    let newZ = baseZ - (zOffset % totalZRange);
                     
-                    // Optimized wrapping: use modulo for cleaner wrapping
-                    // Normalize to prevent extreme values that break calculations
-                    if (newZ < wrapBehind) {
-                        // Calculate wrap offset more efficiently
-                        const offsetFromWrap = newZ - wrapBehind;
-                        const cyclesBehind = Math.floor(Math.abs(offsetFromWrap) / totalZRange) + 1;
-                        newZ += cyclesBehind * totalZRange;
+                    // Normalize newZ to be within the expected range
+                    if (newZ < 0) {
+                        newZ += totalZRange;
+                    }
+                    if (newZ >= totalZRange) {
+                        newZ -= totalZRange;
+                    }
+                    
+                    // Adjust for wrapping: if layer goes behind camera, wrap forward
+                    if (newZ < wrapBehind || newZ < minVisibleZ) {
+                        // Wrap forward by one cycle
+                        newZ += totalZRange;
+                        // Keep wrapping if still behind
+                        while (newZ < minVisibleZ) {
+                            newZ += totalZRange;
+                        }
                     }
                     
                     // Visibility culling: skip layers outside visible range
@@ -377,11 +388,15 @@
                     layer.style.pointerEvents = 'auto';
                     
                     // Calculate scale with bounds checking to prevent division issues
+                    // Add safety check to prevent extreme values
                     const denominator = perspectiveDistance - newZ;
-                    const scale = denominator > 0 ? perspectiveDistance / denominator : 0.1;
+                    let scale = 1.0;
+                    if (denominator > 10 && denominator < perspectiveDistance * 2) {
+                        scale = perspectiveDistance / denominator;
+                    }
                     
-                    // Clamp scale to reasonable bounds
-                    const clampedScale = Math.max(0.1, Math.min(scale, 5));
+                    // Clamp scale to reasonable bounds to prevent visual glitches
+                    const clampedScale = Math.max(0.1, Math.min(scale, 3));
                     
                     // Calculate Y position for line arrangement
                     const yOffset = i * 3;
