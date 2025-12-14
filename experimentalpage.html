@@ -438,13 +438,13 @@
                         layer._cachedHoverY = hoverOffset;
                     }
                     
-                    // Use transform3d for better performance - instant updates, no transitions
-                    // Use pixels for Y translation (more performant than calc())
-                    // Layer is 400px, so center is at -200px, then add hover offset
-                    const yTranslate = -200 + hoverOffset;
+                    // Match Framer's transform format for better performance
+                    // Use translateX/translateY/translateZ/scale instead of translate3d
+                    // This format is more performant because percentages are optimized by the browser
+                    const yTranslate = hoverOffset === 0 ? '-50%' : `calc(-50% + ${hoverOffset}px)`;
                     
-                    // Build transform string efficiently
-                    layer.style.transform = `translate3d(-200px, ${yTranslate}px, ${newZ}px) scale(1)`;
+                    // Build transform string matching Framer's format exactly
+                    layer.style.transform = `translateX(-50%) translateY(${yTranslate}) translateZ(${newZ}px) scale(1)`;
                 }
                 
                 lastScrollY = scrollY;
