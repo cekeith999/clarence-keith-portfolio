@@ -9,94 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Framer-style motion layer */
-        .motion-layer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-            overflow: hidden;
-        }
-        
-        .motion-layer::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 50% 50%, 
-                rgba(163, 0, 0, 0.15) 0%,
-                rgba(163, 0, 0, 0.05) 30%,
-                transparent 70%);
-            filter: blur(80px);
-            transform-origin: center;
-            will-change: transform;
-            transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            transform: translate(
-                calc(var(--mouse-x, 0) * 30px),
-                calc(var(--mouse-y, 0) * 30px + var(--scroll-y, 0) * 0.2px)
-            );
-        }
-        
-        .motion-layer::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 50% 50%,
-                rgba(255, 0, 0, 0.1) 0%,
-                rgba(255, 0, 0, 0.03) 30%,
-                transparent 70%);
-            filter: blur(100px);
-            transform-origin: center;
-            will-change: transform;
-            transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            transform: translate(
-                calc(var(--mouse-x, 0) * -25px),
-                calc(var(--mouse-y, 0) * -25px + var(--scroll-y, 0) * 0.15px)
-            );
-        }
-        
-        .motion-blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(60px);
-            opacity: 0.3;
-            will-change: transform;
-            transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        
-        .motion-blob-1 {
-            width: 400px;
-            height: 400px;
-            background: linear-gradient(135deg, #A30000, #ff3333);
-            top: 20%;
-            left: 10%;
-        }
-        
-        .motion-blob-2 {
-            width: 300px;
-            height: 300px;
-            background: linear-gradient(225deg, #ff0000, #A30000);
-            bottom: 20%;
-            right: 15%;
-        }
-        
-        .motion-blob-3 {
-            width: 350px;
-            height: 350px;
-            background: linear-gradient(45deg, rgba(163, 0, 0, 0.8), rgba(255, 0, 0, 0.6));
-            top: 60%;
-            left: 50%;
-        }
-        
-        /* Framer Motion Layer Styles */
+        /* Framer Motion Layer Styles - Matching Framer exactly */
         .framer-motion-container {
             min-height: 100vh;
         }
@@ -108,40 +21,21 @@
             left: 50%;
             top: 50%;
             transform-origin: center center;
-            background-color: rgb(0, 0, 0);
+            background-color: rgb(50, 50, 50);
             box-shadow: none;
-            border-radius: 12px;
+            border-radius: 8px;
             border: none;
             pointer-events: auto;
-            will-change: transform;
+            will-change: transform, opacity;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-            transform-style: preserve-3d;
-            /* No transition on transform - instant updates for smooth scroll */
-            transition: none;
+            opacity: 0.9;
+            filter: none;
         }
         
-        .motion-layer.hovering {
-            /* Only transition on hover for smooth hover effect */
-            transition: transform 0.15s ease-out;
-        }
-        
-        .motion-layer > div {
-            box-sizing: border-box;
-            padding: 0px;
-            border-radius: 8px;
-            pointer-events: auto;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
         
         .motion-layer img {
             display: block;
@@ -201,13 +95,6 @@
         </div>
     </div>
 
-    <!-- Framer-style motion layer -->
-    <div class="motion-layer" id="motion-layer">
-        <div class="motion-blob motion-blob-1" id="motion-blob-1"></div>
-        <div class="motion-blob motion-blob-2" id="motion-blob-2"></div>
-        <div class="motion-blob motion-blob-3" id="motion-blob-3"></div>
-    </div>
-
     <div class="custom-cursor" id="custom-cursor"></div>
 
     <div class="zoom-modal" id="zoom-modal">
@@ -241,7 +128,7 @@
             <!-- Framer Motion Layer Structure - Fixed in viewport -->
             <div class="framer-motion-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; pointer-events: none; background: rgb(237, 243, 237); overflow: hidden;">
                 <div style="width: 100%; height: 100%; position: relative; overflow: hidden; perspective: 1900px; perspective-origin: center center; transform-style: preserve-3d; pointer-events: auto;">
-                    <div class="scene-container" id="scene-container" style="position: absolute; width: 100%; height: 100%; transform-origin: center center; will-change: transform; transform-style: preserve-3d; pointer-events: none; transform: rotateX(-26.27deg) rotateY(-45deg);">
+                    <div class="scene-container" id="scene-container" style="position: absolute; width: 100%; height: 100%; transform-style: preserve-3d; transform-origin: center center; will-change: transform; pointer-events: none; transform: rotateX(-23.6415deg) rotateY(-45deg);">
                         <!-- Motion layers will be generated here -->
                     </div>
                 </div>
@@ -322,15 +209,33 @@
                 });
             }
             
-            // Create motion layers
+            // Create motion layers - matching Framer's exact structure
             layerConfigs.forEach((config, index) => {
                 const layer = document.createElement('div');
                 layer.className = 'motion-layer';
                 layer.setAttribute('tabindex', '0');
                 layer.style.zIndex = config.zIndex;
-                layer.style.transform = `translateX(-50%) translateY(-50%) translateZ(${config.z}px) scale(${config.scale})`;
                 
+                // Calculate scale based on Z position (matching Framer's approach)
+                // Framer uses scale that changes with Z position for depth effect
+                const baseScale = 1.0;
+                const scale = baseScale; // Keep scale at 1.0 for now (no zoom)
+                
+                // Match Framer's exact transform format
+                layer.style.transform = `translateX(-50%) translateY(-50%) translateZ(${config.z}px) scale(${scale})`;
+                
+                // Match Framer's inner div structure exactly
                 const innerDiv = document.createElement('div');
+                innerDiv.style.boxSizing = 'border-box';
+                innerDiv.style.padding = '16px';
+                innerDiv.style.borderRadius = '4px';
+                innerDiv.style.pointerEvents = 'auto';
+                innerDiv.style.width = '100%';
+                innerDiv.style.height = '100%';
+                innerDiv.style.display = 'flex';
+                innerDiv.style.justifyContent = 'center';
+                innerDiv.style.alignItems = 'center';
+                
                 const imageWrapper = document.createElement('div');
                 imageWrapper.style.position = 'absolute';
                 imageWrapper.style.borderRadius = 'inherit';
@@ -397,12 +302,12 @@
                     return;
                 }
                 
-                // Fixed perspective angle - no rotation changes on scroll
+                // Fixed perspective angle - matching Framer's exact values
                 // Keep the initial rotation constant
-                const rotateX = -26.27; // Fixed angle
-                const rotateY = -45; // Fixed angle
+                const rotateX = -23.6415; // Framer's exact angle
+                const rotateY = -45; // Framer's exact angle
                 
-                // Use transform3d for hardware acceleration
+                // Match Framer's transform format exactly
                 sceneContainer.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
                 
                 // Infinite scroll: layers move continuously in Z-space
@@ -438,13 +343,15 @@
                         layer._cachedHoverY = hoverOffset;
                     }
                     
-                    // Match Framer's transform format for better performance
-                    // Use translateX/translateY/translateZ/scale instead of translate3d
-                    // This format is more performant because percentages are optimized by the browser
-                    const yTranslate = hoverOffset === 0 ? '-50%' : `calc(-50% + ${hoverOffset}px)`;
+                    // Match Framer's exact transform format: translateX(-50%) translateY(-50%) translateZ(...) scale(...)
+                    // For hover, calculate Y as percentage to avoid calc() which can cause issues
+                    // Layer is 400px tall, so -50% = -200px. Add hover offset and convert back to percentage
+                    const yTranslatePx = -200 + hoverOffset;
+                    const yTranslatePercent = (yTranslatePx / 400) * 100;
+                    const scale = 1.0; // Fixed scale, no zoom
                     
                     // Build transform string matching Framer's format exactly
-                    layer.style.transform = `translateX(-50%) translateY(${yTranslate}) translateZ(${newZ}px) scale(1)`;
+                    layer.style.transform = `translateX(-50%) translateY(${yTranslatePercent}%) translateZ(${newZ}px) scale(${scale})`;
                 }
                 
                 lastScrollY = scrollY;
