@@ -123,9 +123,10 @@
             -webkit-backface-visibility: hidden;
             transform-style: preserve-3d;
             /* No transition on transform - instant updates for smooth scroll */
+            transition: none;
         }
         
-        .motion-layer:hover {
+        .motion-layer.hovering {
             /* Only transition on hover for smooth hover effect */
             transition: transform 0.15s ease-out;
         }
@@ -417,15 +418,15 @@
                         let newZ = config.originalZ - zOffset;
                         
                         // Instant offscreen wrapping: when layer goes behind camera, wrap forward
-                        // Use modulo to wrap seamlessly - happens instantly when offscreen
                         // Wrap threshold: when layer is completely behind (negative enough to be invisible)
-                        const wrapBehind = -zSpacing * 2; // Wrap when 2 layers behind camera (completely invisible)
+                        const wrapBehind = -zSpacing * 3; // Wrap when 3 layers behind camera (completely invisible)
                         
+                        // Use modulo arithmetic for seamless infinite loop
+                        // This ensures layers wrap instantly when offscreen
                         if (newZ < wrapBehind) {
-                            // Instantly wrap forward by one full cycle - happens offscreen so invisible
-                            // Use modulo to ensure seamless wrapping
-                            const cyclesBehind = Math.floor((wrapBehind - newZ) / totalZRange) + 1;
-                            newZ = newZ + (cyclesBehind * totalZRange);
+                            // Calculate how many full cycles the layer has passed behind the camera
+                            const cyclesBehind = Math.ceil((wrapBehind - newZ) / totalZRange);
+                            newZ += cyclesBehind * totalZRange;
                         }
                         
                         // Fixed scale - no zoom
@@ -455,6 +456,7 @@
                     
                     // Mouse enter - move up slightly
                     layer.addEventListener('mouseenter', (e) => {
+                        layer.classList.add('hovering');
                         layer.dataset.hoverY = '-20'; // Move up 20px
                         updateScene(); // Update immediately for smooth transition
                     });
@@ -463,6 +465,10 @@
                     layer.addEventListener('mouseleave', (e) => {
                         layer.dataset.hoverY = '0';
                         updateScene(); // Update immediately for smooth transition
+                        // Remove hover class after transition completes
+                        setTimeout(() => {
+                            layer.classList.remove('hovering');
+                        }, 150);
                     });
                 });
                 
