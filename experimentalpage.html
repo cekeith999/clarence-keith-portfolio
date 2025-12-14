@@ -335,7 +335,7 @@
                 sceneContainer.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
                 
                 // Infinite scroll: layers move continuously in Z-space
-                const totalZRange = layersPerSet * zSpacing; // Distance for one full cycle
+                const totalZRange = layersPerSet * zSpacing; // Distance for one full cycle (1500px)
                 const scrollSpeed = 1.5;
                 const zOffset = scrollY * scrollSpeed;
                 const wrapBehind = -zSpacing * 3;
@@ -352,22 +352,23 @@
                     const config = layerConfigs[i];
                     if (!config) continue;
                     
-                    // Calculate raw Z position
-                    // Keep continuous scroll but use efficient wrapping
+                    // Calculate raw Z position - keep continuous for smooth scroll
                     let newZ = config.originalZ - zOffset;
                     
-                    // Efficient wrapping: calculate how many cycles behind we are
-                    // This prevents multiple iterations and handles large scroll values
+                    // Simple, robust wrapping: wrap forward when behind camera
+                    // This handles any scroll position, no matter how large
                     if (newZ < wrapBehind) {
-                        // Calculate cycles behind in one step
-                        const cyclesBehind = Math.floor((wrapBehind - newZ) / totalZRange) + 1;
-                        newZ += cyclesBehind * totalZRange;
+                        // Calculate exactly how many cycles to add in one step
+                        const distanceBehind = wrapBehind - newZ;
+                        const cyclesNeeded = Math.ceil(distanceBehind / totalZRange);
+                        newZ += cyclesNeeded * totalZRange;
                     }
                     
-                    // Also handle wrapping if too far ahead (shouldn't happen but safety check)
-                    if (newZ > maxVisibleZ + totalZRange) {
-                        const cyclesAhead = Math.floor((newZ - maxVisibleZ) / totalZRange);
-                        newZ -= cyclesAhead * totalZRange;
+                    // Safety: ensure we're not way ahead (shouldn't happen, but just in case)
+                    if (newZ > maxVisibleZ + totalZRange * 2) {
+                        const distanceAhead = newZ - (maxVisibleZ + totalZRange);
+                        const cyclesToRemove = Math.floor(distanceAhead / totalZRange);
+                        newZ -= cyclesToRemove * totalZRange;
                     }
                     
                     // Visibility culling: skip layers outside visible range
@@ -382,11 +383,11 @@
                     layer.style.opacity = '0.9';
                     layer.style.pointerEvents = 'auto';
                     
-                    // Calculate scale with bounds checking to prevent division issues
-                    // Add safety check to prevent extreme values
+                    // Calculate scale with robust bounds checking
                     const denominator = perspectiveDistance - newZ;
                     let scale = 1.0;
-                    if (denominator > 10 && denominator < perspectiveDistance * 2) {
+                    // Only calculate scale if denominator is reasonable
+                    if (Math.abs(denominator) > 1 && Math.abs(denominator) < perspectiveDistance * 10) {
                         scale = perspectiveDistance / denominator;
                     }
                     
