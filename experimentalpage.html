@@ -391,10 +391,10 @@
                 const maxScroll = scrollContent ? scrollContent.offsetHeight - window.innerHeight : document.documentElement.scrollHeight - window.innerHeight;
                 const scrollProgress = Math.max(0, Math.min(1, scrollY / Math.max(maxScroll, 1)));
                 
-                // Smooth rotation based on scroll (Framer-style)
-                // Start rotated, gradually straighten as you scroll
-                const rotateX = -26.27 + (scrollProgress * 20); // -26.27deg to ~-6deg
-                const rotateY = -45 + (scrollProgress * 30); // -45deg to ~-15deg
+                // Fixed perspective angle - no rotation changes on scroll
+                // Keep the initial rotation constant
+                const rotateX = -26.27; // Fixed angle
+                const rotateY = -45; // Fixed angle
                 
                 // Use transform3d for hardware acceleration
                 sceneContainer.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
