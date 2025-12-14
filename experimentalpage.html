@@ -9,10 +9,99 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Experimental page specific styles */
+        /* Framer-style motion layer */
+        .motion-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .motion-layer::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 50%, 
+                rgba(163, 0, 0, 0.15) 0%,
+                rgba(163, 0, 0, 0.05) 30%,
+                transparent 70%);
+            filter: blur(80px);
+            transform-origin: center;
+            will-change: transform;
+            transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform: translate(
+                calc(var(--mouse-x, 0) * 30px),
+                calc(var(--mouse-y, 0) * 30px + var(--scroll-y, 0) * 0.2px)
+            );
+        }
+        
+        .motion-layer::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 50%,
+                rgba(255, 0, 0, 0.1) 0%,
+                rgba(255, 0, 0, 0.03) 30%,
+                transparent 70%);
+            filter: blur(100px);
+            transform-origin: center;
+            will-change: transform;
+            transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform: translate(
+                calc(var(--mouse-x, 0) * -25px),
+                calc(var(--mouse-y, 0) * -25px + var(--scroll-y, 0) * 0.15px)
+            );
+        }
+        
+        .motion-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.3;
+            will-change: transform;
+            transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .motion-blob-1 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #A30000, #ff3333);
+            top: 20%;
+            left: 10%;
+        }
+        
+        .motion-blob-2 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(225deg, #ff0000, #A30000);
+            bottom: 20%;
+            right: 15%;
+        }
+        
+        .motion-blob-3 {
+            width: 350px;
+            height: 350px;
+            background: linear-gradient(45deg, rgba(163, 0, 0, 0.8), rgba(255, 0, 0, 0.6));
+            top: 60%;
+            left: 50%;
+        }
+        
+        /* Content layer - above motion layer */
         .experimental-container {
             min-height: calc(100vh - 80px - var(--marquee-h));
             padding: 2rem;
+            position: relative;
+            z-index: 1;
         }
         
         .glitch-text {
@@ -23,6 +112,7 @@
             text-transform: uppercase;
             letter-spacing: 0.1em;
             animation: glitch 2s infinite;
+            text-shadow: 0 0 20px rgba(163, 0, 0, 0.3);
         }
         
         @keyframes glitch {
@@ -156,6 +246,13 @@
         </div>
     </div>
 
+    <!-- Framer-style motion layer -->
+    <div class="motion-layer" id="motion-layer">
+        <div class="motion-blob motion-blob-1" id="motion-blob-1"></div>
+        <div class="motion-blob motion-blob-2" id="motion-blob-2"></div>
+        <div class="motion-blob motion-blob-3" id="motion-blob-3"></div>
+    </div>
+
     <div class="custom-cursor" id="custom-cursor"></div>
 
     <div class="zoom-modal" id="zoom-modal">
@@ -258,6 +355,69 @@
                         item.style.transform = '';
                     }, 500);
                 });
+            });
+            
+            // Framer-style motion layer effect
+            const motionLayer = document.getElementById('motion-layer');
+            const blob1 = document.getElementById('motion-blob-1');
+            const blob2 = document.getElementById('motion-blob-2');
+            const blob3 = document.getElementById('motion-blob-3');
+            const layerBefore = window.getComputedStyle(motionLayer, '::before');
+            const layerAfter = window.getComputedStyle(motionLayer, '::after');
+            
+            let mouseX = 0;
+            let mouseY = 0;
+            let scrollY = 0;
+            
+            // Track mouse movement
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+                mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+                updateMotionLayer();
+            });
+            
+            // Track scroll
+            let ticking = false;
+            window.addEventListener('scroll', () => {
+                scrollY = window.scrollY;
+                if (!ticking) {
+                    window.requestAnimationFrame(() => {
+                        updateMotionLayer();
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+            
+            function updateMotionLayer() {
+                // Calculate transforms based on mouse and scroll
+                const moveX1 = mouseX * 50;
+                const moveY1 = mouseY * 50 + scrollY * 0.3;
+                const moveX2 = -mouseX * 40;
+                const moveY2 = -mouseY * 40 + scrollY * 0.2;
+                const moveX3 = mouseX * 30;
+                const moveY3 = mouseY * 30 + scrollY * 0.4;
+                
+                // Apply transforms to blobs
+                blob1.style.transform = `translate(${moveX1}px, ${moveY1}px) scale(${1 + mouseX * 0.1})`;
+                blob2.style.transform = `translate(${moveX2}px, ${moveY2}px) scale(${1 - mouseY * 0.1})`;
+                blob3.style.transform = `translate(${moveX3}px, ${moveY3}px) scale(${1 + (mouseX + mouseY) * 0.05})`;
+                
+                // Apply transforms to pseudo-elements via CSS variables
+                motionLayer.style.setProperty('--mouse-x', mouseX);
+                motionLayer.style.setProperty('--mouse-y', mouseY);
+                motionLayer.style.setProperty('--scroll-y', scrollY);
+            }
+            
+            // Initial update
+            updateMotionLayer();
+            
+            // Add parallax effect on scroll for content
+            const container = document.querySelector('.experimental-container');
+            window.addEventListener('scroll', () => {
+                const scrolled = window.scrollY;
+                const parallax = scrolled * 0.1;
+                container.style.transform = `translateY(${parallax}px)`;
             });
         });
     </script>
