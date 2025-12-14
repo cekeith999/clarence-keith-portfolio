@@ -1716,26 +1716,17 @@ function addCircleEventListeners() {
             
             // For real URL links, ensure clicks work properly
             if (circleLink.href && circleLink.href !== '#' && !circleLink.hasAttribute('data-target')) {
-                // Add click handler to ensure navigation works even if something tries to prevent it
-                const handleClick = (e) => {
-                    // Only handle if this is a real URL (not a hash)
-                    if (circleLink.href && !circleLink.href.endsWith('#') && !circleLink.href.includes('#')) {
-                        // If something prevented default, force navigation
-                        if (e.defaultPrevented) {
-                            e.stopPropagation();
-                            window.location.href = circleLink.href;
-                        }
-                    }
-                };
+                // Get the href value
+                const href = circleLink.getAttribute('href') || circleLink.href;
                 
-                // Add to both circle and link to catch all clicks
-                hoveredCircle.addEventListener('click', handleClick, true); // Use capture phase
-                circleLink.addEventListener('click', (e) => {
-                    // Don't prevent default for real URLs
-                    if (!circleLink.hasAttribute('data-target') && circleLink.href && !circleLink.href.endsWith('#')) {
-                        // Let the link work normally
+                // Add click handler to circle to ensure navigation
+                hoveredCircle.addEventListener('click', (e) => {
+                    // Navigate directly to the href
+                    if (href && href !== '#') {
+                        e.stopPropagation();
+                        window.location.href = href;
                     }
-                });
+                }, true); // Use capture to run before other handlers
             }
         }
         
