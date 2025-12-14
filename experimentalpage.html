@@ -406,8 +406,8 @@
                 
                 // Infinite scroll: layers move continuously in Z-space
                 // Calculate continuous Z offset based on scroll (smooth infinite loop)
-                const totalZRange = layersPerSet * zSpacing; // Distance for one full cycle (15 layers)
-                const scrollSpeed = 2; // How fast layers move (adjust for speed)
+                const totalZRange = layersPerSet * zSpacing; // Distance for one full cycle (15 layers = 1500px)
+                const scrollSpeed = 1.5; // How fast layers move
                 const zOffset = (scrollY * scrollSpeed) % totalZRange; // Smooth modulo for infinite loop
                 
                 // Update each layer's position based on scroll
@@ -418,10 +418,11 @@
                         // Subtract offset so layers appear to move forward continuously
                         let newZ = config.originalZ - zOffset;
                         
-                        // Infinite loop: if layer goes behind camera, wrap it forward
-                        // This creates seamless infinite scroll
-                        if (newZ < -500) {
-                            newZ = newZ + (totalZRange * Math.ceil(totalLayers / layersPerSet));
+                        // Infinite loop: seamlessly wrap layers that go behind camera
+                        // When a layer goes too far back, move it forward by one full cycle
+                        // This creates seamless infinite scroll without snapping
+                        while (newZ < -totalZRange) {
+                            newZ = newZ + totalZRange;
                         }
                         
                         // Fixed scale - no zoom
