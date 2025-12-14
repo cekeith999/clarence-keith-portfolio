@@ -122,6 +122,7 @@
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
             transform-style: preserve-3d;
+            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         
         .motion-layer > div {
@@ -403,16 +404,19 @@
                 layers.forEach((layer, index) => {
                     const config = layerConfigs[index];
                     if (config) {
-                        // Layers move forward in Z-space as you scroll
+                        // Layers move forward in Z-space as you scroll (no scaling)
                         const zOffset = scrollProgress * 600; // Total Z movement range
                         const newZ = config.z + zOffset;
                         
-                        // Scale increases slightly as layers come forward
-                        const scaleOffset = scrollProgress * 0.25;
-                        const newScale = config.scale + scaleOffset;
+                        // Keep original scale - no zoom effect
+                        const baseScale = config.scale;
+                        
+                        // Get hover offset from data attribute (set by mouse hover)
+                        const hoverOffset = parseFloat(layer.dataset.hoverY || '0');
                         
                         // Use transform3d for better performance
-                        layer.style.transform = `translate3d(-50%, -50%, ${newZ}px) scale(${newScale})`;
+                        // Add hover offset to Y position (moves up on hover)
+                        layer.style.transform = `translate3d(-50%, calc(-50% + ${hoverOffset}px), ${newZ}px) scale(${baseScale})`;
                     }
                 });
                 
@@ -422,6 +426,25 @@
             // Initialize after layers are created
             setTimeout(() => {
                 initializeLayers();
+                
+                // Add hover effects to each layer
+                layers.forEach((layer) => {
+                    // Store original transform
+                    layer.dataset.hoverY = '0';
+                    
+                    // Mouse enter - move up slightly
+                    layer.addEventListener('mouseenter', (e) => {
+                        layer.dataset.hoverY = '-20'; // Move up 20px
+                        updateScene(); // Update immediately for smooth transition
+                    });
+                    
+                    // Mouse leave - return to original position
+                    layer.addEventListener('mouseleave', (e) => {
+                        layer.dataset.hoverY = '0';
+                        updateScene(); // Update immediately for smooth transition
+                    });
+                });
+                
                 updateScene();
             }, 100);
             
