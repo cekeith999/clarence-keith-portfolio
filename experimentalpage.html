@@ -16,9 +16,9 @@
         
         .motion-layer {
             position: absolute;
-            width: 200px;
-            height: 200px;
-            left: 50%;
+            width: 50px;
+            height: 50px;
+            left: 10%;
             top: 50%;
             transform-origin: center center;
             background-color: rgb(50, 50, 50);
@@ -189,45 +189,54 @@
                 '#32CD32'  // Lime Green
             ];
             
-            // Create infinite scroll layers - 15 layers per set
-            // Each layer has a fixed Z position, no scaling
+            // Create infinite scroll layers - arranged in a line with perspective
+            // Layers get smaller as they go further back (down the line)
             const layerConfigs = [];
             const layersPerSet = 15;
-            const zSpacing = 100; // Space between layers in Z-axis (smaller for smoother scroll)
+            const zSpacing = 100; // Space between layers in Z-axis
             const totalLayers = 60; // More layers for smoother infinite effect
+            const perspectiveDistance = 1900; // Match perspective value
             
-            // Create layers for infinite scroll
+            // Create layers for infinite scroll with perspective arrangement
             for (let i = 0; i < totalLayers; i++) {
                 const z = i * zSpacing;
                 const colorIndex = i % layerColors.length;
+                
+                // Calculate initial scale based on Z position for perspective effect
+                // Layers further back (more negative Z) are smaller
+                // Formula: scale = perspectiveDistance / (perspectiveDistance - z)
+                const baseScale = perspectiveDistance / (perspectiveDistance - z);
+                
                 layerConfigs.push({
                     z: z,
-                    scale: 1.0, // Fixed scale, no zoom
+                    baseScale: baseScale, // Store base scale for perspective
                     zIndex: 1000 + z,
                     color: layerColors[colorIndex],
                     originalZ: z // Store original for infinite loop
                 });
             }
             
-            // Create motion layers - matching Framer's exact structure
+            // Create motion layers - arranged in a line on the left side
             layerConfigs.forEach((config, index) => {
                 const layer = document.createElement('div');
                 layer.className = 'motion-layer';
                 layer.setAttribute('tabindex', '0');
                 layer.style.zIndex = config.zIndex;
                 
-                // Calculate scale based on Z position (matching Framer's approach)
-                // Framer uses scale that changes with Z position for depth effect
-                const baseScale = 1.0;
-                const scale = baseScale; // Keep scale at 1.0 for now (no zoom)
+                // Calculate Y position to create a line that goes down
+                // Each layer is positioned slightly lower than the previous one
+                // This creates the line effect from the picture
+                const yOffset = index * 3; // Vertical spacing between squares (in percentage)
+                const baseY = -50; // Start at center, then offset down
                 
                 // Match Framer's exact transform format
-                layer.style.transform = `translateX(-50%) translateY(-50%) translateZ(${config.z}px) scale(${scale})`;
+                // Position on left side (left: 10% in CSS), with Y offset for line arrangement
+                layer.style.transform = `translateX(-50%) translateY(${baseY + yOffset}%) translateZ(${config.z}px) scale(${config.baseScale})`;
                 
                 // Match Framer's inner div structure exactly
                 const innerDiv = document.createElement('div');
                 innerDiv.style.boxSizing = 'border-box';
-                innerDiv.style.padding = '16px';
+                innerDiv.style.padding = '4px';
                 innerDiv.style.borderRadius = '4px';
                 innerDiv.style.pointerEvents = 'auto';
                 innerDiv.style.width = '100%';
@@ -241,16 +250,15 @@
                 imageWrapper.style.borderRadius = 'inherit';
                 imageWrapper.style.inset = '0px';
                 
-                // Placeholder image - you can replace these with your own images
-                // Updated to match new layer size (200px)
+                // Placeholder image - updated to 50px size
                 const img = document.createElement('img');
                 img.decoding = 'async';
                 img.loading = 'lazy';
-                img.width = 200;
-                img.height = 200;
+                img.width = 50;
+                img.height = 50;
                 // Use the assigned color for this layer
                 const color = config.color || '#000000';
-                img.src = `data:image/svg+xml,${encodeURIComponent(`<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="${color}" /></svg>`)}`;
+                img.src = `data:image/svg+xml,${encodeURIComponent(`<svg width="50" height="50" xmlns="http://www.w3.org/2000/svg"><rect width="50" height="50" fill="${color}" /></svg>`)}`;
                 img.alt = `Motion Layer ${index + 1}`;
                 img.style.display = 'block';
                 img.style.width = '100%';
@@ -322,6 +330,7 @@
                 const scrollSpeed = 1.5; // How fast layers move
                 const zOffset = scrollY * scrollSpeed; // Continuous offset
                 const wrapBehind = -zSpacing * 3; // Wrap when 3 layers behind camera (completely invisible)
+                const perspectiveDistance = 1900; // Match perspective value
                 
                 // Optimize: Use for loop instead of forEach for better performance
                 // Pre-calculate constants outside loop
@@ -343,19 +352,27 @@
                         newZ += cyclesBehind * totalZRange;
                     }
                     
+                    // Calculate scale based on Z position for perspective effect
+                    // As layers move closer (positive Z), they get bigger
+                    // As layers move further (negative Z), they get smaller
+                    // Formula: scale = perspectiveDistance / (perspectiveDistance - z)
+                    const scale = perspectiveDistance / (perspectiveDistance - newZ);
+                    
+                    // Calculate Y position for line arrangement
+                    // Each layer is positioned in a line going down
+                    const yOffset = i * 3; // Vertical spacing between squares (in percentage)
+                    const baseY = -50; // Start at center
+                    
                     // Get hover offset from cache (set by mouse hover)
                     const hoverOffset = layer._cachedHoverY || 0;
                     
-                    // Match Framer's exact transform format: translateX(-50%) translateY(-50%) translateZ(...) scale(...)
-                    // For hover, calculate Y as percentage to avoid calc() which can cause issues
-                    // Layer is 200px tall, so -50% = -100px. Add hover offset and convert back to percentage
-                    const yTranslatePx = -100 + hoverOffset;
-                    const yTranslatePercent = (yTranslatePx / 200) * 100;
-                    const scale = 1.0; // Fixed scale, no zoom
+                    // Calculate Y translation with hover offset
+                    // Layer is 50px tall, so -50% = -25px. Add hover offset and convert back to percentage
+                    const yTranslatePx = -25 + hoverOffset;
+                    const yTranslatePercent = (yTranslatePx / 50) * 100;
                     
-                    // Build transform string matching Framer's format exactly
-                    // Use template literal for efficiency
-                    layer.style.transform = `translateX(-50%) translateY(${yTranslatePercent}%) translateZ(${newZ}px) scale(${scale})`;
+                    // Build transform string - position on left, with Y offset for line, scale for perspective
+                    layer.style.transform = `translateX(-50%) translateY(${baseY + yOffset + yTranslatePercent}%) translateZ(${newZ}px) scale(${scale})`;
                 }
                 
                 lastScrollY = scrollY;
