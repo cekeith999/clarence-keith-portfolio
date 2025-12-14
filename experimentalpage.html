@@ -122,7 +122,12 @@
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
             transform-style: preserve-3d;
-            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            /* No transition on transform - instant updates for smooth scroll */
+        }
+        
+        .motion-layer:hover {
+            /* Only transition on hover for smooth hover effect */
+            transition: transform 0.15s ease-out;
         }
         
         .motion-layer > div {
@@ -358,14 +363,14 @@
             let scrollY = 0;
             let ticking = false;
             let layers = [];
-            let continuousZOffset = 0; // Track continuous offset without modulo reset
+            let lastScrollY = 0;
             
             // Store layer references for performance
             function initializeLayers() {
                 layers = Array.from(document.querySelectorAll('.motion-layer'));
             }
             
-            // Optimized scroll handler
+            // Optimized scroll handler with smooth updates
             function handleScroll() {
                 scrollY = window.pageYOffset || document.documentElement.scrollTop;
                 if (!ticking) {
@@ -400,30 +405,27 @@
                 sceneContainer.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
                 
                 // Infinite scroll: layers move continuously in Z-space
-                // Use continuous offset that never resets - this prevents snapping
                 const totalZRange = layersPerSet * zSpacing; // Distance for one full cycle (15 layers = 1500px)
                 const scrollSpeed = 1.5; // How fast layers move
-                continuousZOffset = scrollY * scrollSpeed; // Continuous, never resets
+                const zOffset = scrollY * scrollSpeed; // Continuous offset
                 
                 // Update each layer's position based on scroll
                 layers.forEach((layer, index) => {
                     const config = layerConfigs[index];
                     if (config) {
-                        // Continuous Z movement - layers cycle infinitely
-                        // Subtract continuous offset so layers appear to move forward continuously
-                        let newZ = config.originalZ - continuousZOffset;
+                        // Calculate raw Z position
+                        let newZ = config.originalZ - zOffset;
                         
-                        // Infinite loop: seamlessly wrap layers that go behind camera
-                        // Wrap at a point far enough behind to be invisible, then move forward seamlessly
-                        // This creates true infinite scroll without any visible snapping
-                        const wrapThreshold = -totalZRange * 0.5; // Wrap when layer is halfway through the cycle behind camera
-                        if (newZ < wrapThreshold) {
-                            // Wrap forward by exactly one full cycle to maintain visual continuity
-                            newZ = newZ + totalZRange;
-                        }
-                        // Also handle layers that go too far forward (shouldn't happen, but safety check)
-                        if (newZ > totalZRange * 2.5) {
-                            newZ = newZ - totalZRange;
+                        // Instant offscreen wrapping: when layer goes behind camera, wrap forward
+                        // Use modulo to wrap seamlessly - happens instantly when offscreen
+                        // Wrap threshold: when layer is completely behind (negative enough to be invisible)
+                        const wrapBehind = -zSpacing * 2; // Wrap when 2 layers behind camera (completely invisible)
+                        
+                        if (newZ < wrapBehind) {
+                            // Instantly wrap forward by one full cycle - happens offscreen so invisible
+                            // Use modulo to ensure seamless wrapping
+                            const cyclesBehind = Math.floor((wrapBehind - newZ) / totalZRange) + 1;
+                            newZ = newZ + (cyclesBehind * totalZRange);
                         }
                         
                         // Fixed scale - no zoom
@@ -432,12 +434,13 @@
                         // Get hover offset from data attribute (set by mouse hover)
                         const hoverOffset = parseFloat(layer.dataset.hoverY || '0');
                         
-                        // Use transform3d for better performance
+                        // Use transform3d for better performance - instant updates, no transitions
                         // Add hover offset to Y position (moves up on hover)
                         layer.style.transform = `translate3d(-50%, calc(-50% + ${hoverOffset}px), ${newZ}px) scale(${baseScale})`;
                     }
                 });
                 
+                lastScrollY = scrollY;
                 ticking = false;
             }
             
