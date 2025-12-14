@@ -276,13 +276,20 @@
                 layers = Array.from(document.querySelectorAll('.motion-layer'));
             }
             
-            // Optimized scroll handler - requestAnimationFrame already handles frame rate
+            // Optimized scroll handler - match Framer's approach
+            // Use a more efficient throttling mechanism
+            let rafId = null;
             function handleScroll() {
                 scrollY = window.pageYOffset || document.documentElement.scrollTop;
-                if (!ticking) {
-                    requestAnimationFrame(updateScene);
-                    ticking = true;
+                // Cancel any pending frame
+                if (rafId !== null) {
+                    cancelAnimationFrame(rafId);
                 }
+                // Schedule update for next frame
+                rafId = requestAnimationFrame(() => {
+                    updateScene();
+                    rafId = null;
+                });
             }
             
             window.addEventListener('scroll', handleScroll, { passive: true });
@@ -298,7 +305,6 @@
             
             function updateScene() {
                 if (!sceneContainer || layers.length === 0) {
-                    ticking = false;
                     return;
                 }
                 
@@ -320,6 +326,7 @@
                 // Pre-calculate constants outside loop
                 const layerCount = layers.length;
                 
+                // Batch DOM reads/writes for better performance
                 for (let i = 0; i < layerCount; i++) {
                     const layer = layers[i];
                     const config = layerConfigs[i];
@@ -335,13 +342,8 @@
                         newZ += cyclesBehind * totalZRange;
                     }
                     
-                    // Get hover offset from data attribute (set by mouse hover)
-                    // Cache the hover offset to avoid repeated parsing
-                    let hoverOffset = layer._cachedHoverY;
-                    if (hoverOffset === undefined) {
-                        hoverOffset = parseFloat(layer.dataset.hoverY || '0');
-                        layer._cachedHoverY = hoverOffset;
-                    }
+                    // Get hover offset from cache (set by mouse hover)
+                    const hoverOffset = layer._cachedHoverY || 0;
                     
                     // Match Framer's exact transform format: translateX(-50%) translateY(-50%) translateZ(...) scale(...)
                     // For hover, calculate Y as percentage to avoid calc() which can cause issues
@@ -351,11 +353,11 @@
                     const scale = 1.0; // Fixed scale, no zoom
                     
                     // Build transform string matching Framer's format exactly
+                    // Use template literal for efficiency
                     layer.style.transform = `translateX(-50%) translateY(${yTranslatePercent}%) translateZ(${newZ}px) scale(${scale})`;
                 }
                 
                 lastScrollY = scrollY;
-                ticking = false;
             }
             
             // Initialize after layers are created
