@@ -113,12 +113,15 @@
             border-radius: 12px;
             border: none;
             pointer-events: auto;
-            will-change: transform, opacity;
+            will-change: transform;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            transform-style: preserve-3d;
         }
         
         .motion-layer > div {
@@ -140,6 +143,20 @@
             border-radius: inherit;
             object-position: center center;
             object-fit: cover;
+            will-change: transform;
+        }
+        
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Performance optimizations */
+        .scene-container {
+            -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+            -webkit-perspective: 1900px;
+            perspective: 1900px;
         }
     </style>
 </head>
@@ -211,19 +228,22 @@
         </nav>
     </header>
 
-    <main class="flex-grow" id="main-container" style="background-color: var(--bg-primary); color: var(--text-primary);">
-        <!-- Framer Motion Layer Structure -->
-        <div class="framer-motion-container" style="display:block;flex:0 0 auto;pointer-events:none;width:100%;height:100vh;background:rgb(237, 243, 237);overflow-x:hidden;overflow-y:hidden;transform:none">
-            <div style="width:100%;height:100%;position:relative;overflow:hidden;perspective:1900px;perspective-origin:center center;-webkit-transform-style:preserve-3d;transform-style:preserve-3d;pointer-events:auto">
-                <div class="scene-container" id="scene-container" style="position: absolute; width: 100%; height: 100%; transform-origin: center center; will-change: transform; transform-style: preserve-3d; pointer-events: none; transform: rotateX(-26.27deg) rotateY(-45deg);">
-                    <!-- Motion layers will be generated here -->
+    <main class="flex-grow" id="main-container" style="background-color: rgb(237, 243, 237); color: var(--text-primary); position: relative;">
+        <!-- Scrollable content area for scroll-based animation -->
+        <div class="scroll-content" style="height: 300vh; position: relative;">
+            <!-- Framer Motion Layer Structure - Fixed in viewport -->
+            <div class="framer-motion-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; pointer-events: none; background: rgb(237, 243, 237); overflow: hidden;">
+                <div style="width: 100%; height: 100%; position: relative; overflow: hidden; perspective: 1900px; perspective-origin: center center; transform-style: preserve-3d; pointer-events: auto;">
+                    <div class="scene-container" id="scene-container" style="position: absolute; width: 100%; height: 100%; transform-origin: center center; will-change: transform; transform-style: preserve-3d; pointer-events: none; transform: rotateX(-26.27deg) rotateY(-45deg);">
+                        <!-- Motion layers will be generated here -->
+                    </div>
                 </div>
             </div>
         </div>
         
         <!-- Back link -->
-        <div style="position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 10000; background: rgba(255,255,255,0.9); padding: 1rem 2rem; border-radius: 8px;">
-            <a href="index.html" class="text-[#A30000] hover:underline text-lg">← Back to Home</a>
+        <div style="position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); z-index: 10000; background: rgba(255,255,255,0.95); padding: 1rem 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <a href="index.html" class="text-[#A30000] hover:underline text-lg font-semibold">← Back to Home</a>
         </div>
     </main>
 
@@ -308,17 +328,20 @@
                 
                 // Placeholder image - you can replace these with your own images
                 const img = document.createElement('img');
-                img.decoding = 'auto';
+                img.decoding = 'async';
+                img.loading = 'lazy';
                 img.width = 400;
                 img.height = 400;
-                img.src = `https://via.placeholder.com/400x400/EDF3ED/000000?text=Layer+${index + 1}`;
-                img.alt = '';
+                // Use a gradient placeholder that matches the design
+                img.src = `data:image/svg+xml,${encodeURIComponent(`<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="grad${index}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:rgb(163,0,0);stop-opacity:0.${Math.floor(Math.random() * 5 + 5)}" /><stop offset="100%" style="stop-color:rgb(237,243,237);stop-opacity:0.${Math.floor(Math.random() * 5 + 5)}" /></linearGradient></defs><rect width="400" height="400" fill="url(#grad${index})" /></svg>`)}`;
+                img.alt = `Motion Layer ${index + 1}`;
                 img.style.display = 'block';
                 img.style.width = '100%';
                 img.style.height = '100%';
                 img.style.borderRadius = 'inherit';
                 img.style.objectPosition = 'center center';
                 img.style.objectFit = 'cover';
+                img.style.willChange = 'transform';
                 
                 imageWrapper.appendChild(img);
                 innerDiv.appendChild(imageWrapper);
@@ -326,44 +349,81 @@
                 sceneContainer.appendChild(layer);
             });
             
-            // Scroll-based rotation (Framer-style)
+            // Scroll-based rotation (Framer-style) - Production ready
             let scrollY = 0;
             let ticking = false;
+            let layers = [];
             
-            window.addEventListener('scroll', () => {
-                scrollY = window.scrollY;
+            // Store layer references for performance
+            function initializeLayers() {
+                layers = Array.from(document.querySelectorAll('.motion-layer'));
+            }
+            
+            // Optimized scroll handler
+            function handleScroll() {
+                scrollY = window.pageYOffset || document.documentElement.scrollTop;
                 if (!ticking) {
                     requestAnimationFrame(updateScene);
                     ticking = true;
                 }
+            }
+            
+            window.addEventListener('scroll', handleScroll, { passive: true });
+            
+            // Handle window resize
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    updateScene();
+                }, 100);
             }, { passive: true });
             
             function updateScene() {
+                if (!sceneContainer || layers.length === 0) {
+                    ticking = false;
+                    return;
+                }
+                
                 // Calculate scroll progress (normalized 0-1)
-                const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-                const scrollProgress = Math.max(0, Math.min(1, scrollY / maxScroll));
+                // Use the scroll-content height for calculation
+                const scrollContent = document.querySelector('.scroll-content');
+                const maxScroll = scrollContent ? scrollContent.offsetHeight - window.innerHeight : document.documentElement.scrollHeight - window.innerHeight;
+                const scrollProgress = Math.max(0, Math.min(1, scrollY / Math.max(maxScroll, 1)));
                 
-                // Rotate scene based on scroll (similar to Framer's behavior)
-                const rotateX = -26.27 + (scrollProgress * 20); // Start at -26.27deg, rotate up to ~-6deg
-                const rotateY = -45 + (scrollProgress * 30); // Start at -45deg, rotate up to ~-15deg
+                // Smooth rotation based on scroll (Framer-style)
+                // Start rotated, gradually straighten as you scroll
+                const rotateX = -26.27 + (scrollProgress * 20); // -26.27deg to ~-6deg
+                const rotateY = -45 + (scrollProgress * 30); // -45deg to ~-15deg
                 
+                // Use transform3d for hardware acceleration
                 sceneContainer.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
                 
-                // Update layer positions based on scroll
-                const layers = document.querySelectorAll('.motion-layer');
+                // Update each layer's position based on scroll
                 layers.forEach((layer, index) => {
                     const config = layerConfigs[index];
                     if (config) {
-                        // Adjust Z position based on scroll
-                        const newZ = config.z + (scrollProgress * 500); // Layers move forward as you scroll
-                        const newScale = config.scale + (scrollProgress * 0.2); // Scale increases
+                        // Layers move forward in Z-space as you scroll
+                        const zOffset = scrollProgress * 600; // Total Z movement range
+                        const newZ = config.z + zOffset;
                         
-                        layer.style.transform = `translateX(-50%) translateY(-50%) translateZ(${newZ}px) scale(${newScale})`;
+                        // Scale increases slightly as layers come forward
+                        const scaleOffset = scrollProgress * 0.25;
+                        const newScale = config.scale + scaleOffset;
+                        
+                        // Use transform3d for better performance
+                        layer.style.transform = `translate3d(-50%, -50%, ${newZ}px) scale(${newScale})`;
                     }
                 });
                 
                 ticking = false;
             }
+            
+            // Initialize after layers are created
+            setTimeout(() => {
+                initializeLayers();
+                updateScene();
+            }, 100);
             
             // Initial update
             updateScene();
