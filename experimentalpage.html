@@ -96,6 +96,56 @@
             left: 50%;
         }
         
+        /* Framer-style 3D Motion Layer Container */
+        .motion-layer-container {
+            position: relative;
+            width: 100%;
+            min-height: 200vh; /* Extra height for scroll effect */
+            perspective: 1000px;
+            perspective-origin: center center;
+            padding: 4rem 2rem;
+            overflow: hidden;
+        }
+        
+        .motion-layer-item {
+            position: absolute;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            will-change: transform;
+            transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .layer-content {
+            max-width: 1200px;
+            width: 100%;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        /* Different depths for each layer */
+        .motion-layer-item[data-layer="1"] {
+            transform-style: preserve-3d;
+        }
+        
+        .motion-layer-item[data-layer="2"] {
+            transform-style: preserve-3d;
+        }
+        
+        .motion-layer-item[data-layer="3"] {
+            transform-style: preserve-3d;
+        }
+        
+        .motion-layer-item[data-layer="4"] {
+            transform-style: preserve-3d;
+        }
+        
+        .motion-layer-item[data-layer="5"] {
+            transform-style: preserve-3d;
+        }
+        
         /* Content layer - above motion layer */
         .experimental-container {
             min-height: calc(100vh - 80px - var(--marquee-h));
@@ -281,35 +331,63 @@
     </header>
 
     <main class="flex-grow" id="main-container" style="background-color: var(--bg-primary); color: var(--text-primary);">
-        <div class="experimental-container w-full max-w-6xl mx-auto">
-            <div class="text-center mb-12">
-                <h1 class="glitch-text mb-4">EXPERIMENTAL</h1>
-                <p class="text-xl text-black text-reveal">A space for digital exploration</p>
-                <p class="text-lg text-black text-reveal">Testing boundaries between form and function</p>
+        <!-- Framer-style 3D Motion Layer Container -->
+        <div class="motion-layer-container" id="motion-layer-container">
+            <!-- Layer 1 - Background (furthest) -->
+            <div class="motion-layer-item" data-layer="1" style="z-index: 1;">
+                <div class="layer-content">
+                    <h1 class="glitch-text mb-4">EXPERIMENTAL</h1>
+                </div>
             </div>
             
-            <div class="morphing-shape"></div>
-            
-            <div class="mt-12 space-y-6">
-                <p class="text-black text-lg text-reveal">
-                    This is an experimental space where ideas take shape through code, design, and interaction.
-                </p>
-                <p class="text-black text-lg text-reveal">
-                    Every element here is a test—a question about how we experience digital spaces.
-                </p>
+            <!-- Layer 2 - Middle -->
+            <div class="motion-layer-item" data-layer="2" style="z-index: 2;">
+                <div class="layer-content">
+                    <p class="text-xl text-black text-reveal">A space for digital exploration</p>
+                    <p class="text-lg text-black text-reveal">Testing boundaries between form and function</p>
+                </div>
             </div>
             
-            <div class="interactive-grid mt-12">
-                <div class="grid-item">01</div>
-                <div class="grid-item">02</div>
-                <div class="grid-item">03</div>
-                <div class="grid-item">04</div>
-                <div class="grid-item">05</div>
-                <div class="grid-item">06</div>
-                <div class="grid-item">07</div>
-                <div class="grid-item">08</div>
+            <!-- Layer 3 - Foreground (closest) -->
+            <div class="motion-layer-item" data-layer="3" style="z-index: 3;">
+                <div class="layer-content">
+                    <div class="morphing-shape"></div>
+                </div>
             </div>
             
+            <!-- Layer 4 - Content -->
+            <div class="motion-layer-item" data-layer="4" style="z-index: 4;">
+                <div class="layer-content">
+                    <div class="mt-12 space-y-6">
+                        <p class="text-black text-lg text-reveal">
+                            This is an experimental space where ideas take shape through code, design, and interaction.
+                        </p>
+                        <p class="text-black text-lg text-reveal">
+                            Every element here is a test—a question about how we experience digital spaces.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Layer 5 - Interactive Grid -->
+            <div class="motion-layer-item" data-layer="5" style="z-index: 5;">
+                <div class="layer-content">
+                    <div class="interactive-grid mt-12">
+                        <div class="grid-item">01</div>
+                        <div class="grid-item">02</div>
+                        <div class="grid-item">03</div>
+                        <div class="grid-item">04</div>
+                        <div class="grid-item">05</div>
+                        <div class="grid-item">06</div>
+                        <div class="grid-item">07</div>
+                        <div class="grid-item">08</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Regular content container for non-layered content -->
+        <div class="experimental-container w-full max-w-6xl mx-auto" style="position: relative; z-index: 10;">
             <div class="mt-12 text-center">
                 <a href="index.html" class="text-[#A30000] hover:underline text-lg">← Back to Home</a>
             </div>
@@ -357,68 +435,103 @@
                 });
             });
             
-            // Framer-style motion layer effect
+            // Framer-style 3D Motion Layer effect
+            const motionLayerContainer = document.getElementById('motion-layer-container');
+            const layers = document.querySelectorAll('.motion-layer-item');
+            
+            // Background motion layer (blobs)
             const motionLayer = document.getElementById('motion-layer');
             const blob1 = document.getElementById('motion-blob-1');
             const blob2 = document.getElementById('motion-blob-2');
             const blob3 = document.getElementById('motion-blob-3');
-            const layerBefore = window.getComputedStyle(motionLayer, '::before');
-            const layerAfter = window.getComputedStyle(motionLayer, '::after');
             
             let mouseX = 0;
             let mouseY = 0;
             let scrollY = 0;
+            let ticking = false;
             
-            // Track mouse movement
+            // Track mouse movement for subtle parallax
             document.addEventListener('mousemove', (e) => {
                 mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
                 mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-                updateMotionLayer();
-            });
-            
-            // Track scroll
-            let ticking = false;
-            window.addEventListener('scroll', () => {
-                scrollY = window.scrollY;
                 if (!ticking) {
-                    window.requestAnimationFrame(() => {
-                        updateMotionLayer();
-                        ticking = false;
-                    });
+                    requestAnimationFrame(updateMotionLayers);
                     ticking = true;
                 }
             });
             
-            function updateMotionLayer() {
-                // Calculate transforms based on mouse and scroll
-                const moveX1 = mouseX * 50;
-                const moveY1 = mouseY * 50 + scrollY * 0.3;
-                const moveX2 = -mouseX * 40;
-                const moveY2 = -mouseY * 40 + scrollY * 0.2;
-                const moveX3 = mouseX * 30;
-                const moveY3 = mouseY * 30 + scrollY * 0.4;
+            // Track scroll for 3D perspective effect
+            window.addEventListener('scroll', () => {
+                scrollY = window.scrollY;
+                if (!ticking) {
+                    requestAnimationFrame(updateMotionLayers);
+                    ticking = true;
+                }
+            });
+            
+            function updateMotionLayers() {
+                // Update background blobs
+                if (blob1 && blob2 && blob3) {
+                    const moveX1 = mouseX * 50;
+                    const moveY1 = mouseY * 50 + scrollY * 0.3;
+                    const moveX2 = -mouseX * 40;
+                    const moveY2 = -mouseY * 40 + scrollY * 0.2;
+                    const moveX3 = mouseX * 30;
+                    const moveY3 = mouseY * 30 + scrollY * 0.4;
+                    
+                    blob1.style.transform = `translate(${moveX1}px, ${moveY1}px) scale(${1 + mouseX * 0.1})`;
+                    blob2.style.transform = `translate(${moveX2}px, ${moveY2}px) scale(${1 - mouseY * 0.1})`;
+                    blob3.style.transform = `translate(${moveX3}px, ${moveY3}px) scale(${1 + (mouseX + mouseY) * 0.05})`;
+                }
                 
-                // Apply transforms to blobs
-                blob1.style.transform = `translate(${moveX1}px, ${moveY1}px) scale(${1 + mouseX * 0.1})`;
-                blob2.style.transform = `translate(${moveX2}px, ${moveY2}px) scale(${1 - mouseY * 0.1})`;
-                blob3.style.transform = `translate(${moveX3}px, ${moveY3}px) scale(${1 + (mouseX + mouseY) * 0.05})`;
+                // Update 3D layers with perspective transforms
+                const containerRect = motionLayerContainer.getBoundingClientRect();
+                const containerTop = containerRect.top;
+                const containerHeight = containerRect.height;
+                const scrollProgress = Math.max(0, Math.min(1, -containerTop / containerHeight));
                 
-                // Apply transforms to pseudo-elements via CSS variables
-                motionLayer.style.setProperty('--mouse-x', mouseX);
-                motionLayer.style.setProperty('--mouse-y', mouseY);
-                motionLayer.style.setProperty('--scroll-y', scrollY);
+                // Different depth multipliers for each layer (creating 3D effect)
+                const depthMultipliers = {
+                    1: 0.2,  // Furthest back
+                    2: 0.4,
+                    3: 0.6,
+                    4: 0.8,
+                    5: 1.0   // Closest
+                };
+                
+                layers.forEach((layer, index) => {
+                    const layerNum = parseInt(layer.dataset.layer);
+                    const depth = depthMultipliers[layerNum] || 1;
+                    
+                    // Calculate 3D transform based on scroll
+                    const translateZ = scrollProgress * depth * 200 - 100; // Move layers in Z space
+                    const translateY = scrollProgress * depth * 100; // Parallax Y movement
+                    const rotateX = scrollProgress * depth * 5; // Slight rotation for depth
+                    
+                    // Mouse parallax effect (subtle)
+                    const mouseParallaxX = mouseX * depth * 20;
+                    const mouseParallaxY = mouseY * depth * 20;
+                    
+                    // Apply 3D transform
+                    layer.style.transform = `
+                        translate3d(${mouseParallaxX}px, ${translateY + mouseParallaxY}px, ${translateZ}px)
+                        rotateX(${rotateX}deg)
+                        scale(${1 + scrollProgress * depth * 0.1})
+                    `;
+                    
+                    // Adjust opacity based on depth
+                    layer.style.opacity = 0.7 + (depth * 0.3);
+                });
+                
+                // Update container perspective
+                const perspectiveValue = 1000 + scrollProgress * 500;
+                motionLayerContainer.style.perspective = `${perspectiveValue}px`;
+                
+                ticking = false;
             }
             
             // Initial update
-            updateMotionLayer();
-            
-            // Add parallax effect on scroll for content
-            const container = document.querySelector('.experimental-container');
-            window.addEventListener('scroll', () => {
-                const scrolled = window.scrollY;
-                const parallax = scrolled * 0.1;
-                container.style.transform = `translateY(${parallax}px)`;
-            });
+            updateMotionLayers();
         });
     </script>
 </body>
