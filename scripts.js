@@ -1485,7 +1485,7 @@ function setupCircles() {
             circles.push(circleEl);
         }
         
-        // Then add the three project circles in a row at the bottom
+        // Then add the project circles in a row at the bottom
         const projectWrapper = document.createElement('div');
         projectWrapper.style.display = 'flex';
         projectWrapper.style.flexDirection = 'row';
@@ -1508,6 +1508,7 @@ function setupCircles() {
                 'project1': '/footwear/',
                 'project2': '/accessories/',
                 'project3': '/masks/',
+                'project4': '/fashion-scholarship-fund/',
                 'about': '/about.html'
             };
             circleLink.href = urlMap[project.id] || '#';
@@ -1574,6 +1575,7 @@ function setupCircles() {
                 'project1': '/footwear/',
                 'project2': '/accessories/',
                 'project3': '/masks/',
+                'project4': '/fashion-scholarship-fund/',
                 'about': '/about.html'
             };
             circleLink.href = urlMap[project.id] || '#';
@@ -1642,9 +1644,9 @@ function createConnectingLines() {
     const aboutCenterX = aboutRect.left + aboutRect.width / 2 - containerRect.left;
     const aboutCenterY = aboutRect.top + aboutRect.height / 2 - containerRect.top;
     
-    // Create lines from the first 3 project circles to about circle
-    for (let i = 0; i < 3; i++) {
-        const projectUrls = ['/footwear/', '/accessories/', '/masks/'];
+    // Create lines from all project circles to about circle
+    const projectUrls = ['/footwear/', '/accessories/', '/masks/', '/fashion-scholarship-fund/'];
+    for (let i = 0; i < projectUrls.length; i++) {
         const projectCircle = document.querySelector(`a[href="${projectUrls[i]}"] .portfolio-circle`);
         if (!projectCircle) continue;
         
@@ -1669,7 +1671,7 @@ function createConnectingLines() {
         line.style.zIndex = '-1';
         
         // Add uneven staggered animation delay to create organic offset effect
-        const delays = [0, 1.2, 2.1]; // Uneven delays for more natural flow
+        const delays = [0, 1.2, 2.1, 0.6]; // Uneven delays for more natural flow (4 projects)
         const delay = delays[i] || 0;
         line.style.setProperty('--animation-delay', `${delay}s`);
         
@@ -1688,7 +1690,33 @@ function generateCirclePositions(count) {
         { x: 1.2, y: 1.1 },   // Bottom right
         { x: 0, y: 0.37 }     // Center (About) - geometric center of triangle
     ];
-    // For more than 4, arrange in a circle
+    // For 5 items: 4 project circles around center (about)
+    if (count === 5) {
+        // Find about circle index
+        const aboutIndex = projectsConfig.findIndex(p => p.id === 'about');
+        const positions = [];
+        // Generate 4 positions in a circle (for projects)
+        const projectPositions = [];
+        for (let i = 0; i < 4; i++) {
+            const angle = (i / 4) * 2 * Math.PI - Math.PI / 2; // Start at top
+            projectPositions.push({
+                x: Math.cos(angle) * 0.85,
+                y: Math.sin(angle) * 0.85
+            });
+        }
+        // Insert about circle at center (0, 0) at its index
+        for (let i = 0; i < count; i++) {
+            if (i === aboutIndex) {
+                positions.push({ x: 0, y: 0 }); // Center
+            } else {
+                // Find which project position to use
+                const projectIndex = i < aboutIndex ? i : i - 1;
+                positions.push(projectPositions[projectIndex]);
+            }
+        }
+        return positions;
+    }
+    // For more than 5, arrange in a circle
     const positions = [];
     for (let i = 0; i < count; i++) {
         const angle = (i / count) * 2 * Math.PI - Math.PI / 2;

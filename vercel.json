@@ -13,6 +13,10 @@
       "destination": "/masks/:project.html"
     },
     {
+      "source": "/fashion-scholarship-fund",
+      "destination": "/fashion-scholarship-fund/index.html"
+    },
+    {
       "source": "/experimentalpage",
       "destination": "/experimentalpage.html"
     },

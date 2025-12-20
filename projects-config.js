@@ -347,6 +347,46 @@ const projectsConfig = [
                     ]
                 },
                 {
+                    id: 'project4',
+                    name: 'Fashion Scholarship Fund',
+                    tagline: 'Case Competition Winner',
+                    date: '2024',
+                    goal: 'Winner of the Fashion Scholarship Fund Case Competition, demonstrating strategic thinking, creative problem-solving, and business acumen in the fashion industry. This achievement showcases my ability to combine design innovation with market understanding and strategic planning.',
+                    role: [
+                        'Case Competition Participant',
+                        'Strategic Analyst',
+                        'Creative Problem Solver',
+                        'Business Strategist'
+                    ],
+                    skills: [
+                        'Strategic Analysis',
+                        'Market Research',
+                        'Business Strategy',
+                        'Creative Problem Solving',
+                        'Presentation',
+                        'Industry Analysis'
+                    ],
+                    lessons: [
+                        'Strategic thinking enhances creative solutions',
+                        'Understanding market dynamics informs design decisions',
+                        'Effective communication bridges creativity and business'
+                    ],
+                    circleImage: 'meimages/Mehead.webp',
+                    mainImage: 'meimages/Mehead.webp',
+                    thumbnails: [
+                        { src: 'meimages/Mehead.webp', alt: 'Fashion Scholarship Fund' }
+                    ],
+                    projects: [
+                        {
+                            name: 'Fashion Scholarship Fund Case Competition',
+                            description: 'Winner of the Fashion Scholarship Fund Case Competition, demonstrating excellence in strategic analysis, creative problem-solving, and business acumen within the fashion industry. This achievement reflects my ability to synthesize design innovation with market understanding and strategic planning to develop compelling solutions.',
+                            images: [
+                                { src: 'meimages/Mehead.webp', alt: 'Case Competition Winner' }
+                            ]
+                        }
+                    ]
+                },
+                {
                     id: 'about',
                     name: '',
                     tagline: 'Designer & 3D Artist',
