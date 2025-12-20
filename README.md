@@ -94,6 +94,8 @@ The site includes a **copy switcher system** (`/change`) that allows tailoring p
 - ✅ **SEO Optimized**: Sitemap, meta tags, proper heading structure
 
 ### Interactive Elements
+- **Orbital Animation**: Project circles slowly orbit around central About Me circle (desktop only)
+- **Mouse Proximity Detection**: Orbital animation slows/stops as mouse approaches circles
 - **Image Zoom**: Click zoom icon on any image for full-screen view
 - **Video Support**: `.mov` files supported in galleries
 - **Hover Effects**: Circles and images have hover animations
@@ -334,6 +336,13 @@ vercel --prod
 - **Files Modified**: `projects-config.js`, `scripts.js`, `vercel.json`
 - **Files Created**: `fashion-scholarship-fund/index.html`
 
+#### Orbital Animation System
+- ✅ Added slow orbital rotation for project circles around About Me
+- ✅ Animation slows/stops as mouse approaches circles (proximity detection)
+- ✅ Desktop only - disabled on mobile for performance
+- **Files Modified**: `scripts.js`
+
+
 #### Copy Switcher System
 - ✅ Created `/change` page for switching portfolio copy
 - ✅ Added copy versions: Default, Mattel, Nike/Jordan
@@ -445,6 +454,19 @@ Pages reload or update dynamically
 - **Content**: Philosophical thoughts (4 unique items, duplicated for loop)
 - **Animation**: CSS animation for continuous scroll
 - **Update**: Edit HTML directly in each page
+
+### Orbital Animation System
+
+- **Location**: `scripts.js` - `startOrbitalAnimation()` function
+- **Behavior**: Project circles slowly orbit around central About Me circle
+- **Speed Control**: `orbitSpeed = 0.0003` radians per frame
+- **Mouse Proximity**: Animation slows/stops as mouse approaches
+  - `maxSlowdownDistance = 300` - Distance where slowdown begins
+  - `minSlowdownDistance = 50` - Distance where animation stops completely
+- **Radius**: `containerSize * 0.22 * 1.1` - Controls distance from center
+- **Desktop Only**: Animation disabled on mobile devices
+- **To Adjust Speed**: Modify `orbitSpeed` constant (higher = faster)
+- **To Adjust Spacing**: Modify `radius` values in `setupCircles()` and `startOrbitalAnimation()`
 
 ---
 
