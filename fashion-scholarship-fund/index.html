@@ -529,7 +529,7 @@
 
             // Scroll navigation - immediate response with cooldown
             let lastScrollTime = 0;
-            const scrollCooldown = 300; // Longer cooldown for one card per scroll
+            const scrollCooldown = 500; // 500ms ensures one card per scroll gesture
             
             cardStack.addEventListener('wheel', (e) => {
                 e.preventDefault();
