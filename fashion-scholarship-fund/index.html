@@ -166,8 +166,41 @@
                 </ul>
             </div>
 
-            <!-- Image Section -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- PDF Viewer Section -->
+            <div class="mb-16">
+                <h3 class="text-2xl font-bold mb-4 text-[#A30000]">Case Study Document</h3>
+                <p class="text-lg text-black mb-6 leading-relaxed">
+                    View the complete Fashion Scholarship Fund Merchandising Case Study below. You can scroll through the document, zoom in/out, and download it if needed.
+                </p>
+                
+                <!-- PDF Viewer Container -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <div class="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+                        <h4 class="text-lg font-semibold text-black">FSF Merchandising Case 2026</h4>
+                        <a href="FSF_Merchandising_Case_2026.pdf" download class="px-4 py-2 bg-[#A30000] text-white rounded-lg hover:bg-[#8B0000] transition-colors duration-300 text-sm font-medium flex items-center space-x-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            <span>Download PDF</span>
+                        </a>
+                    </div>
+                    <div class="pdf-viewer-container" style="height: 800px; overflow: hidden;">
+                        <iframe 
+                            src="FSF_Merchandising_Case_2026.pdf" 
+                            class="w-full h-full border-0"
+                            title="FSF Merchandising Case Study PDF"
+                            style="min-height: 800px;">
+                            <p class="p-8 text-center text-gray-600">
+                                Your browser does not support PDFs. 
+                                <a href="FSF_Merchandising_Case_2026.pdf" download class="text-[#A30000] underline">Download the PDF</a> to view it.
+                            </p>
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Section (if you want to keep it) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
                 <div class="bg-white rounded-lg shadow-lg overflow-hidden">
                     <img src="../meimages/Mehead.webp" alt="Fashion Scholarship Fund Case Competition" class="w-full h-auto object-cover cursor-pointer zoom-trigger">
                 </div>
