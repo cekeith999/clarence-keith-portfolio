@@ -1580,7 +1580,7 @@ document.addEventListener('DOMContentLoaded', () => {
             container.appendChild(projectWrapper);
         } else {
             // Desktop layout - triangular arrangement
-            radius = containerSize * 0.22;
+            radius = Math.min(containerSize * 0.15, 150); // Max 150px from center
             const circleSize = containerSize * 0.2;
             const positions = generateCirclePositions(projectsConfig.length);
 
@@ -1713,7 +1713,7 @@ document.addEventListener('DOMContentLoaded', () => {
             orbitAngle += orbitSpeed * speedMultiplier;
 
             // Update each project circle position
-            const radius = containerRect.width * 0.22 * 1.1; // Match the positioning radius
+            const radius = Math.min(containerRect.width * 0.15, 150) * 1.1; // Match the positioning radius, max 150px
             let projectIndex = 0;
 
             circleWrappers.forEach((wrapper, i) => {
