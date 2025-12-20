@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Copy - Clarence Keith</title>
+    <link rel="icon" type="image/png" href="meimages/mehead favicon.webp">
+    <link rel="shortcut icon" type="image/png" href="meimages/mehead favicon.webp">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .copy-version-card {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .copy-version-card:hover {
+            border-color: #A30000;
+            transform: translateY(-2px);
+        }
+        .copy-version-card.active {
+            border-color: #A30000;
+            background-color: #F2F0EF;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col" style="background-color: var(--bg-primary); color: var(--text-primary);">
+
+<!-- Header Navigation -->
+    <header class="w-full p-6 sm:p-8 sticky top-0 z-50 bg-[#A30000] shadow-sm">
+        <nav class="flex justify-between items-center max-w-7xl mx-auto">
+            <div class="flex-1">
+                <a href="index.html" class="text-lg font-bold nav-link text-white hover:text-black transition-colors duration-300">← Back to Portfolio</a>
+            </div>
+            <div class="flex-1 text-center">
+                <a class="text-3xl font-bold tracking-wider nav-link text-white hover:text-black transition-colors duration-300" href="index.html">Clarence Keith</a>
+                <div class="text-sm font-medium tracking-widest text-white/80 mt-1">COPY SWITCHER</div>
+            </div>
+            <div class="flex-1"></div>
+        </nav>
+    </header>
+
+    <main class="flex-grow" id="main-container" style="background-color: var(--bg-primary); color: var(--text-primary);">
+        <section class="w-full max-w-4xl mx-auto p-6 sm:p-8">
+            <div class="mb-8">
+                <h1 class="text-4xl font-bold tracking-tight mb-4 text-[#A30000]">Change Portfolio Copy</h1>
+                <p class="text-lg text-black">Select a copy version to tailor your portfolio for different audiences. The selection will be saved and applied across all pages.</p>
+            </div>
+
+            <div id="copy-versions-container" class="space-y-4 mb-8">
+                <!-- Copy version cards will be generated here -->
+            </div>
+
+            <div id="current-selection" class="mt-8 p-6 bg-[#F2F0EF] rounded-lg">
+                <h2 class="text-xl font-bold mb-2 text-[#A30000]">Current Selection</h2>
+                <p class="text-black" id="current-version-display">Loading...</p>
+            </div>
+
+            <div class="mt-8 p-6 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <h3 class="text-lg font-bold mb-2 text-yellow-800">Note</h3>
+                <p class="text-yellow-700 text-sm">After selecting a version, navigate to your portfolio pages to see the updated copy. The selection persists across page visits.</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="copy-config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('copy-versions-container');
+            const currentDisplay = document.getElementById('current-version-display');
+            
+            // Get current selection
+            const currentVersion = getCurrentCopyVersion();
+            const currentCopy = getCopy();
+            
+            // Display current selection
+            currentDisplay.textContent = `${currentCopy.name}: ${currentCopy.description}`;
+            
+            // Generate version cards
+            Object.keys(copyVersions).forEach(versionKey => {
+                const version = copyVersions[versionKey];
+                const isActive = versionKey === currentVersion;
+                
+                const card = document.createElement('div');
+                card.className = `copy-version-card p-6 bg-white rounded-lg shadow-md cursor-pointer ${isActive ? 'active' : ''}`;
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-2xl font-bold text-[#A30000] mb-2">${version.name}</h3>
+                            <p class="text-black">${version.description}</p>
+                        </div>
+                        ${isActive ? '<span class="text-sm font-bold text-[#A30000]">ACTIVE</span>' : ''}
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <h4 class="text-sm font-bold text-black mb-2">About Section Preview:</h4>
+                        <p class="text-sm text-gray-600 italic mb-2">${version.about.paragraph1.substring(0, 100)}...</p>
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => {
+                    if (setCopyVersion(versionKey)) {
+                        // Update UI
+                        document.querySelectorAll('.copy-version-card').forEach(c => c.classList.remove('active'));
+                        card.classList.add('active');
+                        const newCopy = getCopy();
+                        currentDisplay.textContent = `${newCopy.name}: ${newCopy.description}`;
+                        
+                        // Show success message
+                        const successMsg = document.createElement('div');
+                        successMsg.className = 'fixed top-20 right-6 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+                        successMsg.textContent = 'Copy version updated!';
+                        document.body.appendChild(successMsg);
+                        setTimeout(() => successMsg.remove(), 3000);
+                        
+                        // Trigger copy update on all pages (if copy-switcher.js is loaded)
+                        if (window.updateAllCopy) {
+                            window.updateAllCopy();
+                        }
+                    }
+                });
+                
+                container.appendChild(card);
+            });
+        });
+    </script>
+</body>
+</html>
+

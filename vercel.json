@@ -15,6 +15,10 @@
     {
       "source": "/experimentalpage",
       "destination": "/experimentalpage.html"
+    },
+    {
+      "source": "/change",
+      "destination": "/change.html"
     }
   ],
   "headers": [

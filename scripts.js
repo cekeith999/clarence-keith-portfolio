@@ -1049,14 +1049,17 @@ function generateAboutContent() {
     
     const description1 = document.createElement('p');
     description1.className = 'text-black leading-relaxed mb-4';
+    description1.setAttribute('data-copy', 'about-p1');
     description1.textContent = "I'm Clarence Keith, a passionate footwear designer and 3D artist specializing in experimental design and additive manufacturing. My work explores the intersection of traditional craftsmanship and cutting-edge technology.";
     
     const description2 = document.createElement('p');
     description2.className = 'text-black leading-relaxed mb-4';
+    description2.setAttribute('data-copy', 'about-p2');
     description2.textContent = "With a background in industrial design and a fascination for generative design principles, I create footwear that challenges conventional form while maintaining functionality and aesthetic appeal.";
     
     const description3 = document.createElement('p');
     description3.className = 'text-black leading-relaxed mb-6';
+    description3.setAttribute('data-copy', 'about-p3');
     description3.textContent = "Each piece in my portfolio represents a unique exploration of materials, form, and manufacturing processes, pushing the boundaries of what's possible in contemporary footwear design.";
     
     // Thoughts button
