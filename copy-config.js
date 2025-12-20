@@ -15,28 +15,28 @@ const copyVersions = {
             // Format: projectId: { goal: "...", tagline: "...", etc. }
         }
     },
-    corporate: {
-        name: 'Corporate',
-        description: 'Tailored for corporate clients and business opportunities',
+    mattel: {
+        name: 'Mattel',
+        description: 'Tailored for Mattel Future Lab Program Management Internship',
         about: {
-            paragraph1: "I'm Clarence Keith, a professional footwear designer and 3D artist with expertise in experimental design and additive manufacturing. My work bridges traditional craftsmanship with cutting-edge technology to deliver innovative solutions.",
-            paragraph2: "With a strong background in industrial design and expertise in generative design principles, I create footwear that balances innovative form with functional requirements and market appeal.",
-            paragraph3: "Each project in my portfolio demonstrates a strategic approach to materials, form, and manufacturing processes, delivering solutions that meet both creative and commercial objectives."
+            paragraph1: "I'm Clarence Keith, a footwear designer and 3D artist with a passion for innovation and cross-functional collaboration. My work combines experimental design with additive manufacturing, demonstrating my ability to manage complex creative projects from concept to execution.",
+            paragraph2: "Through my portfolio projects, I've developed strong organizational skills, project coordination experience, and the ability to work collaboratively with diverse teams. I excel at tracking progress, identifying dependencies, and documenting processes—skills essential for supporting innovation project management.",
+            paragraph3: "My experience in early-stage concept exploration, material research, and iterative design processes aligns with Mattel's mission to create innovative products that inspire and develop children through play. I'm eager to contribute to Future Lab's discovery practice and support strategic innovation initiatives."
         },
         projects: {
-            // Add project-specific corporate copy here if needed
+            // Add project-specific Mattel copy here if needed
         }
     },
-    creative: {
-        name: 'Creative',
-        description: 'Tailored for creative agencies and artistic collaborations',
+    nike: {
+        name: 'Nike/Jordan',
+        description: 'Tailored for Nike/Jordan Design Internship',
         about: {
-            paragraph1: "I'm Clarence Keith, a footwear designer and 3D artist pushing the boundaries of experimental design and additive manufacturing. My work exists at the intersection of art, craft, and technology.",
-            paragraph2: "Rooted in industrial design and driven by generative design principles, I create footwear that challenges perception, reimagines form, and explores new possibilities in wearable art.",
-            paragraph3: "Each piece in my portfolio is a unique experiment in materials, form, and process—a statement that questions what footwear can be and where design might go next."
+            paragraph1: "I'm Clarence Keith, a footwear designer and 3D artist specializing in experimental design and additive manufacturing. My work brings trend-relevant concepts to life through innovative materials, form, and storytelling—core to Jordan Brand's design philosophy.",
+            paragraph2: "With expertise in 3D modeling, rendering, and digital product creation, I create footwear that combines performance, style, and cultural relevance. My portfolio demonstrates strong visual communication skills, modern aesthetic application, and the ability to translate concepts from ideation to final product.",
+            paragraph3: "Each project showcases my passion for design innovation, material exploration, and collaborative problem-solving. I'm excited to contribute to Jordan Brand's mission of helping athletes fly on and off the court through cutting-edge design that bridges sport, culture, and creativity."
         },
         projects: {
-            // Add project-specific creative copy here if needed
+            // Add project-specific Nike/Jordan copy here if needed
         }
     }
 };
