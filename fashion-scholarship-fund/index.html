@@ -527,21 +527,34 @@
                 }
             });
 
-            // Scroll navigation - immediate response with cooldown
-            let lastScrollTime = 0;
-            const scrollCooldown = 500; // 500ms ensures one card per scroll gesture
+            // Scroll navigation - accumulate delta for reliable one-card-per-scroll
+            let accumulatedDelta = 0;
+            let isScrolling = false;
+            const deltaThreshold = 50; // Amount of scroll needed to trigger
             
             cardStack.addEventListener('wheel', (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 
-                const now = Date.now();
-                if (now - lastScrollTime < scrollCooldown) return;
-                lastScrollTime = now;
+                if (isScrolling) return;
                 
-                if (e.deltaY > 0) {
-                    nextCard();
-                } else if (e.deltaY < 0) {
-                    prevCard();
+                accumulatedDelta += e.deltaY;
+                
+                if (Math.abs(accumulatedDelta) >= deltaThreshold) {
+                    isScrolling = true;
+                    
+                    if (accumulatedDelta > 0) {
+                        nextCard();
+                    } else {
+                        prevCard();
+                    }
+                    
+                    accumulatedDelta = 0;
+                    
+                    // Block scrolling until animation completes
+                    setTimeout(() => {
+                        isScrolling = false;
+                    }, 400);
                 }
             }, { passive: false });
 
