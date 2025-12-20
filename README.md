@@ -342,6 +342,15 @@ vercel --prod
 - ✅ Desktop only - disabled on mobile for performance
 - **Files Modified**: `scripts.js`
 
+#### Card Stack Document Viewer
+- ✅ Converted 22-page PDF to WebP images (5.3MB vs 45MB)
+- ✅ Interactive card stack viewer with stacked card visual effects
+- ✅ Scroll wheel, drag, button, and keyboard navigation
+- ✅ Immediate response on scroll (debounced cooldown)
+- **Files Created**: `fashion-scholarship-fund/slides/slide-*.webp` (22 images)
+- **Files Modified**: `fashion-scholarship-fund/index.html`
+
+
 
 #### Copy Switcher System
 - ✅ Created `/change` page for switching portfolio copy
