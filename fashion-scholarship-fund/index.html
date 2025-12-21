@@ -101,10 +101,10 @@
             padding: 0 1rem;
         }
         
-        /* Sticky card stack - starts aligned with Project Overview */
+        /* Sticky card stack - initially hidden until JS positions it */
         .fsf-sidebar {
             position: fixed;
-            top: 550px; /* Aligned with Project Overview section */
+            top: 0;
             right: 3rem;
             width: 480px;
             z-index: 10;
@@ -815,6 +815,11 @@
             
             // Apply will-change for smooth animation
             sidebar.style.willChange = 'transform, top';
+            
+            // Get the Project Overview section position for alignment
+            const projectOverview = fsfContent.querySelector('h3');
+            const initialTop = projectOverview ? projectOverview.getBoundingClientRect().top + window.scrollY : 500;
+            sidebar.style.top = initialTop + 'px';
             
             function checkScroll() {
                 const scrollY = window.scrollY;
