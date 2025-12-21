@@ -386,7 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Understanding market dynamics informs design decisions',
                 'Effective communication bridges creativity and business'
             ],
-            circleImage: 'meimages/Mehead.webp',
+            circleImage: 'meimages/fsf-circle.webp',
             mainImage: 'meimages/Mehead.webp',
             thumbnails: [
                 { src: 'meimages/Mehead.webp', alt: 'Fashion Scholarship Fund' }
