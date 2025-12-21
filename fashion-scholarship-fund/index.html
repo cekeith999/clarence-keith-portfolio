@@ -87,16 +87,17 @@
         }
         
         .fsf-content {
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 0 2rem;
+            max-width: 600px;
+            margin-left: 2rem;
+            margin-right: 550px; /* Leave space for fixed sidebar */
+            padding: 0 1rem;
         }
         
         /* Sticky card stack - always on right side */
         .fsf-sidebar {
             position: fixed;
             top: 120px;
-            right: calc(50% - 600px + 2rem);
+            right: 3rem;
             width: 480px;
             z-index: 10;
             transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
