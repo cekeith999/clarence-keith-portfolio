@@ -1,0 +1,177 @@
+import re
+
+# Read the current file
+with open(r'c:\portfolio\fashion-scholarship-fund\index.html', 'r', encoding='utf-8') as f:
+    content = f.read()
+
+# First, remove the image section at the bottom
+content = re.sub(
+    r'<!-- Image Section.*?</div>\s*</div>\s*</div>\s*</main>',
+    '</div>\n    </main>',
+    content,
+    flags=re.DOTALL
+)
+
+# Add CSS for the two-column layout
+layout_css = '''
+        <style>
+            /* Two-column sticky layout */
+            .fsf-two-column {
+                display: flex;
+                gap: 3rem;
+                align-items: flex-start;
+                min-height: 100vh;
+            }
+            
+            .fsf-text-column {
+                flex: 1;
+                min-width: 0;
+            }
+            
+            .fsf-card-column {
+                position: sticky;
+                top: 100px;
+                width: 50%;
+                max-width: 550px;
+                flex-shrink: 0;
+            }
+            
+            .fsf-card-column .card-stack-wrapper {
+                max-width: 100%;
+            }
+            
+            .fsf-card-column .card-stack {
+                aspect-ratio: 16 / 10;
+            }
+            
+            @media (max-width: 1024px) {
+                .fsf-two-column {
+                    flex-direction: column;
+                }
+                
+                .fsf-card-column {
+                    position: relative;
+                    top: 0;
+                    width: 100%;
+                    max-width: 100%;
+                    margin-bottom: 2rem;
+                    order: -1;
+                }
+            }
+        </style>
+'''
+
+# Insert the CSS after the opening main tag
+content = content.replace(
+    '<main class="flex-grow" id="main-container"',
+    layout_css + '\n    <main class="flex-grow" id="main-container"'
+)
+
+# Now restructure the HTML - wrap content in two-column layout
+# Find the header section and change it to be left-aligned instead of centered
+content = content.replace(
+    '            <div class="text-center mb-16">',
+    '            <!-- Two Column Layout -->\n            <div class="fsf-two-column">\n                <!-- Left Column: Text Content -->\n                <div class="fsf-text-column">\n                    <div class="mb-12">'
+)
+
+# Change the h1 to be left-aligned
+content = content.replace(
+    '<h1 class="text-5xl font-bold tracking-tight text-[#A30000] mb-6">Fashion Scholarship Fund (FSF) 2026</h1>',
+    '<h1 class="text-4xl font-bold tracking-tight text-[#A30000] mb-4">FASHION SCHOLARSHIP FUND (FSF) 2026</h1>'
+)
+
+content = content.replace(
+    '<p class="text-2xl text-black mb-8">Merchandising Case Study — Winner</p>',
+    '<p class="text-lg text-black mb-6 uppercase tracking-wide">Merchandising Case Study — Winner</p>'
+)
+
+content = content.replace(
+    '<p class="text-lg text-black max-w-4xl mx-auto leading-relaxed">',
+    '<p class="text-base text-black leading-relaxed">'
+)
+
+# Close the header div and keep the rest of the content flowing
+content = content.replace(
+    '''                </p>
+            </div>
+
+            <!-- Project Overview -->''',
+    '''                </p>
+                    </div>
+
+                    <!-- Project Overview -->'
+'''
+)
+
+# Find the Card Stack section and extract it, then move it to the right column
+# First, let's find where the card stack section starts and ends
+card_stack_start = content.find('<!-- Card Stack Viewer Section -->')
+if card_stack_start == -1:
+    print("Could not find card stack section")
+else:
+    # Find the end of the card stack section (the closing style tag followed by closing div)
+    card_stack_end = content.find('</style>', card_stack_start)
+    card_stack_end = content.find('</div>', card_stack_end) + 6
+    card_stack_end = content.find('</div>', card_stack_end) + 6
+    
+    # Extract the card stack section
+    card_stack_html = content[card_stack_start:card_stack_end]
+    
+    # Remove the card stack from its original location
+    content = content[:card_stack_start] + '<!-- CARD_STACK_PLACEHOLDER -->' + content[card_stack_end:]
+    
+    # Close the text column and add the card column with the card stack
+    # Find Skills Demonstrated section end and close the text column there
+    skills_end = content.find('</p>\n            </div>\n\n\n')
+    if skills_end == -1:
+        # Try another pattern
+        content = content.replace(
+            '<!-- CARD_STACK_PLACEHOLDER -->',
+            '''
+                </div>
+                
+                <!-- Right Column: Card Stack -->
+                <div class="fsf-card-column">
+                    <div class="text-sm text-gray-600 mb-2">FSF 2026 Merchandising Case Study</div>
+                    <div class="card-stack-wrapper">
+                        <div class="card-stack" id="card-stack">
+                            <!-- Cards will be generated by JavaScript -->
+                        </div>
+                        
+                        <!-- Navigation Controls -->
+                        <div class="card-stack-controls">
+                            <button id="prev-card" class="card-nav-btn" aria-label="Previous slide">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="card-counter">
+                                <span id="current-card">1</span> / <span id="total-cards">22</span>
+                            </div>
+                            <button id="next-card" class="card-nav-btn" aria-label="Next slide">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <!-- Download Button -->
+                        <div class="mt-3 text-center">
+                            <a href="FSF_Merchandising_Case_2026.pdf" download
+                                class="inline-flex items-center space-x-2 px-3 py-1.5 bg-[#A30000] text-white rounded-lg hover:bg-[#8B0000] transition-colors duration-300 text-xs font-medium">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                </svg>
+                                <span>Download PDF</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+'''
+        )
+
+with open(r'c:\portfolio\fashion-scholarship-fund\index.html', 'w', encoding='utf-8') as f:
+    f.write(content)
+
+print('Restructured to two-column layout!')
