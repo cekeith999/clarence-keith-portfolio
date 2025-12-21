@@ -106,7 +106,27 @@
             max-width: 100%;
         }
         
-        @media (max-width: 1024px) {
+        
+            /* Expanded state when at bottom */
+            .fsf-sidebar.expanded {
+                position: relative;
+                top: 0;
+                width: 100%;
+                max-width: 800px;
+                margin: 3rem auto 0;
+                transform: scale(1);
+                transition: all 0.5s ease;
+            }
+            
+            .fsf-layout.at-bottom {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .fsf-layout.at-bottom .fsf-content {
+                max-width: 100%;
+            }
+\n        @media (max-width: 1024px) {
             .fsf-layout {
                 flex-direction: column;
             }
@@ -747,6 +767,36 @@
         
         // Initialize scroll detection
         document.addEventListener('DOMContentLoaded', setupScrollDetection);
+
+        
+        // Scroll detection for bottom expansion
+        function setupBottomExpansion() {
+            const layout = document.querySelector('.fsf-layout');
+            const sidebar = document.querySelector('.fsf-sidebar');
+            const content = document.querySelector('.fsf-content');
+            
+            if (!layout || !sidebar || !content) return;
+            
+            function checkScroll() {
+                const contentBottom = content.getBoundingClientRect().bottom;
+                const viewportHeight = window.innerHeight;
+                
+                // When the content bottom is near or above the viewport bottom
+                if (contentBottom < viewportHeight + 100) {
+                    layout.classList.add('at-bottom');
+                    sidebar.classList.add('expanded');
+                } else {
+                    layout.classList.remove('at-bottom');
+                    sidebar.classList.remove('expanded');
+                }
+            }
+            
+            window.addEventListener('scroll', checkScroll);
+            window.addEventListener('resize', checkScroll);
+            checkScroll(); // Initial check
+        }
+        
+        document.addEventListener('DOMContentLoaded', setupBottomExpansion);
     </script>
 </body>
 
