@@ -77,184 +77,184 @@
     </header>
 
     
-    <style>
-        /* Two-column sticky layout */
-        .fsf-layout {
-            display: flex;
-            gap: 3rem;
-            align-items: flex-start;
+        <style>
+        /* Simple layout with sticky card stack */
+        .fsf-page-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 2rem;\n            justify-content: center;
+            padding: 0 2rem;
+            position: relative;
         }
         
         .fsf-content {
-            flex: 1;
-            min-width: 0;
             max-width: 600px;
+            padding-right: 520px; /* Space for sticky sidebar */
         }
         
+        /* Sticky card stack - always on right side */
         .fsf-sidebar {
-            position: sticky;
-            top: 100px;
-            width: 500px;
-            flex-shrink: 0;
-            align-self: flex-start;
+            position: fixed;
+            top: 120px;
+            right: calc(50% - 600px + 2rem);
+            width: 480px;
+            z-index: 10;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                        opacity 0.3s ease;
+            transform-origin: center center;
         }
         
-        .fsf-sidebar .card-stack-wrapper {
-            max-width: 100%;
+        /* When at bottom - center and enlarge */
+        .fsf-sidebar.at-bottom {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            right: auto;
+            transform: translate(-50%, -50%) scale(1.3);
+            width: 600px;
+            z-index: 100;
         }
         
+        /* Backdrop when enlarged */
+        .fsf-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(242, 240, 239, 0.95);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            z-index: 50;
+        }
         
-            /* Expanded state when at bottom */
-            .fsf-sidebar.expanded {
-                position: relative;
-                top: 0;
-                width: 100%;
-                max-width: 800px;
-                margin: 3rem auto 0;
-                transform: scale(1);
-                transition: all 0.5s ease;
-            }
-            
-            .fsf-layout.at-bottom {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .fsf-layout.at-bottom .fsf-content {
-                max-width: 100%;
-            }
-\n        
-            /* Fullscreen button */
-            .fullscreen-btn {
-                position: absolute;
-                top: 10px;
-                right: 10px;
-                background: rgba(0, 0, 0, 0.6);
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 6px 10px;
-                cursor: pointer;
-                font-size: 12px;
-                z-index: 10;
-                transition: background 0.2s;
-            }
-            
-            .fullscreen-btn:hover {
-                background: rgba(0, 0, 0, 0.8);
-            }
-            
-            /* Navigation position adjustment */
-            .card-stack-controls {
-                margin-top: 1.5rem;
-            }
-            
-            /* Smooth transition for sidebar */
-            .fsf-sidebar {
-                transition: transform 0.15s ease-out, width 0.15s ease-out;
-            }
-
+        .fsf-backdrop.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Fullscreen button */
+        .fullscreen-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 12px;
+            z-index: 10;
+            transition: background 0.2s;
+        }
+        
+        .fullscreen-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+        
+        /* Navigation position adjustment */
+        .card-stack-controls {
+            margin-top: 1rem;
+        }
+        
+        /* Card stack styles */
+        .card-stack-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        
+        .card-stack {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            perspective: 1000px;
+            cursor: grab;
+            user-select: none;
+        }
+        
+        .card-stack:active {
+            cursor: grabbing;
+        }
+        
+        .card-stack-card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .card-stack-card.dragging {
+            transition: none;
+        }
+        
+        .card-stack-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .card-nav-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #A30000;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .card-nav-btn:hover:not(:disabled) {
+            background: #8B0000;
+            transform: scale(1.1);
+        }
+        
+        .card-nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .card-counter {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #333;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        /* Mobile: stack vertically */
         @media (max-width: 1024px) {
-            .fsf-layout {
-                flex-direction: column;
-            }
-            
-            .fsf-sidebar {
-                position: relative;
-                top: 0;
-                width: 100%;
-                order: -1;
-                margin-bottom: 2rem;
-            }
-            
             .fsf-content {
                 max-width: 100%;
+                padding-right: 0;
+            }
+            
+            .fsf-sidebar {
+                position: relative;
+                top: 0;
+                right: auto;
+                width: 100%;
+                max-width: 500px;
+                margin: 2rem auto;
+            }
+            
+            .fsf-sidebar.at-bottom {
+                position: relative;
+                top: auto;
+                left: auto;
+                transform: none;
+                width: 100%;
             }
         }
-    
-            /* Card stack styles */
-            .card-stack-wrapper {
-                position: relative;
-                width: 100%;
-            }
-            
-            .card-stack {
-                position: relative;
-                width: 100%;
-                aspect-ratio: 16 / 10;
-                perspective: 1000px;
-                cursor: grab;
-                user-select: none;
-            }
-            
-            .card-stack:active {
-                cursor: grabbing;
-            }
-            
-            .card-stack-card {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                border-radius: 12px;
-                overflow: hidden;
-                background: white;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-                transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            }
-            
-            .card-stack-card.dragging {
-                transition: none;
-            }
-            
-            .card-stack-card img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
-            
-            .card-stack-controls {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 1rem;
-                margin-top: 1rem;
-            }
-            
-            .card-nav-btn {
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                background: #A30000;
-                color: white;
-                border: none;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: all 0.2s ease;
-            }
-            
-            .card-nav-btn:hover:not(:disabled) {
-                background: #8B0000;
-                transform: scale(1.1);
-            }
-            
-            .card-nav-btn:disabled {
-                opacity: 0.5;
-                cursor: not-allowed;
-            }
-            
-            .card-counter {
-                font-size: 0.875rem;
-                font-weight: 600;
-                color: #333;
-                min-width: 60px;
-                text-align: center;
-            }
-</style>
+    </style>
 <main class="flex-grow" id="main-container"
         style="background-color: var(--bg-primary); color: var(--text-primary);">
         <div class="w-full max-w-6xl mx-auto p-6 sm:p-8">
@@ -269,7 +269,8 @@
         </div>
         
         <!-- Two Column Layout -->
-        <div class="fsf-layout">
+        <div id="fsf-backdrop" class="fsf-backdrop"></div>
+        <div class="fsf-page-container">
             <!-- Left Column: Content -->
             <div class="fsf-content">
             
@@ -787,125 +788,46 @@
 
         
         // ============================================================================
-        // SCROLL-BASED EXPANSION - GPU-OPTIMIZED, RAF-BATCHED
+        // SCROLL DETECTION - Simple at-bottom toggle
         // ============================================================================
         
         function setupScrollExpansion() {
-            const sidebar = document.querySelector('.fsf-sidebar');
+            const sidebar = document.getElementById('fsf-sidebar');
             const fsfContent = document.querySelector('.fsf-content');
-            const layout = document.querySelector('.fsf-layout');
+            const backdrop = document.getElementById('fsf-backdrop');
             
             if (!sidebar || !fsfContent) return;
             
-            // Cache measurements - only update on resize
-            let contentBottom = 0;
-            let rafPending = false;
-            let currentProgress = 0;
-            let targetProgress = 0;
+            // Apply will-change for smooth animation
+            sidebar.style.willChange = 'transform';
             
-            // Spring interpolation
-            const springStiffness = 0.08;
-            const springDamping = 0.85;
-            let velocity = 0;
-            
-            function measureLayout() {
-                const rect = fsfContent.getBoundingClientRect();
-                contentBottom = rect.bottom + window.scrollY;
-            }
-            
-            function onScroll() {
-                const viewportBottom = window.scrollY + window.innerHeight;
-                const startThreshold = 400;
-                const distanceFromEnd = contentBottom - viewportBottom;
+            function checkScroll() {
+                const contentRect = fsfContent.getBoundingClientRect();
+                const viewportHeight = window.innerHeight;
                 
-                // Calculate target progress (0 to 1)
-                targetProgress = Math.max(0, Math.min(1, 1 - (distanceFromEnd / startThreshold)));
+                // When content bottom is above viewport (user scrolled past content)
+                const isAtBottom = contentRect.bottom < viewportHeight - 100;
                 
-                if (!rafPending) {
-                    rafPending = true;
-                    requestAnimationFrame(updateAnimation);
-                }
-            }
-            
-            function updateAnimation() {
-                rafPending = false;
-                
-                // Spring physics for smooth interpolation
-                const force = (targetProgress - currentProgress) * springStiffness;
-                velocity = velocity * springDamping + force;
-                currentProgress += velocity;
-                
-                // Stop when settled
-                const isSettled = Math.abs(targetProgress - currentProgress) < 0.001 && Math.abs(velocity) < 0.001;
-                
-                if (!isSettled) {
-                    requestAnimationFrame(updateAnimation);
-                    rafPending = true;
+                if (isAtBottom) {
+                    sidebar.classList.add('at-bottom');
+                    backdrop?.classList.add('visible');
                 } else {
-                    currentProgress = targetProgress;
-                }
-                
-                // Apply transforms ONLY (no layout-affecting properties)
-                applyTransforms(currentProgress);
-            }
-            
-            function applyTransforms(progress) {
-                if (progress > 0.01) {
-                    // Scale: 1.0 to 1.35
-                    const scale = 1 + (progress * 0.35);
-                    // Translate: move toward center as it grows
-                    const translateX = progress * -12;
-                    const translateY = progress * 10;
-                    
-                    // Use translate3d for GPU acceleration
-                    sidebar.style.transform = `translate3d(${translateX}%, ${translateY}px, 0) scale(${scale})`;
-                    sidebar.style.opacity = 1 - (progress * 0.05);
-                    
-                    if (progress > 0.85) {
-                        layout?.classList.add('at-bottom');
-                        sidebar.classList.add('expanded');
-                    } else {
-                        layout?.classList.remove('at-bottom');
-                        sidebar.classList.remove('expanded');
-                    }
-                } else {
-                    sidebar.style.transform = '';
-                    sidebar.style.opacity = '';
-                    layout?.classList.remove('at-bottom');
-                    sidebar.classList.remove('expanded');
+                    sidebar.classList.remove('at-bottom');
+                    backdrop?.classList.remove('visible');
                 }
             }
             
-            // Apply will-change on interaction, remove when idle
-            function enableGPU() {
-                sidebar.style.willChange = 'transform, opacity';
-            }
+            // Passive scroll listener
+            window.addEventListener('scroll', checkScroll, { passive: true });
+            window.addEventListener('resize', checkScroll, { passive: true });
             
-            function disableGPU() {
-                setTimeout(() => {
-                    if (currentProgress < 0.01) {
-                        sidebar.style.willChange = 'auto';
-                    }
-                }, 500);
-            }
+            // Initial check
+            checkScroll();
             
-            // Initial measurement
-            measureLayout();
-            
-            // Event listeners (passive!)
-            window.addEventListener('scroll', () => {
-                enableGPU();
-                onScroll();
-                disableGPU();
-            }, { passive: true });
-            
-            window.addEventListener('resize', () => {
-                measureLayout();
-                onScroll();
-            }, { passive: true });
-            
-            // Initial call
-            onScroll();
+            // Click backdrop to scroll back up
+            backdrop?.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
         }
         
         document.addEventListener('DOMContentLoaded', setupScrollExpansion);
