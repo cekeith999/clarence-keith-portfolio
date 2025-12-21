@@ -527,30 +527,42 @@
                 }
             });
 
-            // Scroll navigation - strict one card per scroll gesture
+            // Scroll navigation - detects and ignores trackpad momentum
             let scrollLocked = false;
+            let lastWheelTime = 0;
+            let lastDeltaY = 0;
             
             cardStack.addEventListener('wheel', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 
-                // Completely ignore all wheel events while locked
-                if (scrollLocked) return;
+                const now = Date.now();
+                const timeDiff = now - lastWheelTime;
+                const currentDelta = Math.abs(e.deltaY);
                 
-                // Lock immediately
+                // Detect momentum: rapid successive events with similar/decreasing delta
+                const isMomentum = timeDiff < 100 && timeDiff > 0;
+                
+                lastWheelTime = now;
+                lastDeltaY = e.deltaY;
+                
+                // Ignore momentum events and locked state
+                if (isMomentum || scrollLocked) return;
+                
+                // Lock and navigate
                 scrollLocked = true;
                 
-                // Determine direction and move one card
                 if (e.deltaY > 0) {
                     nextCard();
                 } else if (e.deltaY < 0) {
                     prevCard();
                 }
                 
-                // Keep locked for 600ms to ignore all momentum/follow-up events
+                // Unlock after a delay
                 setTimeout(() => {
                     scrollLocked = false;
-                }, 600);
+                    lastDeltaY = 0;
+                }, 400);
             }, { passive: false });
 
             // Drag navigation
