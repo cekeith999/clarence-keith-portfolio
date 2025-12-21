@@ -93,16 +93,21 @@
             padding: 0 1rem;
         }
         
-        /* Sticky card stack - always on right side */
+        /* Sticky card stack - starts aligned with Project Overview */
         .fsf-sidebar {
             position: fixed;
-            top: 120px;
+            top: 280px; /* Aligned with Project Overview heading */
             right: 3rem;
             width: 480px;
             z-index: 10;
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
-                        opacity 0.3s ease;
+            transition: top 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             transform-origin: center center;
+        }
+        
+        /* Mid-scroll: centered in viewport */
+        .fsf-sidebar.centered {
+            top: 50%;
+            transform: translateY(-50%);
         }
         
         /* When at bottom - center and enlarge */
@@ -790,7 +795,7 @@
 
         
         // ============================================================================
-        // SCROLL DETECTION - Simple at-bottom toggle
+        // SCROLL DETECTION - Three phases: aligned, centered, enlarged
         // ============================================================================
         
         function setupScrollExpansion() {
@@ -801,19 +806,32 @@
             if (!sidebar || !fsfContent) return;
             
             // Apply will-change for smooth animation
-            sidebar.style.willChange = 'transform';
+            sidebar.style.willChange = 'transform, top';
             
             function checkScroll() {
-                const contentRect = fsfContent.getBoundingClientRect();
+                const scrollY = window.scrollY;
                 const viewportHeight = window.innerHeight;
+                const contentRect = fsfContent.getBoundingClientRect();
                 
-                // When content bottom is above viewport (user scrolled past content)
-                const isAtBottom = contentRect.bottom < viewportHeight - 100;
+                // Phase thresholds
+                const startCenteringAt = 150;
+                const isAtBottom = contentRect.bottom < viewportHeight - 50;
                 
-                if (isAtBottom) {
+                // Phase 1: At top - aligned with Project Overview
+                if (scrollY < startCenteringAt) {
+                    sidebar.classList.remove('centered');
+                    sidebar.classList.remove('at-bottom');
+                    backdrop?.classList.remove('visible');
+                }
+                // Phase 3: At bottom - enlarged and centered
+                else if (isAtBottom) {
+                    sidebar.classList.add('centered');
                     sidebar.classList.add('at-bottom');
                     backdrop?.classList.add('visible');
-                } else {
+                }
+                // Phase 2: Mid-scroll - centered in viewport
+                else {
+                    sidebar.classList.add('centered');
                     sidebar.classList.remove('at-bottom');
                     backdrop?.classList.remove('visible');
                 }
