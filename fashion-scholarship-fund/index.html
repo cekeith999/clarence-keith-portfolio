@@ -527,35 +527,30 @@
                 }
             });
 
-            // Scroll navigation - accumulate delta for reliable one-card-per-scroll
-            let accumulatedDelta = 0;
-            let isScrolling = false;
-            const deltaThreshold = 50; // Amount of scroll needed to trigger
+            // Scroll navigation - strict one card per scroll gesture
+            let scrollLocked = false;
             
             cardStack.addEventListener('wheel', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 
-                if (isScrolling) return;
+                // Completely ignore all wheel events while locked
+                if (scrollLocked) return;
                 
-                accumulatedDelta += e.deltaY;
+                // Lock immediately
+                scrollLocked = true;
                 
-                if (Math.abs(accumulatedDelta) >= deltaThreshold) {
-                    isScrolling = true;
-                    
-                    if (accumulatedDelta > 0) {
-                        nextCard();
-                    } else {
-                        prevCard();
-                    }
-                    
-                    accumulatedDelta = 0;
-                    
-                    // Block scrolling until animation completes
-                    setTimeout(() => {
-                        isScrolling = false;
-                    }, 400);
+                // Determine direction and move one card
+                if (e.deltaY > 0) {
+                    nextCard();
+                } else if (e.deltaY < 0) {
+                    prevCard();
                 }
+                
+                // Keep locked for 600ms to ignore all momentum/follow-up events
+                setTimeout(() => {
+                    scrollLocked = false;
+                }, 600);
             }, { passive: false });
 
             // Drag navigation
